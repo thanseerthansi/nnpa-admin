@@ -1,23 +1,34 @@
 import logo from './logo.svg';
 import './App.css';
+import {BrowserRouter as  Router,Route,Routes } from 'react-router-dom';
+import Text from './Components.js/Text';
+import Header from './Components.js/Header';
+import Category from './Components.js/Category';
+import Home from './Components.js/Home';
+import News from './Components.js/News';
+import Login from './Components.js/Login';
+import Simplecontextprovider from './Components.js/Simplecontext';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    
+      <Router>
+        <Simplecontextprovider>
+        <Routes>
+        <Route exact path="/text" element={<Text/>}/>
+        <Route exact path="/header" element={<Header/>}/>
+        <Route exact path="/login" element={<Login/>}/>
+        <Route path="/" element={< Home/>}>
+          <Route  path='category' element={<Category />}/>
+          <Route  index element={<News />}/>
+        
+        
+      </Route>
+      
+        </Routes>
+        </Simplecontextprovider>
+      </Router>
     </div>
   );
 }
