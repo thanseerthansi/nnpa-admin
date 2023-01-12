@@ -5,18 +5,22 @@ import Callaxios from './Callaxios';
 import { BaseURL } from './urlcall';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-
+import { BiSearch ,BiAddToQueue,BiEdit} from 'react-icons/bi';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import Scripts from './Scripts';
 export default function News() {
     const [newsdata,setnewsdata]=useState([]);
     const [newsitem,setnewsitem]=useState('')
     const [page,setpage]=useState(1)
     const [query,setquery]=useState('')
     const [next,setnext]=useState(false)
+    const [modal,setmodal]=useState(false)
     const [searchvalue,setsearchvalue]=useState('')
     
     // console.log("page",next)
     useEffect(() => {
-        getnews()
+      Scripts()
+      getnews()
     }, [])
     const notify = (msg) => toast.success(msg, {
       position: "top-right",
@@ -66,17 +70,19 @@ export default function News() {
       <div className='row ' >
           <div className='col-6' >
         <h6 className="card-title text-start text-bold">News</h6>
+        <div className='text-start'><button onClick={()=>setmodal(!modal)} className='btn btn-success btn-sm'><BiAddToQueue size={20}/>Add</button></div>
         </div>
         <div className='col-6'>
         <form className="search-form ml-auto" onSubmit={(e)=>getnews(e,1)} >
           <div className="input-group">
             
-            <input onChange={(e)=>setsearchvalue(e.target.value)} type="text" className="form-control" id="navbarForm" placeholder="Search here..." />
+            <input onChange={(e)=>setsearchvalue(e.target.value)} type="text" className="form-control form-control-sm" id="navbarForm" placeholder="Search here..." />
             <div className="">
-              <button type='submit' className='btn btn-primary ' ><i  data-feather="search" /></button>
+              <button type='submit' className='btn btn-primary btn-sm ' ><BiSearch size={20}/></button>
             </div>
           </div>
         </form>
+        
         </div>
         </div>
         
@@ -100,7 +106,7 @@ export default function News() {
             <tbody>
                 {newsdata.length ? newsdata.map((itm,k)=>(
                     <tr key={k}>
-                    <td>{itm._id}</td>
+                    <td>{k+1}</td>
                     <td className='table-linebreak' onClick={()=>setnewsitem(itm)} data-bs-toggle="modal" data-bs-target="#exampleModalCenter">{itm.heading}</td>
                     <td>
                     {itm.media_type==="image" ?
@@ -111,7 +117,7 @@ export default function News() {
                     }
                     </td>
                     <td>{itm.category.length ?itm.category[0].name:null}</td>
-                    <td className='table-linebreak' onClick={()=>setnewsitem(itm)}><button  type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg">
+                    <td className='table-linebreak' onClick={()=>setnewsitem(itm)}><button  type="button" className="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg">
                     Content
                     </button>
                     </td>
@@ -127,11 +133,11 @@ export default function News() {
                     <td>
                     <ul className=''>
                     <li className='list-group-item'>
-                      <button onClick={()=>setnewsitem(itm)} className='btn btn-warning btn-xs'>edit</button>
+                      <button onClick={()=>setnewsitem(itm) &setmodal(!modal)} className='btn btn-warning btn-xs'><BiEdit size={15}/>edit</button>
                     </li>
                     <li className='list-group-item mt-1' >
                     
-                      <button onClick={()=>deletenews(itm._id)} className='btn btn-danger btn-xs' >delete</button>
+                      <button onClick={()=>deletenews(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15}/>delete</button>
                     </li>
                   </ul>
                     </td>
@@ -231,6 +237,20 @@ export default function News() {
   </div>
 </div>
  {/* edit modal */}
+<div className="modal fade bd-example-modal-xl show" tabIndex={-1}  role="dialog" style={modal===true ? {display: 'block', paddingRight: 17}:{display:'none'}}>
+  <div className="modal-dialog modal-xl box-shadow-blank">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title h4" id="myExtraLargeModalLabel">Extra large modal</h5>
+        <button onClick={()=>setmodal(!modal) & setnewsitem('')} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
+        </button>
+      </div>
+      <div className="modal-body">
+        ...
+      </div>
+    </div>
+  </div>
+</div>
 
 
     </div>

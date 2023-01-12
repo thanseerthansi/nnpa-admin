@@ -26,17 +26,18 @@ export default function Header() {
           </Link>
         </li>  */}
         <li className="nav-item">
-          <Link to="/category" className="nav-link">
+          <Link to="/news/category" className="nav-link">
             <i className="link-icon" data-feather="grid" />
             <span className="link-title">Category</span>
           </Link>
         </li>
         <li className="nav-item">
-          <Link to="/" className="nav-link">
+          <Link to="/news" className="nav-link">
             <i className="link-icon" data-feather="table" />
             <span className="link-title">News</span>
           </Link>
         </li>
+        
         
         
       </ul>
@@ -82,7 +83,7 @@ export default function Header() {
         <ul className="navbar-nav">
          
           <li className="nav-item dropdown">
-          <Link href="/" className="text-body ms-0">
+          <Link to="/" className="text-body ms-0">
             <i className="me-2 icon-md" data-feather="log-out" />
             <span>Log Out</span>
           </Link>

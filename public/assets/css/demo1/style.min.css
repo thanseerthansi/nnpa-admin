@@ -27403,3 +27403,7 @@ html{
     white-space: nowrap;
     cursor: pointer;
 }
+.box-shadow-blank {
+    box-shadow: 0 0 0 50vmax rgb(0 0 0 / 50%);
+    background: rgba(0 0 0 / 50%);
+}

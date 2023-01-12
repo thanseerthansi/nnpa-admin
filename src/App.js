@@ -18,8 +18,8 @@ function App() {
         <Routes>
         <Route exact path="/text" element={<Text/>}/>
         <Route exact path="/header" element={<Header/>}/>
-        <Route exact path="/login" element={<Login/>}/>
-        <Route path="/" element={< Home/>}>
+        <Route exact path="/" element={<Login/>}/>
+        <Route path="/news" element={< Home/>}>
           <Route  path='category' element={<Category />}/>
           <Route  index element={<News />}/>
         

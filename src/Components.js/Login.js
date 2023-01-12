@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Login() {
     let navigate = useNavigate();
     const loginfn=()=>{
-        return navigate('/');
+        return navigate('/news');
     }
   return (
     <div className='main-wrapper'>

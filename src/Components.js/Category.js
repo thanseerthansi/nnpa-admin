@@ -3,14 +3,17 @@ import Callaxios from './Callaxios'
 import { Simplecontext } from './Simplecontext'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-
+import { BiSearch,BiAddToQueue,BiEdit } from 'react-icons/bi';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import Scripts from './Scripts';
 export default function Category() {
   const {categorydata,getcategory} =useContext(Simplecontext)
   const [categoryitem,setcategoryitem]=useState('')
   const [searchvalue,setsearchvalue]=useState('')
+  const [modal,setmodal]=useState(false)
   // console.log("d=search",searchvalue)
   useEffect(() => {
-    
+    Scripts()
   }, [])
   const notify = (msg) => toast.success(msg, {
     position: "top-right",
@@ -60,12 +63,13 @@ export default function Category() {
         <div className='row ' >
           <div className='col-6' >
         <h6 className="card-title text-start text-bold">Category</h6>
+        <div className='text-start'><button onClick={()=>setmodal(!modal)} className='btn btn-success btn-sm' ><BiAddToQueue size={20}/>Add</button></div>
         </div>
         <div className='col-6'>
         <form className="search-form ml-auto">
           <div className="input-group">
             <div className="input-group-text">
-              <i data-feather="search" />
+              <BiSearch/>
             </div>
             <input onChange={(e)=>setsearchvalue(e.target.value.toLowerCase())} type="text" className="form-control" id="navbarForm" placeholder="Search here..." />
           </div>
@@ -92,11 +96,11 @@ export default function Category() {
                 <td>
                   <ul className=''>
                     <li className='list-group-item'>
-                      <button onClick={()=>setcategoryitem(itm)} className='btn btn-warning btn-xs' data-bs-toggle="modal" data-bs-target="#exampleModalCenter">edit</button>
+                      <button onClick={()=>setcategoryitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs' ><BiEdit size={15}/>edit</button>
                     </li>
                     <li className='list-group-item mt-1' >
                     
-                      <button onClick={()=>deletecat(itm._id)} className='btn btn-danger btn-xs' >delete</button>
+                      <button onClick={()=>deletecat(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
                     </li>
                   </ul>
                 </td>
@@ -113,7 +117,7 @@ export default function Category() {
 </div>
 
    {/* Modal */}
-<div className="modal fade" id="exampleModalCenter" tabIndex={-1} aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+{/* <div className="modal fade" id="exampleModalCenter" tabIndex={-1} aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div className="modal-dialog modal-dialog-centered">
     <div className="modal-content">
       <div className="modal-header">
@@ -138,12 +142,34 @@ export default function Category() {
       </div>
       <div className="modal-footer">
         <button onClick={()=>setcategoryitem('')} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" className="btn btn-primary">Save changes</button>
+        <button type="submit" className="btn btn-primary">Save changes</button>
       </div>
       </form>
     </div>
   </div>
-</div>
+</div> */}
+  <div className="modal fade show" id="exampleModalCenter" tabIndex={1} aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog" style={modal===true ? {display: 'block', paddingRight: 17}:{display:'none'}}>
+  <div className="modal-dialog modal-dialog-centered  box-shadow-blank" >
+    <div className="modal-content"><div className="modal-header">
+      <h5 className="modal-title" id="exampleModalCenterTitle">Category</h5>
+      <button onClick={()=>setmodal(!modal) & setcategoryitem('')} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close" />
+      </div>
+      <form className="forms-sample">
+        <div className="modal-body">
+        <div className="mb-3 text-start">
+          <label htmlFor="userEmail" className="form-label ">Name</label>
+          <input type="text" onChange={(e)=>setcategoryitem({...categoryitem,name:e.target.value})} value={categoryitem.name?categoryitem.name:'' } className="form-control" placeholder="Name"  />
+        </div>
+        <div />
+        </div>
+        <div className="modal-footer">
+          <button onClick={()=>setmodal(!modal) & setcategoryitem('')} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" className="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
     </div>
   )
 }
