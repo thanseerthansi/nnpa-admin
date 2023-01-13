@@ -6463,7 +6463,7 @@ div.tox .tox-button .badge {
 .modal {
     --bs-modal-zindex: 1055;
     --bs-modal-width: 500px;
-    --bs-modal-padding: 1rem;
+    --bs-modal-padding: 2rem;
     --bs-modal-margin: 0.5rem;
     --bs-modal-bg: #fff;
     --bs-modal-border-color: #e9ecef;

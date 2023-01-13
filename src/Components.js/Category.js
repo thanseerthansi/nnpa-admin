@@ -6,6 +6,9 @@ import 'react-toastify/dist/ReactToastify.css'
 import { BiSearch,BiAddToQueue,BiEdit } from 'react-icons/bi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Scripts from './Scripts';
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+
 export default function Category() {
   const {categorydata,getcategory} =useContext(Simplecontext)
   const [categoryitem,setcategoryitem]=useState('')
@@ -33,26 +36,50 @@ export default function Category() {
       notifyerror("Something went wrong")
     }    
   }
-  const categorypost = async(e,action)=>{
+  const categorypost = async(e)=>{
     e.preventDefault();
     let datalist = categoryitem
-    if (action==="create"){
+    if (datalist._id){
+      datalist.id = datalist._id
+      if (datalist.name){
+        console.log("dataname")
+        datalist.action="update"
+      }else(notifyerror("Name required"))
+          
+    }else{
+      console.log("notid")
       datalist.action="create"
-    }else if(action==="update"){
-      datalist.action="update"
     }
     console.log("datalist",datalist)
-    // try {
-    //   let data =await Callaxios("post","category/create-category/",datalist)
-    //   // console.log("data",data)
-    //   if (data.data.status===200){
-    //     notify("Deleted Successfully")
-    //     getcategory()
-    //   }
-    // } catch (error) {
-    //   notifyerror("Something went wrong")
-    // }  
+    try {
+      let data =await Callaxios("post","category/create-category/",datalist)
+      // console.log("data",data)
+      if (data.data.status===200){
+        notify("Successfully")
+        getcategory()
+        setmodal(!modal)
+      }
+    } catch (error) {
+      notifyerror("Something went wrong")
+    }  
   }
+  const submitdelete = (itemid) => {
+    confirmAlert({
+        title: "Confirmation",
+        message: `Are you sure to delete this ?`,
+        buttons: [
+        {
+            label: "Yes",           
+            onClick:()=>deletecat(itemid),
+        },
+        {
+            label: "No"
+            // onClick: () => alert("Click No")
+        } 
+        ],
+        
+    });
+    };
   return (
     <div className='page-wrapper p-3 mt-5'>
        <ToastContainer/>
@@ -100,7 +127,7 @@ export default function Category() {
                     </li>
                     <li className='list-group-item mt-1' >
                     
-                      <button onClick={()=>deletecat(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
+                      <button onClick={()=>submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
                     </li>
                   </ul>
                 </td>
@@ -148,23 +175,23 @@ export default function Category() {
     </div>
   </div>
 </div> */}
-  <div className="modal fade show" id="exampleModalCenter" tabIndex={1} aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog" style={modal===true ? {display: 'block', paddingRight: 17}:{display:'none'}}>
+  <div className="modal " id="exampleModalCenter" tabIndex={1} aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog" style={modal===true ? {display: 'block', paddingRight: 17}:{display:'none'}}>
   <div className="modal-dialog modal-dialog-centered  box-shadow-blank" >
     <div className="modal-content"><div className="modal-header">
       <h5 className="modal-title" id="exampleModalCenterTitle">Category</h5>
       <button onClick={()=>setmodal(!modal) & setcategoryitem('')} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close" />
       </div>
-      <form className="forms-sample">
+      <form className="forms-sample" onSubmit={(e)=>categorypost(e)}>
         <div className="modal-body">
         <div className="mb-3 text-start">
           <label htmlFor="userEmail" className="form-label ">Name</label>
-          <input type="text" onChange={(e)=>setcategoryitem({...categoryitem,name:e.target.value})} value={categoryitem.name?categoryitem.name:'' } className="form-control" placeholder="Name"  />
+          <input type="text" required onChange={(e)=>setcategoryitem({...categoryitem,name:e.target.value})} value={categoryitem.name?categoryitem.name:'' } className="form-control" placeholder="Name"  />
         </div>
         <div />
         </div>
         <div className="modal-footer">
           <button onClick={()=>setmodal(!modal) & setcategoryitem('')} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" className="btn btn-primary">Save changes</button>
+          <button type="submit" className="btn btn-primary">Submit</button>
         </div>
       </form>
       </div>

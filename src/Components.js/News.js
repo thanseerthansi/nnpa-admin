@@ -1,14 +1,20 @@
 
-import { isDisabled } from '@testing-library/user-event/dist/utils';
-import React, { useEffect, useState } from 'react'
+// import { isDisabled } from '@testing-library/user-event/dist/utils';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import Callaxios from './Callaxios';
 import { BaseURL } from './urlcall';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { BiSearch ,BiAddToQueue,BiEdit} from 'react-icons/bi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import Scripts from './Scripts';
+import JoditEditor from 'jodit-react';
+import { Simplecontext } from './Simplecontext';
+// import MultiSelect from  'react-multiple-select-dropdown-lite'
+// import  'react-multiple-select-dropdown-lite/dist/index.css'
+import Multiselect from 'multiselect-react-dropdown';
+// import Scripts from './Scripts';
 export default function News() {
+  const {categorydata} =useContext(Simplecontext)
     const [newsdata,setnewsdata]=useState([]);
     const [newsitem,setnewsitem]=useState('')
     const [page,setpage]=useState(1)
@@ -16,12 +22,15 @@ export default function News() {
     const [next,setnext]=useState(false)
     const [modal,setmodal]=useState(false)
     const [searchvalue,setsearchvalue]=useState('')
+    const editor = useRef(null);
+	  const [content,setcontent] = useState('');
     
-    // console.log("page",next)
+    console.log("newsitem",newsitem)
     useEffect(() => {
-      Scripts()
+      // Scripts()
       getnews()
     }, [])
+   
     const notify = (msg) => toast.success(msg, {
       position: "top-right",
       });
@@ -96,6 +105,7 @@ export default function News() {
                 <th>image/video</th>
                 <th>category</th>
                 <th>Content</th>
+                <th>Slider</th>
                 <th>tags</th>
                 <th>Thumbnail</th>
                 <th>description</th>
@@ -121,6 +131,7 @@ export default function News() {
                     Content
                     </button>
                     </td>
+                    <td>{itm.is_slider.toString()}</td>
                     <td>{itm.tag ?  itm.tag.split(',').map((tagitm,tagk)=>(
                       <ul key={tagk}>
                         <li> {tagitm}</li>
@@ -237,7 +248,7 @@ export default function News() {
   </div>
 </div>
  {/* edit modal */}
-<div className="modal fade bd-example-modal-xl show" tabIndex={-1}  role="dialog" style={modal===true ? {display: 'block', paddingRight: 17}:{display:'none'}}>
+<div className="modal " tabIndex={-1}  role="dialog" style={modal===true ? {display: 'block', paddingRight: 17}:{display:'none'}}>
   <div className="modal-dialog modal-xl box-shadow-blank">
     <div className="modal-content">
       <div className="modal-header">
@@ -245,8 +256,169 @@ export default function News() {
         <button onClick={()=>setmodal(!modal) & setnewsitem('')} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
         </button>
       </div>
-      <div className="modal-body">
-        ...
+      <div className="modal-body text-start">
+      <div>
+  <form>
+    <div className="row">
+      <div className="col-sm-6">
+        <div className="mb-3">
+          <label className="form-label "><b>Heading</b></label>
+          <input onChange={(e)=>setnewsitem({...newsitem,heading:e.target.value})} value={newsitem.heading ? newsitem.heading :''} required type="text" className="form-control" placeholder="Enter Heading" />
+        </div>
+      </div>{/* Col */}
+      <div className="col-sm-6">
+        <div className="mb-3">
+          <label className="form-label"><b>Thumbnail</b></label>
+          <input onChange={(e)=>setnewsitem({...newsitem,thumbnail:e.target.value})} value={newsitem.thumbnail ? newsitem.thumbnail :''} required type="text" className="form-control" placeholder="Enter Thumbnail" />
+        </div>
+      </div>{/* Col */}
+    </div>{/* Row */}
+    <div className="row">
+      <div className="col-sm-4">
+      <div className="mb-3">
+        <label htmlFor="exampleFormControlSelect2" className="form-label"><b>Tags </b></label>
+        <Multiselect
+  displayValue="key"
+  onKeyPressFn={function noRefCheck(){}}
+  onRemove={newcontent => {setnewsitem({...newsitem,tag:newcontent})}}
+  onSearch={function noRefCheck(){}}
+  onSelect={newcontent => {setnewsitem({...newsitem,tag:newcontent})}}
+  options={[
+    {
+      cat: 'Group 1',
+      key: 'Option 1'
+    },
+    {
+      cat: 'Group 1',
+      key: 'Option 2'
+    },
+    {
+      cat: 'Group 1',
+      key: 'Option 3'
+    },
+    {
+      cat: 'Group 2',
+      key: 'Option 4'
+    },
+    {
+      cat: 'Group 2',
+      key: 'Option 5'
+    },
+    {
+      cat: 'Group 2',
+      key: 'Option 6'
+    },
+    {
+      cat: 'Group 2',
+      key: 'Option 7'
+    }
+  ]}
+  selectedValues={[
+    {
+      cat: 'Group 1',
+      key: 'Option 1'
+    },
+    {
+      cat: 'Group 1',
+      key: 'Option 2'
+    }
+  ]}
+/>
+        {/* <MultiSelect
+        onChange={newcontent => {setnewsitem({...newsitem,tag:newcontent})}}
+        options={[
+          { label:  'Around The World', value:  'aroundtheworld'  },
+          { label:  'Trending', value:  'trending'  },
+          { label:  'Top Stories', value:  'topstories'  },
+          
+        ]}
+        value={newsitem.tag ? newsitem.tag :''}
+          
+      /> */}
+        {/* <select onChange={(e)=>setnewsitem({...newsitem,tag:e.target.value})}  multiple="multiple" className="form-select" id="exampleFormControlSelect2">
+          <option value={"aroundtheworld"}>Around The World</option>
+          <option value={"trending"}>Trending</option>
+          <option value={"topstories"}>Top Stories</option>
+         
+        </select> */}
+      </div>
+                    
+      </div>{/* Col */}
+      <div className="col-sm-4">
+      <div className="mb-3">
+        <label htmlFor="exampleFormControlSelect1" className="form-label"><b>Select Category</b></label>
+        <select required className="form-select" id="exampleFormControlSelect1">
+          <option hidden >Select Category</option>
+          {categorydata.length ?  categorydata.map((itm,k)=>(
+            <option key={k}>{itm.name}</option>
+          )):null}
+
+        </select>
+      </div>
+
+      </div>{/* Col */}
+      <div className="col-sm-4">
+      <div className="mb-3">
+          <label className="form-label"><b>Media Type</b></label>
+          <select required className="form-select" id="exampleFormControlSelect1">
+          <option hidden >Select Image Type</option>
+          <option value={"image"}  >Image</option>
+          <option  value={"video"} >Video</option>
+          </select>
+        </div>
+      </div>{/* Col */}
+      
+    </div>{/* Row */}
+    <div className="row">
+      <div className="col-sm-6">
+        <div className="mb-3">
+          <label className="form-label"><b>Image/Video</b></label>
+          <input required type="file" className="form-control"  />
+        </div>
+      </div>{/* Col */}
+      <div className="col-sm-6">
+        <div className="mb-3">
+          <label className="form-label"><b>Description</b></label>
+          <input type="text" className="form-control" placeholder="Enter description" />
+        </div>
+      </div>{/* Col */}
+    </div>{/* Row */}
+
+    <div className='row'>
+    <div className="col-sm-12">
+        <div className="mb-3">
+          <label className="form-label"><b>Content</b></label>
+          <JoditEditor
+        ref={editor}
+        value={content}
+        onChange={newcontent => {setcontent(newcontent)}}
+      />
+        </div>
+      </div>{/* Col */}
+    </div>{/* row */}
+    <div className=''>
+      <div className="form-check mb-2">
+      <input type="checkbox" className="form-check-input" id="checkChecked"   />
+      <label className="form-check-label" htmlFor="checkChecked">
+        <b>Is-Slider</b>
+      </label>
+    </div>
+      <div className="form-check mb-2">
+      <input type="checkbox" className="form-check-input" id="checkChecked"  />
+      <label className="form-check-label" htmlFor="checkChecked">
+        <b>Push Notification</b>
+      </label>
+    </div>
+
+    </div>
+    <div className='text-end '>
+          <button type="button" onClick={()=>setmodal(!modal) & setnewsitem('')} className="btn btn-secondary " style={{marginRight:"5px"}} data-bs-dismiss="modal">Close</button>
+          <button type="submit" className="btn btn-primary ">Submit</button>
+        </div>
+  </form>
+  
+</div>
+
       </div>
     </div>
   </div>
