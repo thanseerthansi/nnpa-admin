@@ -382,13 +382,13 @@ export default function News() {
       <div className="col-sm-6">
         <div className="mb-3">
           <label className="form-label"><b>Image</b></label>
-          {newsitem.thumbnail ? 
+          {image? 
           <div className=''>
-          <img  className='rounded image-size'  src={ BaseURL+newsitem.thumbnail} alt='img' height="auto" width="auto" />
+          <img  className='rounded image-size'  src={ URL.createObjectURL(image )} alt='img' height="auto" width="auto" />
           </div>
           :<div className=''>
-            {image ? 
-          <img  className='rounded  image-size'  src={ URL.createObjectURL(image )} alt='img' height="auto" width="auto" />
+            {newsitem.thumbnail  ? 
+          <img  className='rounded  image-size' src={ BaseURL+newsitem.thumbnail}   alt='img' height="auto" width="auto" />
           :null}
           </div>}
           <input  onChange={(e)=>setimage(e.target.files[0])} type="file" className="form-control"  />
