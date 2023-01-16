@@ -7,7 +7,7 @@ export default function Header() {
          {/* partial:partials/_sidebar.html */}
   <nav className="sidebar">
     <div className="sidebar-header">
-      <a href="#" className="sidebar-brand">
+      <a href= "/" className="sidebar-brand">
         Noble<span>UI</span>
       </a>
       <div className="sidebar-toggler not-active">
@@ -45,7 +45,7 @@ export default function Header() {
   </nav>
   <nav className="settings-sidebar">
     <div className="sidebar-body">
-      <a href="#" className="settings-sidebar-toggler">
+      <a href= "/" className="settings-sidebar-toggler">
         <i data-feather="settings" />
       </a>
       <h6 className="text-muted mb-2">Sidebar:</h6>
@@ -75,7 +75,7 @@ export default function Header() {
   {/* partial:partials/_navbar.html */}
   <div className="page-wrapper" >
   <nav className="navbar">
-      <a href="#" className="sidebar-toggler">
+      <a href= "/" className="sidebar-toggler">
         <i data-feather="menu" />
       </a>
       <div className="navbar-content">

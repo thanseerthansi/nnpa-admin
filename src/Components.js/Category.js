@@ -42,12 +42,12 @@ export default function Category() {
     if (datalist._id){
       datalist.id = datalist._id
       if (datalist.name){
-        console.log("dataname")
+        // console.log("dataname")
         datalist.action="update"
       }else(notifyerror("Name required"))
           
     }else{
-      console.log("notid")
+      // console.log("notid")
       datalist.action="create"
     }
     console.log("datalist",datalist)

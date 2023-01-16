@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React from 'react'
+// import React from 'react'
 import { BaseURL } from './urlcall'
 
 export default async function Callaxios(action,url,datalist) {

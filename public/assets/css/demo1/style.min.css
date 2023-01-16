@@ -27407,3 +27407,9 @@ html{
     box-shadow: 0 0 0 50vmax rgb(0 0 0 / 50%);
     background: rgba(0 0 0 / 50%);
 }
+.image-size{
+    width: 108px;
+    height: 80px;
+    border-radius: 5px;
+
+}
