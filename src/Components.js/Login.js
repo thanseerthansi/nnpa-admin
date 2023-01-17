@@ -1,13 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 export default function Login() {
     let navigate = useNavigate();
-    const loginfn=()=>{
+    const [password,setpassword]=useState('')
+    const [username,setusername]=useState('')
+    const notify = (msg) => toast.success(msg, {
+      position: "top-right",
+      });
+    const notifyerror = (msg) => toast.error(msg, {
+      position: "top-right",
+      });
+    const loginfn=(e)=>{
+      e.preventDefault();
+      if (username==="nnpa" & password==="nnpa"){
         return navigate('/news');
+      }else{
+        notifyerror("invalid Username or password")
+      }
+        
     }
   return (
     <div className='main-wrapper'>
+      <ToastContainer/>
         <div className="page-wrapper full-page">
   <div className="page-content d-flex align-items-center justify-content-center">
     <div className="row w-100 mx-0 auth-page">
@@ -19,14 +35,14 @@ export default function Login() {
               <div className="auth-form-wrapper px-4 py-5">
                 <a href= "/" className="noble-ui-logo d-block mb-2">Noble<span>UI</span></a>
                 <h5 className="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
-                <form className="forms-sample" onSubmit={()=>loginfn()}>
+                <form className="forms-sample" onSubmit={(e)=>loginfn(e)}>
                   <div className="mb-3 text-start">
                     <label htmlFor="userEmail" className="form-label ">Email address</label>
-                    <input type="email" className="form-control" id="userEmail" placeholder="Email" />
+                    <input type="text" required onChange={(e)=>setusername(e.target.value)} value={username} className="form-control" id="username" placeholder="Username" />
                   </div>
                   <div className="mb-3 text-start">
                     <label htmlFor="userPassword" className="form-label">Password</label>
-                    <input type="password" className="form-control" id="userPassword" autoComplete="current-password" placeholder="Password" />
+                    <input type="password" className="form-control" required onChange={(e)=>setpassword(e.target.value)} value={password} id="userPassword" autoComplete="current-password" placeholder="Password" />
                   </div>
                   
                   <div>
