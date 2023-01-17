@@ -16,7 +16,7 @@ import { confirmAlert } from "react-confirm-alert";
 import ReactPlayer from 'react-player'
 // import Scripts from './Scripts';
 export default function News() {
-  const {categorydata} =useContext(Simplecontext)
+  const {categorydata,accesscheck} =useContext(Simplecontext)
     const [newsdata,setnewsdata]=useState([]);
     const [newsitem,setnewsitem]=useState('')
     const [page,setpage]=useState(1)
@@ -34,6 +34,7 @@ export default function News() {
     console.log("newsitem",newsitem)
     useEffect(() => {
       // Scripts()
+      accesscheck()
       getnews()
     }, [])
    

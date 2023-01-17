@@ -1,7 +1,18 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-
+import React, { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { MdOutlineLogout } from 'react-icons/md';
+import { BsGrid } from 'react-icons/bs';
+import { BiNews } from 'react-icons/bi';
+import Scripts from './Scripts';
 export default function Header() {
+  let navigate = useNavigate();
+  useEffect(() => {
+    Scripts()
+  }, [])
+  const logoutfn=()=>{
+    window.localStorage.setItem("login-access","false")
+    return navigate('/');
+  }
   return (
     <div>
          {/* partial:partials/_sidebar.html */}
@@ -27,13 +38,15 @@ export default function Header() {
         </li>  */}
         <li className="nav-item not-active">
           <Link to="/news/category" className="nav-link">
-            <i className="link-icon" data-feather="grid" />
-            <span className="link-title">Category</span>
+            {/* <i className="link-icon" data-feather="grid" /> */}
+            <BsGrid  size={18}/>
+            <span className="link-title ">Category</span>
           </Link>
         </li>
         <li className="nav-item not-active">
           <Link to="/news" className="nav-link">
-            <i className="link-icon" data-feather="table" />
+            {/* <i className="link-icon" data-feather="table" /> */}
+            <BiNews size={20}/>
             <span className="link-title">News</span>
           </Link>
         </li>
@@ -45,7 +58,7 @@ export default function Header() {
   </nav>
   <nav className="settings-sidebar">
     <div className="sidebar-body">
-      <a href= "/" className="settings-sidebar-toggler">
+      <a href= "#" className="settings-sidebar-toggler">
         <i data-feather="settings" />
       </a>
       <h6 className="text-muted mb-2">Sidebar:</h6>
@@ -82,11 +95,12 @@ export default function Header() {
        
         <ul className="navbar-nav">
          
-          <li className="nav-item dropdown">
-          <Link to="/" className="text-body ms-0">
-            <i className="me-2 icon-md" data-feather="log-out" />
-            <span>Log Out</span>
-          </Link>
+          <li className="nav-item">
+          <a style={{cursor:"pointer"}} onClick={()=>logoutfn()} className="nav-link ms-0">
+            {/* <i className="me-2 icon-md" data-feather="log-out" /> */}
+            <MdOutlineLogout className='me-1 icon-md'/>
+            <span style={{}}>Log Out</span>
+          </a>
             
           </li>
         </ul>

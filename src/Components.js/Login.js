@@ -15,6 +15,7 @@ export default function Login() {
     const loginfn=(e)=>{
       e.preventDefault();
       if (username==="nnpa" & password==="nnpa"){
+        window.localStorage.setItem("login-access","true")
         return navigate('/news');
       }else{
         notifyerror("invalid Username or password")

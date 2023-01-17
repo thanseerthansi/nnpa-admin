@@ -10,12 +10,13 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function Category() {
-  const {categorydata,getcategory} =useContext(Simplecontext)
+  const {categorydata,getcategory,accesscheck} =useContext(Simplecontext)
   const [categoryitem,setcategoryitem]=useState('')
   const [searchvalue,setsearchvalue]=useState('')
   const [modal,setmodal]=useState(false)
   // console.log("d=search",searchvalue)
   useEffect(() => {
+    accesscheck()
     Scripts()
   }, [])
   const notify = (msg) => toast.success(msg, {
