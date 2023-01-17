@@ -14,6 +14,7 @@ import  'react-multiple-select-dropdown-lite/dist/index.css'
 import { confirmAlert } from "react-confirm-alert";
 // import Multiselect from 'multiselect-react-dropdown';
 import ReactPlayer from 'react-player'
+import Scripts from './Scripts';
 // import Scripts from './Scripts';
 export default function News() {
   const {categorydata,accesscheck} =useContext(Simplecontext)
@@ -384,11 +385,11 @@ export default function News() {
       {/* Col */}
     </div>{/* Row */}
     <div className="row">
-      <div className="col-sm-4">
+      <div className="col-sm-4 ">
       <div className="mb-3">
         <label htmlFor="exampleFormControlSelect2" className="form-label"><b>Tags </b></label><br/>
         {/* <b>{newsitem.tag}</b> */}
-        <MultiSelect
+        <MultiSelect style={{maxWidth: "100%"}}
         onChange={newcontent => {setnewsitem({...newsitem,tag:newcontent})}}
         options={options}  
         // selected={[

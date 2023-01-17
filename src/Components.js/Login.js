@@ -1,11 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import Scripts from './Scripts';
 export default function Login() {
     let navigate = useNavigate();
     const [password,setpassword]=useState('')
     const [username,setusername]=useState('')
+    useEffect(() => {
+      Scripts()
+    }, [])
+    
     const notify = (msg) => toast.success(msg, {
       position: "top-right",
       });
@@ -16,7 +21,8 @@ export default function Login() {
       e.preventDefault();
       if (username==="nnpa" & password==="nnpa"){
         window.localStorage.setItem("login-access","true")
-        return navigate('/news');
+        window.location='/news'
+        // return navigate('/news');
       }else{
         notifyerror("invalid Username or password")
       }

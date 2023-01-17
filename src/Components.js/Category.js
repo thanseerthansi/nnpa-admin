@@ -17,7 +17,7 @@ export default function Category() {
   // console.log("d=search",searchvalue)
   useEffect(() => {
     accesscheck()
-    Scripts()
+    // Scripts()
   }, [])
   const notify = (msg) => toast.success(msg, {
     position: "top-right",
