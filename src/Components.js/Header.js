@@ -25,13 +25,13 @@ export default function Header() {
             <span className="link-title">Dashboard</span>
           </Link>
         </li>  */}
-        <li className="nav-item">
+        <li className="nav-item not-active">
           <Link to="/news/category" className="nav-link">
             <i className="link-icon" data-feather="grid" />
             <span className="link-title">Category</span>
           </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item not-active">
           <Link to="/news" className="nav-link">
             <i className="link-icon" data-feather="table" />
             <span className="link-title">News</span>

@@ -11,6 +11,7 @@ import JoditEditor from 'jodit-react';
 import { Simplecontext } from './Simplecontext';
 import MultiSelect from  'react-multiple-select-dropdown-lite'
 import  'react-multiple-select-dropdown-lite/dist/index.css'
+import { confirmAlert } from "react-confirm-alert";
 // import Multiselect from 'multiselect-react-dropdown';
 import ReactPlayer from 'react-player'
 // import Scripts from './Scripts';
@@ -21,6 +22,9 @@ export default function News() {
     const [page,setpage]=useState(1)
     const [next,setnext]=useState(false)
     const [modal,setmodal]=useState(false)
+    const [isslider,setisslider]=useState(false)
+    const [pushnotification,setpushnotification]=useState(false)
+
     const [newsvideomodal,setnewsvideomodal]=useState(false)
     const [searchvalue,setsearchvalue]=useState('')
     const [image,setimage]=useState('')
@@ -64,7 +68,7 @@ export default function News() {
         // console.log("data",data)
         if (data.data.status===200){
           notify("Deleted Successfully")
-          getnews()
+          getnews('',page)
         }
       } catch (error) {
         notifyerror("Something went wrong")
@@ -73,16 +77,25 @@ export default function News() {
     } 
     const postnewsfn =async(e)=>{
       e.preventDefault();
-      console.log("newsitem",newsitem)
+      console.log("newsiteminpost",newsitem)
       const form_data = new FormData();
       let datalist = newsitem
+      // console.log("datrlistcat",datalist.category[0].name)
+      if(datalist.category[0].name){
+        
+        datalist.category = datalist.category[0]._id
+      }
+      datalist.is_slider = isslider
+      datalist.is_pushnotification= pushnotification
+
+      console.log("datalist",datalist)
       for (const [key, value] of Object.entries(datalist)) {
         
         form_data.append(`${key}`, `${value}`)
       }
       // console.log("form_data",form_data)
       if (image ){
-        form_data.append('thumbnail',image)
+        form_data.append('media',image)
       }
       if (datalist._id){
         form_data.append('id',datalist._id)
@@ -93,6 +106,13 @@ export default function News() {
       try {
         let data = await Callaxios("post","news/create-news",form_data)
         console.log("data",data)
+        if(data.data.status===200){
+          
+          setmodal(!modal)
+          getnews()
+          setallnull()
+        
+        }
       } catch (error) {
         console.log(error)
       }
@@ -103,6 +123,29 @@ export default function News() {
     { label:  'Trending', value:  'trending'  },
     { label:  'Top Stories', value:  'topstories'  },
 ]
+  const setallnull =()=>{
+    setnewsitem('')
+    setisslider(false)
+    setpushnotification(false)
+    setimage('')
+  } 
+  const submitdelete = (itemid) => {
+    confirmAlert({
+        title: "Confirmation",
+        message: `Are you sure to delete this ?`,
+        buttons: [
+        {
+            label: "Yes",           
+            onClick:()=>deletenews(itemid),
+        },
+        {
+            label: "No"
+            // onClick: () => alert("Click No")
+        } 
+        ],
+        
+    });
+    };
   return (
     <div className='page-wrapper p-3 mt-5'>
        <ToastContainer/>
@@ -182,17 +225,17 @@ export default function News() {
                       </ul>
                     )):null}</td>
                     
-                    <td className='table-linebreak' onClick={()=>setnewsitem(itm)} data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg-dis">{itm.short_description} </td>
+                    <td className='table-linebreak' onClick={()=>setnewsitem(itm) } data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg-dis">{itm.short_description} </td>
                    
                     <td>{itm.createdAt.split('T')[0]}</td>
                     <td>
                     <ul className=''>
                     <li className='list-group-item'>
-                      <button onClick={()=>setnewsitem(itm) &setmodal(!modal)} className='btn btn-warning btn-xs'><BiEdit size={15}/>edit</button>
+                      <button onClick={()=>setnewsitem(itm) &setmodal(!modal) & setisslider(itm.is_slider.toString()) &setpushnotification(itm.is_pushnotification.toString())} className='btn btn-warning btn-xs'><BiEdit size={15}/>edit</button>
                     </li>
                     <li className='list-group-item mt-1' >
                     
-                      <button onClick={()=>deletenews(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15}/>delete</button>
+                      <button onClick={()=>submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15}/>delete</button>
                     </li>
                   </ul>
                     </td>
@@ -302,7 +345,7 @@ export default function News() {
       </div>
       <div className="modal-body text-start">
       <ReactPlayer 
-                    url='https://www.youtube.com/watch?v=G-zyTlZQYpE'
+                    url={newsitem.url}
                     width='auto'
                     height='350px'
                     controls
@@ -320,7 +363,7 @@ export default function News() {
     <div className="modal-content">
       <div className="modal-header">
         <h5 className="modal-title h4" id="myExtraLargeModalLabel">Extra large modal</h5>
-        <button onClick={()=>setmodal(!modal) & setnewsitem('')} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
+        <button onClick={()=>setmodal(!modal) & setallnull()} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
         </button>
       </div>
       <div className="modal-body text-start">
@@ -347,7 +390,11 @@ export default function News() {
         <MultiSelect
         onChange={newcontent => {setnewsitem({...newsitem,tag:newcontent})}}
         options={options}  
-        value={[]}
+        // selected={[
+        //   // newsitem.tag ? newsitem.tag.split(',').map((item,key)=>(
+        //     { label:  'Around The World',value:'item'}
+        //   // )) : ''
+        // ]}
       />
       </div>
                     
@@ -355,7 +402,7 @@ export default function News() {
       <div className="col-sm-4">
       <div className="mb-3">
         <label htmlFor="exampleFormControlSelect1" className="form-label"><b>Select Category</b></label>
-        <select required className="form-select" onChange={(e)=>{setnewsitem({...newsitem,category:e.target.value})}} value={newsitem ?  newsitem.category   ?newsitem.category[0].name:'' :''} id="exampleFormControlSelect1">
+        <select required className="form-select" onChange={(e)=>{setnewsitem({...newsitem,category:e.target.value})}} value={newsitem.category ? newsitem.category[0]._id :''} >
           <option hidden >Select Category</option>
           {categorydata.length ?  categorydata.map((itm,k)=>(
             <option key={k} value={itm._id} >{itm.name}</option>
@@ -391,7 +438,7 @@ export default function News() {
           <img  className='rounded  image-size' src={ BaseURL+newsitem.thumbnail}   alt='img' height="auto" width="auto" />
           :null}
           </div>}
-          <input  onChange={(e)=>setimage(e.target.files[0])} type="file" className="form-control"  />
+          <input  onChange={(e)=>setimage(e.target.files[0])} style={{color: "rgba(0, 0, 0, 0)"}} value={''} type="file" className="form-control"  />
         </div>
       </div>{/* Col */}
       <div className="col-sm-6">
@@ -404,13 +451,13 @@ export default function News() {
     <div className='row'>
       <div className='col-sm-6'>
       <div className="form-check mb-2">
-      <input type="checkbox" onChange={(e)=>setnewsitem({...newsitem,is_slider:e.target.value})}  className="form-check-input" id="checkChecked"   />
+      <input type="checkbox" onChange={(e)=>setisslider(!isslider)} checked={isslider===true}   className="form-check-input" id="checkChecked"   />
       <label className="form-check-label" htmlFor="checkChecked">
         <b>Is-Slider</b>
       </label>
     </div>
       <div className="form-check mb-2">
-      <input type="checkbox"  onChange={(e)=>setnewsitem({...newsitem,is_pushnotification:e.target.value})}   className="form-check-input" id="checkChecked"  />
+      <input type="checkbox"  onChange={(e)=>setpushnotification(!pushnotification)}   className="form-check-input" id="checkChecked"  />
       <label className="form-check-label" htmlFor="checkChecked">
         <b>Push Notification</b>
       </label>
@@ -453,7 +500,7 @@ export default function News() {
 
     </div> */}
     <div className='text-end '>
-          <button type="button" onClick={()=>setmodal(!modal) & setnewsitem('')} className="btn btn-secondary " style={{marginRight:"5px"}} data-bs-dismiss="modal">Close</button>
+          <button type="button" onClick={()=>setmodal(!modal) & setallnull()} className="btn btn-secondary " style={{marginRight:"5px"}} data-bs-dismiss="modal">Close</button>
           <button type="submit" className="btn btn-primary ">Submit</button>
         </div>
   </form>
