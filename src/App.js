@@ -9,6 +9,7 @@ import News from './Components.js/News';
 import Login from './Components.js/Login';
 import Simplecontextprovider from './Components.js/Simplecontext';
 import Text from './Components.js/Text';
+import Joeditor from './Components.js/Joeditor';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Simplecontextprovider>
         <Routes>
         
+        <Route exact path="/editor" element={<Joeditor/>}/>
         <Route exact path="/text" element={<Text/>}/>
         <Route exact path="/header" element={<Header/>}/>
         <Route exact path="/" element={<Login/>}/>

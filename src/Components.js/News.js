@@ -1,6 +1,6 @@
 
 // import { isDisabled } from '@testing-library/user-event/dist/utils';
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import Callaxios from './Callaxios';
 import { BaseURL } from './urlcall';
 import { ToastContainer, toast } from 'react-toastify';
@@ -25,7 +25,7 @@ export default function News() {
     const [modal,setmodal]=useState(false)
     const [isslider,setisslider]=useState(false)
     const [pushnotification,setpushnotification]=useState(false)
-
+    // const [content, setContent] = useState('');
     const [newsvideomodal,setnewsvideomodal]=useState(false)
     const [searchvalue,setsearchvalue]=useState('')
     const [image,setimage]=useState('')
@@ -148,6 +148,13 @@ export default function News() {
         
     });
     };
+    // const config = useMemo(
+    //   {
+    //     readonly: false, // all options from https://xdsoft.net/jodit/doc/,
+    //     placeholder: placeholder || 'Start typings...'
+    //   },
+    //   [placeholder]
+    // );
   return (
     <div className='page-wrapper p-3 mt-5'>
        <ToastContainer/>
@@ -478,11 +485,23 @@ export default function News() {
     <div className="col-sm-12">
         <div className="mb-3">
           <label className="form-label"><b>Content</b></label>
-          <JoditEditor
-        ref={editor}
-        value={newsitem.content ? newsitem.content : ''}
-        onChange={newcontent => {setnewsitem({...newsitem,content:newcontent})}}
-      />
+          <JoditEditor 
+            ref={editor}
+            value={newsitem.content ? newsitem.content : ''}
+            
+            tabIndex={1} // tabIndex of textarea
+            onBlur={(newContent) => setnewsitem({...newsitem,content:newContent})} // preferred to use only this option to update the content for performance reasons
+            onChange={(newContent) => {}}
+          />
+          
+          {/* <JoditEditor
+          ref={editor}
+          // config={config}
+          tabIndex={1} // tabIndex of textarea
+          onBlur={newcontent => setnewsitem({...newsitem,content:newcontent})}  
+          value={newsitem.content ? newsitem.content : ''}
+          onChange={newcontent => {setnewsitem({...newsitem,content:newcontent})}}
+      /> */}
         </div>
       </div>{/* Col */}
     </div>{/* row */}
