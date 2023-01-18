@@ -32,7 +32,7 @@ export default function News() {
     const editor = useRef(null);
 
     
-    console.log("newsitem",newsitem)
+    // console.log("newsitem",newsitem)
     useEffect(() => {
       // Scripts()
       accesscheck()

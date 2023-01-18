@@ -58,6 +58,7 @@ export default function Category() {
       if (data.data.status===200){
         notify("Successfully")
         getcategory()
+        setcategoryitem('')
         setmodal(!modal)
       }
     } catch (error) {

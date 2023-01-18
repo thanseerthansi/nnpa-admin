@@ -19,7 +19,8 @@ export default function Header() {
   <nav className="sidebar">
     <div className="sidebar-header">
       <a href= "/" className="sidebar-brand">
-        Noble<span>UI</span>
+        {/* NNPA<span>UI</span> */}
+        <img src="../assets/images/logo/nnpa_logo.png" alt="light theme" width={150} />
       </a>
       <div className="sidebar-toggler not-active">
         <span />
@@ -56,7 +57,7 @@ export default function Header() {
       </ul>
     </div>
   </nav>
-  <nav className="settings-sidebar">
+  {/* <nav className="settings-sidebar">
     <div className="sidebar-body">
       <a href= "#" className="settings-sidebar-toggler">
         <i data-feather="settings" />
@@ -84,7 +85,7 @@ export default function Header() {
        
       </div>
     </div>
-  </nav>
+  </nav> */}
   {/* partial:partials/_navbar.html */}
   <div className="page-wrapper" >
   <nav className="navbar">

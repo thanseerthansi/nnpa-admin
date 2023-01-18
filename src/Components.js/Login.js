@@ -40,7 +40,10 @@ export default function Login() {
             
             <div className="col-md-8 m-auto ps-md-0">
               <div className="auth-form-wrapper px-4 py-5">
-                <a href= "/" className="noble-ui-logo d-block mb-2">Noble<span>UI</span></a>
+                <a href= "/" className="noble-ui-logo d-block mb-2">
+                  {/* Noble<span>UI</span> */}
+                  <img src="../assets/images/logo/NNPA-VECTOR-LOGO.webp" alt="light theme" width={50} />
+                  </a>
                 <h5 className="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
                 <form className="forms-sample" onSubmit={(e)=>loginfn(e)}>
                   <div className="mb-3 text-start">
