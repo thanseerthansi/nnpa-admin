@@ -123,8 +123,8 @@ export default function Category() {
                 <td>{k+1}</td>
                 <td>{itm.name}</td>
                 <td>
-                  <ul className=''>
-                    <li className='list-group-item'>
+                  <ul className='text-center'>
+                    <li className='list-group-item '>
                       <button onClick={()=>setcategoryitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs edit-btn' ><BiEdit size={15}/>edit</button>
                     </li>
                     <li className='list-group-item mt-1' >
