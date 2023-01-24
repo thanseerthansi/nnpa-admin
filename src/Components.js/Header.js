@@ -18,9 +18,9 @@ export default function Header() {
          {/* partial:partials/_sidebar.html */}
   <nav className="sidebar">
     <div className="sidebar-header">
-      <a href= "/" className="sidebar-brand">
+      <a href= "/news" className="sidebar-brand">
         {/* NNPA<span>UI</span> */}
-        <img src="../assets/images/logo/nnpa_logo.png" alt="light theme" width={150} />
+        <img src="../assets/images/logo/nnpa_logo.png" alt="light theme" width={165} height={45} />
       </a>
       <div className="sidebar-toggler not-active">
         <span />
@@ -81,7 +81,7 @@ export default function Header() {
         <h6 className="text-muted mb-2">Light Theme:</h6>
         <a className="theme-item active" href="dashboard.html">
           <img src="../assets/images/screenshots/light.jpg" alt="light theme" />
-        </a>
+        </a>  
        
       </div>
     </div>
@@ -89,7 +89,7 @@ export default function Header() {
   {/* partial:partials/_navbar.html */}
   <div className="page-wrapper" >
   <nav className="navbar">
-      <a href= "/" className="sidebar-toggler">
+      <a href= "/news" className="sidebar-toggler">
         <i data-feather="menu" />
       </a>
       <div className="navbar-content">

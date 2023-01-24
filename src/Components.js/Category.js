@@ -125,7 +125,7 @@ export default function Category() {
                 <td>
                   <ul className=''>
                     <li className='list-group-item'>
-                      <button onClick={()=>setcategoryitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs' ><BiEdit size={15}/>edit</button>
+                      <button onClick={()=>setcategoryitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs edit-btn' ><BiEdit size={15}/>edit</button>
                     </li>
                     <li className='list-group-item mt-1' >
                     

@@ -34,7 +34,7 @@ export default function Login() {
         <div className="page-wrapper full-page">
   <div className="page-content d-flex align-items-center justify-content-center">
     <div className="row w-100 mx-0 auth-page">
-      <div className="col-md-8 col-xl-6 mx-auto">
+      <div className="col-md-6 col-xl-6 mx-auto">
         <div className="card">
           <div className="row">
             

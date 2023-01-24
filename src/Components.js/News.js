@@ -240,7 +240,7 @@ export default function News() {
                     <td>
                     <ul className=''>
                     <li className='list-group-item'>
-                      <button onClick={()=>setnewsitem(itm) &setmodal(!modal) & setisslider(itm.is_slider.toString()) &setpushnotification(itm.is_pushnotification.toString())} className='btn btn-warning btn-xs'><BiEdit size={15}/>edit</button>
+                      <button onClick={()=>setnewsitem(itm) &setmodal(!modal) & setisslider(itm.is_slider.toString()) &setpushnotification(itm.is_pushnotification.toString())} className='btn btn-warning btn-xs edit-btn'><BiEdit size={15}/>edit</button>
                     </li>
                     <li className='list-group-item mt-1' >
                     
