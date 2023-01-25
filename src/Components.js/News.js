@@ -33,7 +33,10 @@ export default function News() {
   const editor = useRef(null);
 
 
-  // console.log("newsitem",newsitem)
+  // console.log("isslider",isslider)
+  // console.log("sliderdata",sliderdata)
+  // console.log("sliderdata.image_slider_count",sliderdata.image_slider_count ? sliderdata.image_slider_count :"null")
+  
   useEffect(() => {
     // Scripts()
     accesscheck()
@@ -50,8 +53,12 @@ export default function News() {
     if (e) {
       e.preventDefault();
     }
+    if (!pages){
+      pages = 1  
+    }
     try {
-      let data = await Callaxios("get", "news/get-all-news/", { page: pages, limit: parseInt(10), query: searchvalue })
+      // console.log("pages",pages)
+      let data = await Callaxios("get", "news/get-all-news", { page: pages, limit: 10, query: searchvalue,category:'' })
       // console.log("datanews", data.data.data)
       if (data.data.status === 200) {
         setnewsdata(data.data.data.news)
@@ -61,8 +68,8 @@ export default function News() {
         }
         try {
           let slidercount = await Callaxios("get","news/get-slider-count/")
-          // console.log("slidredat",slidercount.data.data)
-          if (slidercount.data.status===200){
+          // console.log("slidredat",slidercount)
+          if (slidercount.status===200){
             setsliderdata(slidercount.data.data)
           }
         } catch (error) {
@@ -124,8 +131,14 @@ export default function News() {
       if (data.data.status === 200) {
 
         setmodal(!modal)
-        getnews()
+        getnews('',page)       
+        
         setallnull()
+        if (datalist._id){
+          notify('News updated Successfully')
+        }else{
+          notify('News added Successfully')
+        }
 
       }
     } catch (error) {
@@ -171,19 +184,21 @@ export default function News() {
   const slidercheckfn=()=>{
    if (newsitem.media_type){
     if(newsitem.media_type==="image"){
-      if(sliderdata.image_slider_count<10 ){
+      if( sliderdata.image_slider_count<10 ){
         setisslider(!isslider)
       }else{
         notifyerror("only 10 image sliders are allowed")
       }
     }else{
-      if(sliderdata.vedio_slider_count<10){
+      if( sliderdata.vedio_slider_count<10 ){
         setisslider(!isslider)
       }else{
         notifyerror("only 10 video sliders are allowed")
       }
     } 
-   } 
+   }else{
+    notifyerror("Need to Select Media Type")
+   }
       
   }
   return (
@@ -252,7 +267,7 @@ export default function News() {
                     
                     }
                     </td> */}
-                        <td ><img src={BaseURL + itm.thumbnail} onClick={() => itm.media_type === "video" ? setnewsitem(itm) & setnewsvideomodal(!newsvideomodal) : {}} style={itm.media_type === "video" ? { cursor: "pointer" } : {}} /></td>
+                        <td ><img src={BaseURL + itm.thumbnail} onClick={() => itm.media_type === "vedio" ? setnewsitem(itm) & setnewsvideomodal(!newsvideomodal) : {}} style={itm.media_type === "vedio" ? { cursor: "pointer" } : {}} /></td>
                         <td>{itm.category.length ? itm.category[0].name : null}</td>
                         <td className='table-linebreak' onClick={() => setnewsitem(itm)}><button type="button" className="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg">
                           Content
@@ -459,7 +474,7 @@ export default function News() {
                         <select required onChange={(e) => setnewsitem({ ...newsitem, media_type: e.target.value })} value={newsitem.media_type ? newsitem.media_type : ''} className="form-select" id="exampleFormControlSelect1">
                           <option hidden>Select Image Type</option>
                           <option value={"image"}  >Image</option>
-                          <option value={"video"}  >Video</option>
+                          <option value={"vedio"}  >Video</option>
                         </select>
                       </div>
                     </div>{/* Col */}
@@ -503,7 +518,7 @@ export default function News() {
                         </label>
                       </div>
                     </div>
-                    {newsitem.media_type ? newsitem.media_type === "video" ?
+                    {newsitem.media_type ? newsitem.media_type === "vedio" ?
                       <div className="col-sm-6">
                         <div className="mb-3">
                           <label className="form-label"><b>Video url</b></label>

@@ -10,6 +10,7 @@ import Login from './Components.js/Login';
 import Simplecontextprovider from './Components.js/Simplecontext';
 import Text from './Components.js/Text';
 import Joeditor from './Components.js/Joeditor';
+import Rsfeed from './Components.js/Rsfeed';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/news" element={< Home/>}>
           <Route  path='category' element={<Category />}/>
           <Route  index element={<News />}/>
+          <Route path='rssfeed' element={<Rsfeed/>} />
         
         
       </Route>

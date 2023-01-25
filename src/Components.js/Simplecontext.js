@@ -22,7 +22,7 @@ export default function Simplecontextprovider({children}) {
     }
     const accesscheck =()=>{
        let token = window.localStorage.getItem('login-access')
-       console.log("tken",token)
+    //    console.log("tken",token)
     if (token==="false"){
         // console.log("tkensdds")
         window.location="/"
