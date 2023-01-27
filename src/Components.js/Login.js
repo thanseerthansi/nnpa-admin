@@ -47,7 +47,7 @@ export default function Login() {
                 <h5 className="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
                 <form className="forms-sample" onSubmit={(e)=>loginfn(e)}>
                   <div className="mb-3 text-start">
-                    <label htmlFor="userEmail" className="form-label ">Email address</label>
+                    <label htmlFor="userEmail" className="form-label ">Username</label>
                     <input type="text" required onChange={(e)=>setusername(e.target.value)} value={username} className="form-control" id="username" placeholder="Username" />
                   </div>
                   <div className="mb-3 text-start">
