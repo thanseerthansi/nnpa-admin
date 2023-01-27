@@ -31,7 +31,7 @@ export default function News() {
   const [image, setimage] = useState('')
   const [sliderdata, setsliderdata] = useState('')
   const editor = useRef(null);
-
+  const [loading, setLoading] = useState(true);
 
   // console.log("isslider",isslider)
   // console.log("sliderdata",sliderdata)
@@ -200,6 +200,9 @@ export default function News() {
     notifyerror("Need to Select Media Type")
    }
       
+  }
+  function handleVideoLoad() {
+    setLoading(false);
   }
   return (
     <div className='page-wrapper p-3 mt-5'>
@@ -395,19 +398,25 @@ export default function News() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title h4" id="myLargeModalLabel"></h5>
-              <button onClick={() => setnewsitem('') & setnewsvideomodal(!newsvideomodal)} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
+              <button onClick={() => setnewsitem('') & setnewsvideomodal(!newsvideomodal) & setLoading(true)} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
               </button>
             </div>
             <div className="modal-body text-start">
+            {loading &&
+            <div className='m-auto mt-6' style={{padding: "80px 0"}}>
+             <div className='text-center' >Loading...</div>
+            </div>
+            }
               <ReactPlayer
                 url={newsitem.url}
                 width='auto'
                 height='350px'
+                onReady={handleVideoLoad}
                 controls
               />
             </div>
             <div className="modal-footer">
-              <button onClick={() => setnewsitem('') & setnewsvideomodal(!newsvideomodal)} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button onClick={() => setnewsitem('') & setnewsvideomodal(!newsvideomodal) & setLoading(true)} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
