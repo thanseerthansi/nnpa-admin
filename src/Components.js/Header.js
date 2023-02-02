@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { MdOutlineLogout } from 'react-icons/md';
+import { MdOutlineLogout,MdOutlineTopic } from 'react-icons/md';
 import { BsGrid } from 'react-icons/bs';
 import { BiNews } from 'react-icons/bi';
 import Scripts from './Scripts';
@@ -37,6 +37,13 @@ export default function Header() {
             <span className="link-title">Dashboard</span>
           </Link>
         </li>  */}
+        <li className="nav-item not-active">
+          <Link to="/news/topics" className="nav-link">
+            {/* <i className="link-icon" data-feather="grid" /> */}
+            <MdOutlineTopic  size={18}/>
+            <span className="link-title ">Topics</span>
+          </Link>
+        </li>
         <li className="nav-item not-active">
           <Link to="/news/category" className="nav-link">
             {/* <i className="link-icon" data-feather="grid" /> */}

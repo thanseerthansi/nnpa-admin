@@ -27,9 +27,9 @@ export default function Category() {
     });
   const deletecat = async(itmid)=>{
     try {
-      let data =await Callaxios("post","category/create-category/",{id:itmid,action:"delete"})
+      let data =await Callaxios("delete",`categories/${itmid}`)
       // console.log("data",data)
-      if (data.data.status===200){
+      if (data.status===200){
         notify("Deleted Successfully")
         getcategory()
       }
@@ -39,24 +39,31 @@ export default function Category() {
   }
   const categorypost = async(e)=>{
     e.preventDefault();
+    let url 
+    let action
+    let msg
     let datalist = categoryitem
     if (datalist._id){
-      datalist.id = datalist._id
+     
       if (datalist.name){
         // console.log("dataname")
-        datalist.action="update"
+        url = `categories/${datalist._id}`
+        action = "put"
+        msg = "Successfully updated"
       }else(notifyerror("Name required"))
           
     }else{
       // console.log("notid")
-      datalist.action="create"
+      url = `categories/`
+      action = "post"
+      msg = "Successfully Added"
     }
-    console.log("datalist",datalist)
+    // console.log("datalist",datalist)
     try {
-      let data =await Callaxios("post","category/create-category/",datalist)
+      let data =await Callaxios(action,url,datalist)
       // console.log("data",data)
-      if (data.data.status===200){
-        notify("Successfully")
+      if (data.status===200){
+        notify(msg)
         getcategory()
         setcategoryitem('')
         setmodal(!modal)

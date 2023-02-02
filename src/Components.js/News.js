@@ -17,7 +17,7 @@ import ReactPlayer from 'react-player'
 import Scripts from './Scripts';
 // import Scripts from './Scripts';
 export default function News() {
-  const { categorydata, accesscheck } = useContext(Simplecontext)
+  const { categorydata, accesscheck,topicsdata } = useContext(Simplecontext)
   const [newsdata, setnewsdata] = useState([]);
   const [newsitem, setnewsitem] = useState('')
   const [page, setpage] = useState(1)
@@ -32,6 +32,9 @@ export default function News() {
   const [sliderdata, setsliderdata] = useState('')
   const editor = useRef(null);
   const [loading, setLoading] = useState(true);
+  const [category,setcategory]=useState()
+  const [topic,settopic]=useState()
+  const [tag,settag]=useState()
 
   // console.log("isslider",isslider)
   // console.log("sliderdata",sliderdata)
@@ -58,16 +61,16 @@ export default function News() {
     }
     try {
       // console.log("pages",pages)
-      let data = await Callaxios("get", "news/get-all-news", { page: pages, limit: 10, query: searchvalue,category:'' })
-      // console.log("datanews", data.data.data)
-      if (data.data.status === 200) {
+      let data = await Callaxios("get", "news/admin-news", { page: pages, limit: 10, query: searchvalue,category:'' })
+      // console.log("datanews", data)
+      if (data.status === 200) {
         setnewsdata(data.data.data.news)
         setnext(data.data.data.is_next)
         if (pages) {
           setpage(pages)
         }
         try {
-          let slidercount = await Callaxios("get","news/get-slider-count/")
+          let slidercount = await Callaxios("get","filter/get-slider-count")
           // console.log("slidredat",slidercount)
           if (slidercount.status===200){
             setsliderdata(slidercount.data.data)
@@ -83,9 +86,9 @@ export default function News() {
   const deletenews = async (itmid) => {
     // console.log("itmid",itmid)
     try {
-      let data = await Callaxios("post", "news/create-news", { id: itmid, action: "delete" })
+      let data = await Callaxios("delete", `news/${itmid}`)
       // console.log("data",data)
-      if (data.data.status === 200) {
+      if (data.status === 200) {
         notify("Deleted Successfully")
         getnews('', page)
       }
@@ -96,38 +99,64 @@ export default function News() {
   }
   const postnewsfn = async (e) => {
     e.preventDefault();
-    // let imagecount
-    // let videocount
-    
-    // console.log("newsiteminpost", newsitem)
+    let action
+    let url
     const form_data = new FormData();
     let datalist = newsitem
-    // console.log("datrlistcat",datalist.category[0].name)
-    if (datalist.category[0].name) {
-
-      datalist.category = datalist.category[0]._id
+    delete datalist.is_pushnotification;
+    if (category) {
+      let catlist=[] 
+      category.split(',').map((item) => {
+        catlist.push(item);
+      });
+      datalist.category = catlist
+    }else{
+      delete datalist.category;
+    }
+    if (topic) {
+      let topiclist=[] 
+      topic.split(',').map((item) => {
+        topiclist.push(item);
+      });
+      datalist.topics = topiclist
+    }else{
+      delete datalist.topics;
     }
     datalist.is_slider = isslider
     datalist.is_pushnotification = pushnotification
-
-    console.log("datalist", datalist)
-    for (const [key, value] of Object.entries(datalist)) {
-
-      form_data.append(`${key}`, `${value}`)
+    if (tag){
+      let taglist =[]
+      tag.split(',').map((tagitm)=>{
+          taglist.push(tagitm)
+      })
+      datalist.tag = taglist
     }
-    // console.log("form_data",form_data)
+    
+    for (const [key, value] of Object.entries(datalist)) {
+      if(key !== "category" && key !== "tag" && key !== "topics"){
+        form_data.append(`${key}`, `${value}`)
+      }
+    }
+    form_data.append("category",JSON.stringify(datalist.category))
+    form_data.append("tag",JSON.stringify(datalist.tag))
+    form_data.append("topics",JSON.stringify(datalist.topics))
     if (image) {
       form_data.append('media', image)
     }
     if (datalist._id) {
-      form_data.append('id', datalist._id)
-      form_data.append('action', 'update')
+      action = "put"
+      url=`news/${datalist._id}`
+      
     } else {
-      form_data.append('action', 'create')
+      action = "post"
+      url=`news/`
     }
     try {
-      let data = await Callaxios("post", "news/create-news", form_data)
-      console.log("data", data)
+    //   for (var pair of form_data.entries()) {
+    //     console.log("formdata",pair[0]+ ', ' + pair[1]);
+    // }
+      let data = await Callaxios(action, url, form_data)
+      // console.log("data", data)
       if (data.data.status === 200) {
 
         setmodal(!modal)
@@ -147,7 +176,7 @@ export default function News() {
   }
 
   const options = [
-    { label: 'Around The World', value: 'aroundtheworld' },
+    
     { label: 'Trending', value: 'trending' },
     { label: 'Top Stories', value: 'topstories' },
   ]
@@ -156,6 +185,9 @@ export default function News() {
     setisslider(false)
     setpushnotification(false)
     setimage('')
+    setcategory('')
+    settopic('')
+    settag('')
   }
   const submitdelete = (itemid) => {
     confirmAlert({
@@ -182,6 +214,7 @@ export default function News() {
   //   [placeholder]
   // );
   const slidercheckfn=()=>{
+    // console.log("slider",isslider)
    if (newsitem.media_type){
     if(newsitem.media_type==="image"){
       if( sliderdata.image_slider_count<10 ){
@@ -204,6 +237,13 @@ export default function News() {
   function handleVideoLoad() {
     setLoading(false);
   }
+  const seteditfn=(itm)=>{
+    setnewsitem(itm) 
+    setmodal(!modal) 
+    setisslider(itm.is_slider.toString())
+    setpushnotification(itm.is_pushnotification.toString())
+    settag(itm.tag)
+  }
   return (
     <div className='page-wrapper p-3 mt-5'>
       <ToastContainer />
@@ -216,7 +256,7 @@ export default function News() {
                   <h6 className="card-title text-start text-bold">News</h6>
                   <div className='text-start'><button onClick={() => setmodal(!modal)} className='btn btn-success btn-sm'><BiAddToQueue size={20} />Add</button></div>
                 </div>
-                <div className='col-6'>
+                <div  className='col-6'>
                   <form className="search-form ml-auto" onSubmit={(e) => getnews(e, 1)} >
                     <div className="input-group">
 
@@ -239,6 +279,7 @@ export default function News() {
                       <th >Heading</th>
                       <th>Thumbnail</th>
                       <th>category</th>
+                      <th>Topics</th>
                       <th>Content</th>
                       <th>Slider</th>
                       <th>tags</th>
@@ -270,18 +311,28 @@ export default function News() {
                     
                     }
                     </td> */}
-                        <td ><img src={BaseURL + itm.thumbnail} onClick={() => itm.media_type === "vedio" ? setnewsitem(itm) & setnewsvideomodal(!newsvideomodal) : {}} style={itm.media_type === "vedio" ? { cursor: "pointer" } : {}} /></td>
-                        <td>{itm.category.length ? itm.category[0].name : null}</td>
+                        <td ><img src={BaseURL + itm.thumbnail} onClick={() => itm.media_type === "video" ? setnewsitem(itm) & setnewsvideomodal(!newsvideomodal) : {}} style={itm.media_type === "video" ? { cursor: "pointer" } : {}} /></td>
+                        <td>{itm.category.length ? itm.category.map((cat,kc)=>(
+                          <ul key={kc}>
+                            <li>{cat.name}</li>
+                          </ul>
+                        )): null}</td>
+                        <td>{itm.topics.map((topicitm,key)=>(
+                          <ul key={key}>
+                            <li >{topicitm.name}</li>
+                          </ul>
+                        ))}</td>
                         <td className='table-linebreak' onClick={() => setnewsitem(itm)}><button type="button" className="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg">
                           Content
                         </button>
                         </td>
+                        
                         <td>{itm.is_slider.toString()}</td>
-                        <td>{itm.tag ? itm.tag.split(',').map((tagitm, tagk) => (
-                          <ul key={tagk}>
-                            <li> {tagitm}</li>
+                        <td>{itm.tag.map((itmtag,ke)=>(
+                          <ul key={ke}>
+                            <li >{itmtag}</li>
                           </ul>
-                        )) : null}</td>
+                        ))}</td>
 
                         <td className='table-linebreak' onClick={() => setnewsitem(itm)} data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg-dis">{itm.short_description} </td>
 
@@ -289,7 +340,7 @@ export default function News() {
                         <td>
                           <ul className=''>
                             <li className='list-group-item'>
-                              <button onClick={() => setnewsitem(itm) & setmodal(!modal) & setisslider(itm.is_slider.toString()) & setpushnotification(itm.is_pushnotification.toString())} className='btn btn-warning btn-xs edit-btn'><BiEdit size={15} />edit</button>
+                              <button onClick={() => seteditfn(itm)} className='btn btn-warning btn-xs edit-btn'><BiEdit size={15} />edit</button>
                             </li>
                             <li className='list-group-item mt-1' >
 
@@ -449,11 +500,15 @@ export default function News() {
                   <div className="row">
                     <div className="col-sm-4 ">
                       <div className="mb-3">
-                        <label htmlFor="exampleFormControlSelect2" className="form-label"><b>Tags </b></label><br />
+                        <label htmlFor="exampleFormControlSelect2" className="form-label"><b>Topics </b></label><br />
                         {/* <b>{newsitem.tag}</b> */}
                         <MultiSelect style={{ maxWidth: "100%" }}
-                          onChange={newcontent => { setnewsitem({ ...newsitem, tag: newcontent }) }}
-                          options={options}
+                          onChange={newcontent => { settopic(newcontent ) }}
+                          options={topicsdata ?topicsdata.map((topicitm,kt)=>(
+                            { label: topicitm.name, value: topicitm._id }
+                          ))
+                            
+                           :null }
                         // selected={[
                         //   // newsitem.tag ? newsitem.tag.split(',').map((item,key)=>(
                         //     { label:  'Around The World',value:'item'}
@@ -466,13 +521,27 @@ export default function News() {
                     <div className="col-sm-4">
                       <div className="mb-3">
                         <label htmlFor="exampleFormControlSelect1" className="form-label"><b>Select Category</b></label>
-                        <select required className="form-select" onChange={(e) => { setnewsitem({ ...newsitem, category: e.target.value }) }} value={newsitem.category ? newsitem.category[0]._id : ''} >
+                        {/* <select required className="form-select" onChange={(e) => { setnewsitem({ ...newsitem, category: e.target.value }) }} value={newsitem.category ? newsitem.category[0]._id : ''} >
                           <option hidden >Select Category</option>
                           {categorydata.length ? categorydata.map((itm, k) => (
                             <option key={k} value={itm._id} >{itm.name}</option>
                           )) : null}
 
-                        </select>
+                        </select> */}
+                        <MultiSelect style={{ maxWidth: "100%" }}
+                          onChange={newcontent => { setcategory( newcontent ) }}
+                          options={categorydata ?categorydata.map((catitm,kc)=>(
+                            { label: catitm.name, value: catitm._id }
+                          ))
+                            
+                           :null }
+                        // selected={[
+                        //   // newsitem.tag ? newsitem.tag.split(',').map((item,key)=>(
+                        //     { label:  'Around The World',value:'item'}
+                        //   // )) : ''
+                        // ]}
+                        />
+                        {/* {newsitem.category} */}
                       </div>
 
                     </div>{/* Col */}
@@ -481,13 +550,28 @@ export default function News() {
                         <label className="form-label"><b>Media Type</b></label>
 
                         <select required onChange={(e) => setnewsitem({ ...newsitem, media_type: e.target.value })} value={newsitem.media_type ? newsitem.media_type : ''} className="form-select" id="exampleFormControlSelect1">
-                          <option hidden>Select Image Type</option>
+                          <option hidden>Select Media Type</option>
                           <option value={"image"}  >Image</option>
-                          <option value={"vedio"}  >Video</option>
+                          <option value={"video"}  >Video</option>
                         </select>
                       </div>
                     </div>{/* Col */}
 
+                  </div>{/* Row */}
+                  <div className="row">
+                    
+                    <div className="col-sm-6">
+                      <div className="mb-3">
+                        <label className="form-label"><b>Tags</b></label>
+                        <input type="text" onChange={(e) => settag( e.target.value )} value={tag} className="form-control" placeholder="Enter description" />
+                      </div>
+                    </div>
+                    <div className="col-sm-6">
+                      <div className="mb-3">
+                        <label className="form-label"><b>Description</b></label>
+                        <textarea type="text" onChange={(e) => setnewsitem({ ...newsitem, short_description: e.target.value })} value={newsitem.short_description ? newsitem.short_description : ''} className="form-control" placeholder="Enter description" />
+                      </div>
+                    </div>{/* Col */}
                   </div>{/* Row */}
                   <div className="row">
                     <div className="col-sm-6">
@@ -505,17 +589,11 @@ export default function News() {
                         <input onChange={(e) => setimage(e.target.files[0])} style={{ color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
                       </div>
                     </div>{/* Col */}
-                    <div className="col-sm-6">
-                      <div className="mb-3">
-                        <label className="form-label"><b>Description</b></label>
-                        <input type="text" onChange={(e) => setnewsitem({ ...newsitem, short_description: e.target.value })} value={newsitem.short_description ? newsitem.short_description : ''} className="form-control" placeholder="Enter description" />
-                      </div>
-                    </div>{/* Col */}
-                  </div>{/* Row */}
+                    </div>
                   <div className='row'>
                     <div className='col-sm-6'>
                       <div className="form-check mb-2">
-                        <input type="checkbox" onChange={(e) =>slidercheckfn()} checked={isslider === true} className="form-check-input" id="checkChecked" />
+                        <input type="checkbox" onChange={(e) =>slidercheckfn()} checked={!!(isslider) ===true ? true : false }  className="form-check-input" id="checkChecked" />
                         <label className="form-check-label" htmlFor="checkChecked">
                           <b>Is-Slider</b>
                         </label>
@@ -527,7 +605,7 @@ export default function News() {
                         </label>
                       </div>
                     </div>
-                    {newsitem.media_type ? newsitem.media_type === "vedio" ?
+                    {newsitem.media_type ? newsitem.media_type === "video" ?
                       <div className="col-sm-6">
                         <div className="mb-3">
                           <label className="form-label"><b>Video url</b></label>

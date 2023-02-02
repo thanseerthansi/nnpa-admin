@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import Callaxios from './Callaxios';
 import Scripts from './Scripts';
 export default function Login() {
     let navigate = useNavigate();
@@ -17,15 +18,28 @@ export default function Login() {
     const notifyerror = (msg) => toast.error(msg, {
       position: "top-right",
       });
-    const loginfn=(e)=>{
+    const loginfn=async(e)=>{
       e.preventDefault();
-      if (username==="nnpa" & password==="nnpa"){
-        window.localStorage.setItem("login-access","true")
-        window.location='/news'
-        // return navigate('/news');
-      }else{
+      try {
+        let data = await Callaxios ("post","user/login/",{"username":username,"password":password})
+        console.log("data",data)
+        if(data.status===200){
+          window.localStorage.setItem("login-access","true")
+          window.location='/news'
+        }else{
+          notifyerror("invalid Username or password")
+        }
+      } catch (error) {
+        console.log(error)
         notifyerror("invalid Username or password")
       }
+      // if (username==="nnpa" & password==="nnpa"){
+      //   window.localStorage.setItem("login-access","true")
+      //   window.location='/news'
+      //   // return navigate('/news');
+      // }else{
+      //   notifyerror("invalid Username or password")
+      // }
         
     }
   return (
