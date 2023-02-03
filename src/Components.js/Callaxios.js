@@ -8,7 +8,7 @@ export default async function Callaxios(action,url,datalist) {
         if (action==="get"){
             data = await axios.get(BaseURL+url,{params:datalist})
         }else {
-            console.log("datainpost",datalist)
+            // console.log("datainpost",datalist)
             data = await axios(
                 {
                     method: action,

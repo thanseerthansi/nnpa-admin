@@ -99,11 +99,13 @@ export default function News() {
   }
   const postnewsfn = async (e) => {
     e.preventDefault();
+    
     let action
     let url
-    const form_data = new FormData();
-    let datalist = newsitem
-    delete datalist.is_pushnotification;
+    let msg
+    let form_data = new FormData();
+    let datalist = Object.assign({}, newsitem); 
+    
     if (category) {
       let catlist=[] 
       category.split(',').map((item) => {
@@ -124,7 +126,12 @@ export default function News() {
     }
     datalist.is_slider = isslider
     datalist.is_pushnotification = pushnotification
-    if (tag){
+    
+    if (Array.isArray(tag) != true){
+
+      // console.log("tagvalue",tag)
+      // console.log("tag",Array.isArray(tag))
+
       let taglist =[]
       tag.split(',').map((tagitm)=>{
           taglist.push(tagitm)
@@ -143,13 +150,20 @@ export default function News() {
     if (image) {
       form_data.append('media', image)
     }
+
     if (datalist._id) {
       action = "put"
       url=`news/${datalist._id}`
-      
+      form_data = datalist
+      delete datalist.topics
+      delete datalist.category
+      delete datalist.image
+      // console.log("formdata",form_data)
+      msg =" News updated Successfully"
     } else {
       action = "post"
       url=`news/`
+      msg ="News added Successfully"
     }
     try {
     //   for (var pair of form_data.entries()) {
@@ -157,17 +171,13 @@ export default function News() {
     // }
       let data = await Callaxios(action, url, form_data)
       // console.log("data", data)
-      if (data.data.status === 200) {
+      if (data.status === 200) {
 
         setmodal(!modal)
         getnews('',page)       
-        
+        notify(msg)
         setallnull()
-        if (datalist._id){
-          notify('News updated Successfully')
-        }else{
-          notify('News added Successfully')
-        }
+      
 
       }
     } catch (error) {
