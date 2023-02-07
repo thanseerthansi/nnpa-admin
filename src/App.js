@@ -12,6 +12,7 @@ import Text from './Components.js/Text';
 import Joeditor from './Components.js/Joeditor';
 import Rsfeed from './Components.js/Rsfeed';
 import Topics from './Components.js/Topics';
+import Privacypolicy from './Components.js/Privacypolicy';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Simplecontextprovider>
           <Routes>
 
+            <Route exact path="/privacypolicy" element={<Privacypolicy />} />
             <Route exact path="/editor" element={<Joeditor />} />
             <Route exact path="/text" element={<Text />} />
             <Route exact path="/header" element={<Header />} />

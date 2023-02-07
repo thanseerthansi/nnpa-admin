@@ -1,6 +1,6 @@
 
 // import { isDisabled } from '@testing-library/user-event/dist/utils';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Callaxios from './Callaxios';
 import { BaseURL } from './urlcall';
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,7 +14,7 @@ import 'react-multiple-select-dropdown-lite/dist/index.css'
 import { confirmAlert } from "react-confirm-alert";
 // import Multiselect from 'multiselect-react-dropdown';
 import ReactPlayer from 'react-player'
-import Scripts from './Scripts';
+// import Scripts from './Scripts';
 // import Scripts from './Scripts';
 export default function News() {
   const { categorydata, accesscheck,topicsdata } = useContext(Simplecontext)
@@ -127,7 +127,7 @@ export default function News() {
     datalist.is_slider = isslider
     datalist.is_pushnotification = pushnotification
     
-    if (Array.isArray(tag) != true){
+    if (Array.isArray(tag) !== true){
 
       // console.log("tagvalue",tag)
       // console.log("tag",Array.isArray(tag))
@@ -507,10 +507,10 @@ export default function News() {
       </div> */}
                     {/* Col */}
                   </div>{/* Row */}
-                  <div className="row">
-                    <div className="col-sm-4 ">
+                  <div className="row" style={newsitem._id ?{"display":'none'}:{}} >
+                    <div className="col-sm-4 " >
                       <div className="mb-3">
-                        <label htmlFor="exampleFormControlSelect2" className="form-label"><b>Topics </b></label><br />
+                        <label htmlFor="exampleFormControlSelect2"  className="form-label"><b>Topics </b></label><br />
                         {/* <b>{newsitem.tag}</b> */}
                         <MultiSelect style={{ maxWidth: "100%" }}
                           onChange={newcontent => { settopic(newcontent ) }}
@@ -528,7 +528,7 @@ export default function News() {
                       </div>
 
                     </div>{/* Col */}
-                    <div className="col-sm-4">
+                    <div className="col-sm-4" >
                       <div className="mb-3">
                         <label htmlFor="exampleFormControlSelect1" className="form-label"><b>Select Category</b></label>
                         {/* <select required className="form-select" onChange={(e) => { setnewsitem({ ...newsitem, category: e.target.value }) }} value={newsitem.category ? newsitem.category[0]._id : ''} >
@@ -573,7 +573,7 @@ export default function News() {
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Tags</b></label>
-                        <input type="text" onChange={(e) => settag( e.target.value )} value={tag} className="form-control" placeholder="Enter description" />
+                        <input type="text" onChange={(e) => settag( e.target.value )} value={tag} className="form-control" placeholder="Enter tags Sepperate by comma(,) . " />
                       </div>
                     </div>
                     <div className="col-sm-6">
@@ -591,12 +591,23 @@ export default function News() {
                           <div className=''>
                             <img className='rounded image-size' src={URL.createObjectURL(image)} alt='img' height="auto" width="auto" />
                           </div>
-                          : <div className=''>
+                          : <div className='' >
                             {newsitem.thumbnail ?
                               <img className='rounded  image-size' src={BaseURL + newsitem.thumbnail} alt='img' height="auto" width="auto" />
                               : null}
                           </div>}
-                        <input onChange={(e) => setimage(e.target.files[0])} style={{ color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
+                        <input   onChange={(e) => setimage(e.target.files[0])} style={newsitem._id ?{"display":'none'}: { color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
+                      </div>
+                    </div>{/* Col */}
+                    <div className="col-sm-6" style={newsitem._id ? {}: {"display":'none'}}>
+                      <div className="mb-3">
+                        <label className="form-label"><b>Media Type</b></label>
+
+                        <select required onChange={(e) => setnewsitem({ ...newsitem, media_type: e.target.value })} value={newsitem.media_type ? newsitem.media_type : ''} className="form-select" id="exampleFormControlSelect1">
+                          <option hidden>Select Media Type</option>
+                          <option value={"image"}  >Image</option>
+                          <option value={"video"}  >Video</option>
+                        </select>
                       </div>
                     </div>{/* Col */}
                     </div>
