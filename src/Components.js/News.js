@@ -36,7 +36,7 @@ export default function News() {
   const [topic,settopic]=useState()
   const [tag,settag]=useState()
 
-  // console.log("isslider",isslider)
+  console.log("isslider",isslider)
   // console.log("sliderdata",sliderdata)
   // console.log("sliderdata.image_slider_count",sliderdata.image_slider_count ? sliderdata.image_slider_count :"null")
   
@@ -226,19 +226,24 @@ export default function News() {
   const slidercheckfn=()=>{
     // console.log("slider",isslider)
    if (newsitem.media_type){
-    if(newsitem.media_type==="image"){
-      if( sliderdata.image_slider_count<10 ){
-        setisslider(!isslider)
+    if (isslider===false || isslider ==="false"){
+      if(newsitem.media_type==="image"){
+        
+        if( sliderdata.image_slider_count<10 ){
+          setisslider(true)
+        }else{
+          notifyerror("only 10 image sliders are allowed")
+        }
       }else{
-        notifyerror("only 10 image sliders are allowed")
-      }
+        if( sliderdata.vedio_slider_count<10 ){
+          setisslider(true)
+        }else{
+          notifyerror("only 10 video sliders are allowed")
+        }
+      } 
     }else{
-      if( sliderdata.vedio_slider_count<10 ){
-        setisslider(!isslider)
-      }else{
-        notifyerror("only 10 video sliders are allowed")
-      }
-    } 
+      setisslider(!isslider)
+    }
    }else{
     notifyerror("Need to Select Media Type")
    }
@@ -514,16 +519,13 @@ export default function News() {
                         {/* <b>{newsitem.tag}</b> */}
                         <MultiSelect style={{ maxWidth: "100%" }}
                           onChange={newcontent => { settopic(newcontent ) }}
+                          defaultValue={null}
                           options={topicsdata ?topicsdata.map((topicitm,kt)=>(
                             { label: topicitm.name, value: topicitm._id }
                           ))
                             
                            :null }
-                        // selected={[
-                        //   // newsitem.tag ? newsitem.tag.split(',').map((item,key)=>(
-                        //     { label:  'Around The World',value:'item'}
-                        //   // )) : ''
-                        // ]}
+                      
                         />
                       </div>
 
@@ -540,6 +542,7 @@ export default function News() {
                         </select> */}
                         <MultiSelect style={{ maxWidth: "100%" }}
                           onChange={newcontent => { setcategory( newcontent ) }}
+                          value={category}
                           options={categorydata ?categorydata.map((catitm,kc)=>(
                             { label: catitm.name, value: catitm._id }
                           ))
@@ -614,7 +617,7 @@ export default function News() {
                   <div className='row'>
                     <div className='col-sm-6'>
                       <div className="form-check mb-2">
-                        <input type="checkbox" onChange={(e) =>slidercheckfn()} checked={!!(isslider) ===true ? true : false }  className="form-check-input" id="checkChecked" />
+                        <input type="checkbox" onChange={(e) =>slidercheckfn()} checked={isslider === "false" ? false : Boolean(isslider)}  className="form-check-input" id="checkChecked" />
                         <label className="form-check-label" htmlFor="checkChecked">
                           <b>Is-Slider</b>
                         </label>

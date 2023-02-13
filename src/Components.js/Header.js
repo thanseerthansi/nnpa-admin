@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { MdOutlineLogout,MdOutlineTopic } from 'react-icons/md';
+import { MdOutlineLogout,MdOutlineTopic,MdRssFeed } from 'react-icons/md';
 import { BsGrid } from 'react-icons/bs';
 import { BiNews } from 'react-icons/bi';
 import Scripts from './Scripts';
@@ -56,6 +56,13 @@ export default function Header() {
             {/* <i className="link-icon" data-feather="table" /> */}
             <BiNews size={20}/>
             <span className="link-title">News</span>
+          </Link>
+        </li>
+        <li className="nav-item not-active">
+          <Link to="/news/rssfeed" className="nav-link">
+            {/* <i className="link-icon" data-feather="table" /> */}
+            <MdRssFeed size={20}/>
+            <span className="link-title">RssFeed</span>
           </Link>
         </li>
         

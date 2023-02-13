@@ -1,89 +1,249 @@
-// import axios from 'axios'
-import axios from 'axios';
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import Callaxios from './Callaxios'
+import { Simplecontext } from './Simplecontext'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import { BiSearch,BiAddToQueue,BiEdit } from 'react-icons/bi';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+// import Scripts from './Scripts';
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
-// const {convertXML} = require("simple-xml-to-json")
-// const { parse } = require('rss-to-json');
-// import rssToJson from 'rss-to-json';
-// let googleNewsAPI = require("google-news-json");
-// import Parser from "rss-parser";
 export default function Rsfeed() {
-    // let parser = new Parser();
-    // const CORS_PROXY = "<some cors proxy>";
-    useEffect(() => {
-        Rssread()
-    }, [])
-    
-    // const Rssread =async()=>{
-    //     // const header ='Authorization: Bearer OAuthA3tWOfOcxZXMGY58frpCRSofj905vGD7hGr0EfcQqBtVwqRlBKOpqk0VLWuGZbRCAsAapwV_BjtHmPoxXcHnK1jv_caiqSu0gzu-TvTdcCWJ7RcKKXRy6sfotyNRbZSDkmj_ylMSleno1EBSJq2V64A0VzjRZXbZbCwBIrskCss7DRs9BQxjZp0uCVgwopDWuBqICGrI5yUTm31r4nStfsd-a1_ZWR40Gdn5B9QGxXliNdKYUvnZsVt747El';
-
-    //     // let data = await  axios.get(" https://feedly.com/i/collection/content/user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/a384bc96-c5c0-4bc6-906b-a4cd82682c10",)
-    //     // console.log("rssdata",data)
-    //     const accessToken = 'A3tWOfOcxZXMGY58frpCRSofj905vGD7hGr0EfcQqBtVwqRlBKOpqk0VLWuGZbRCAsAapwV_BjtHmPoxXcHnK1jv_caiqSu0gzu-TvTdcCWJ7RcKKXRy6sfotyNRbZSDkmj_ylMSleno1EBSJq2V64A0VzjRZXbZbCwBIrskCss7DRs9BQxjZp0uCVgwopDWuBqICGrI5yUTm31r4nStfsd-a1_ZWR40Gdn5B9QGxXliNdKYUvnZsVt747El:feedlydev';
-
-    //     axios.get('https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/a384bc96-c5c0-4bc6-906b-a4cd82682c10', {
-    //     headers: {
-    //         Authorization: `Bearer ${accessToken}`
-    //     }
-    //     })
-    //     .then(response => {
-    //         console.log("response",response.data);
-    //     })
-    //     .catch(error => {
-    //         console.error(error);
-    //     });
-
-    //     console.log("rssfeed other")
-        
-
-
-    //     // Authorization: OAuth <access_token>
-    //     // const myJson = convertXML(data)
-    //     // console.log("myJson",myJson)
-    //     // rssToJson(`https://news.google.com/news/rss`)
-    //     //     .then(data => {
-    //     //         console.log("rssfeed",data);
-    //     //     })
-    //     //     .catch(error => {
-    //     //         console.log(error);
-    //     //     });
-    // //         fetch("https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/a384bc96-c5c0-4bc6-906b-a4cd82682c10", {
-    // //   method: "GET",
-    // //   headers: {
-    // //     Authorization: "Bearer A3tWOfOcxZXMGY58frpCRSofj905vGD7hGr0EfcQqBtVwqRlBKOpqk0VLWuGZbRCAsAapwV_BjtHmPoxXcHnK1jv_caiqSu0gzu-TvTdcCWJ7RcKKXRy6sfotyNRbZSDkmj_ylMSleno1EBSJq2V64A0VzjRZXbZbCwBIrskCss7DRs9BQxjZp0uCVgwopDWuBqICGrI5yUTm31r4nStfsd-a1_ZWR40Gdn5B9QGxXliNdKYUvnZsVt747El:feedlydev"
-    // //   }
-    // // })
-    // //   .then(response => response.json())
-    // //   .then(data => console.log(data))
-    // //   .catch(error => console.error(error));
-    
-    // // let news = await googleNewsAPI.getNews(googleNewsAPI.TOP_NEWS, null, "en-GB");
-    // }
-    const Rssread=async()=>{
-        try {
-            // let data = await parser.parseURL("https://rollingout.com/feed/");
-            // console.log("daa",data)
-            // let parser = new Parser();
-            // const CORS_PROXY = "<some cors proxy>";
-            // let data = await rssToJson(`https://rollingout.com/feed/`,{headers:{}})
-            // console.log("rssfeed",data)
-        //     let response = await fetch("https://rollingout.com/feed/", {
-        //         method: 'GET',
-        //         headers: {
-        //           'Access-Control-Allow-Origin': '*'
-        //         }
-        //       });
-        //       console.log("response",response)
-        //       let data = await response.json();
-        //       console.log("data",data)
-        } catch (error) {
-          console.log(error)  
-        }
-        
+  const {categorydata,getcategory,accesscheck} =useContext(Simplecontext)
+  const [rssdata,setrssdata] = useState([])
+  const [rssitem,setrssitem]=useState('')
+  const [searchvalue,setsearchvalue]=useState('')
+  const [modal,setmodal]=useState(false)
+  const [page,setpage]=useState(1)
+  // console.log("d=search",searchvalue)
+  useEffect(() => {
+    accesscheck()
+    getrss()
+    // Scripts()
+  }, [])
+  const notify = (msg) => toast.success(msg, {
+    position: "top-right",
+    });
+  const notifyerror = (msg) => toast.error(msg, {
+    position: "top-right",
+    });
+  const getrss = async(e,pageno)=>{
+    if (e) {
+      e.preventDefault();
     }
+    if (!pageno){
+      pageno = 1  
+    }
+    let data = await Callaxios("get","rss/",{page:pageno,limit:10,query:searchvalue})
+    console.log("rssdata",data.data.data)
+    if (data.status === 200){
+      setrssdata(data.data.data)
+      setpage(pageno)
+    }
+  }
+  const deleterss = async(itmid)=>{
+    try {
+      let data =await Callaxios("delete",`rss/${itmid}`)
+      // console.log("data",data)
+      if (data.status===200){
+        notify("Deleted Successfully")
+        getrss()
+      }
+    } catch (error) {
+      notifyerror("Something went wrong")
+    }    
+  }
+  const rsspost = async(e)=>{
+    e.preventDefault();
+    let url 
+    let action
+    let msg
+    let datalist = rssitem
+    if (datalist._id){
+     
+      if (datalist.name){
+        // console.log("dataname")
+        url = `rss/${datalist._id}`
+        action = "put"
+        msg = "Successfully updated"
+      }else(notifyerror("Name required"))
+          
+    }else{
+      // console.log("notid")
+      url = `rss/`
+      action = "post"
+      msg = "Successfully Added"
+    }
+    // console.log("datalist",datalist)
+    try {
+      let data =await Callaxios(action,url,datalist)
+      // console.log("data",data)
+      if (data.status===200){
+        notify(msg)
+        getrss()
+        setrssitem('')
+        setmodal(!modal)
+      }
+    } catch (error) {
+      notifyerror("Something went wrong")
+    }  
+  }
+  const submitdelete = (itemid) => {
+    confirmAlert({
+        title: "Confirmation",
+        message: `Are you sure to delete this ?`,
+        buttons: [
+        {
+            label: "Yes",           
+            onClick:()=>deleterss(itemid),
+        },
+        {
+            label: "No"
+            // onClick: () => alert("Click No")
+        } 
+        ],
+        
+    });
+    };
   return (
-    <div>
+    <div className='page-wrapper p-3 mt-5'>
+       <ToastContainer/>
+      <div className="row">
+  <div className="col-md-12 grid-margin stretch-card">
+    <div className="card">
+      <div className="card-body">
+        <div className='row ' >
+          <div className='col-6' >
+        <h6 className="card-title text-start text-bold">Rss Feed</h6>
+        <div className='text-start'><button onClick={()=>setmodal(!modal)} className='btn btn-success btn-sm' ><BiAddToQueue size={20}/>Add</button></div>
+        </div>
+        <div  className='col-6'>
+                  <form className="search-form ml-auto" onSubmit={(e) => getrss(e, 1)} >
+                    <div className="input-group">
 
+                      <input onChange={(e) => setsearchvalue(e.target.value)} type="text" className="form-control form-control-sm" id="navbarForm" placeholder="Search here..." />
+                      <div className="">
+                        <button type='submit' className='btn btn-primary btn-sm ' ><BiSearch size={20} /></button>
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+        </div>
+
+        <div className="table-responsive pt-3">
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Category</th>
+                <th>Action</th>
+                
+                
+              </tr>
+            </thead>
+            <tbody>
+              {rssdata.rss_links ? rssdata.rss_links.map((itm,k)=>(
+                <tr key={k}>
+                <td>{k+1}</td>
+                <td>{itm.name}</td>
+                <td>{itm.url}</td>
+                <td>{itm.category ? itm.category.name :null}</td>
+                <td>
+                  <ul className='text-center'>
+                    <li className='list-group-item '>
+                      <button onClick={()=>setrssitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs edit-btn' ><BiEdit size={15}/>edit</button>
+                    </li>
+                    <li className='list-group-item mt-1' >
+                    
+                      <button onClick={()=>submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              )):null}
+              
+             
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+   {/* Modal */}
+{/* <div className="modal fade" id="exampleModalCenter" tabIndex={-1} aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div className="modal-dialog modal-dialog-centered">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+        <button onClick={()=>setrssitem('')}  type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close" />
+      </div>
+      <form className="forms-sample" onSubmit={(e)=>rsspost(e,"create")}>
+      <div className="modal-body">
+      
+                  <div className="mb-3 text-start">
+                    <label htmlFor="userEmail" className="form-label ">Name</label>
+                    <input type="text" className="form-control" onChange={(e)=>setrssitem({...rssitem,name:e.target.value})}value={rssitem.name} placeholder="Name" />
+                  </div>
+                  
+                  
+                  <div>
+                   
+                    
+                  </div>
+                 
+                
+      </div>
+      <div className="modal-footer">
+        <button onClick={()=>setrssitem('')} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" className="btn btn-primary">Save changes</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div> */}
+  <div className="modal " id="exampleModalCenter" tabIndex={1} aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog" style={modal===true ? {display: 'block', paddingRight: 17}:{display:'none'}}>
+  <div className="modal-dialog modal-dialog-centered  box-shadow-blank" >
+    <div className="modal-content"><div className="modal-header">
+      <h5 className="modal-title" id="exampleModalCenterTitle">Category</h5>
+      <button onClick={()=>setmodal(!modal) & setrssitem('')} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close" />
+      </div>
+      <form className="forms-sample" onSubmit={(e)=>rsspost(e)}>
+        <div className="modal-body">
+        <div className="mb-3 text-start">
+          <label htmlFor="userEmail" className="form-label ">Name</label>
+          <input type="text" required onChange={(e)=>setrssitem({...rssitem,name:e.target.value})} value={rssitem.name?rssitem.name:'' } className="form-control" placeholder="Name"  />
+        </div>
+        <div className="mb-3 text-start">
+          <label htmlFor="userEmail" className="form-label ">URL</label>
+          <input type="text" required onChange={(e)=>setrssitem({...rssitem,url:e.target.value})} value={rssitem.url?rssitem.url:'' } className="form-control" placeholder="URL"  />
+        </div>
+        <div className="mb-3 text-start">
+          <label htmlFor="userEmail" className="form-label ">Category</label>
+          {/* <input type="text" required onChange={(e)=>setrssitem({...rssitem,url:e.target.value})} value={rssitem.url?rssitem.url:'' } className="form-control" placeholder="URL"  /> */}
+          <select required onChange={(e) => setrssitem({ ...rssitem, category_id: e.target.value })} value={rssitem.category ? rssitem.category._id : ''} className="form-select" id="exampleFormControlSelect1">
+            <option hidden   >Select Category</option>
+            {categorydata.map((catitm,ck)=>(
+              <option key={ck} value={catitm._id} >{catitm.name}</option>            
+            ))}
+            
+          </select>
+        </div>
+        <div />
+        </div>
+        <div className="modal-footer">
+          <button onClick={()=>setmodal(!modal) & setrssitem('')} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" className="btn btn-primary">Submit</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
     </div>
   )
 }
