@@ -20,7 +20,7 @@ export default function Header() {
     <div className="sidebar-header">
       <a href= "/news" className="sidebar-brand">
         {/* NNPA<span>UI</span> */}
-        <img src="../assets/images/logo/nnpa_logo.png" alt="light theme" width={165} height={45} />
+        <img src="/assets/images/logo/nnpa_logo.png" alt="light theme" width={165} height={45} />
       </a>
       <div className="sidebar-toggler not-active">
         <span />

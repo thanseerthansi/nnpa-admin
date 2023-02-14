@@ -8,9 +8,14 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 // import Scripts from './Scripts';
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Rsfeed() {
-  const {categorydata,getcategory,accesscheck} =useContext(Simplecontext)
+
+  
+  let navigate = useNavigate()
+
+  const {categorydata,getcategory,accesscheck} = useContext(Simplecontext)
   const [rssdata,setrssdata] = useState([])
   const [rssitem,setrssitem]=useState('')
   const [searchvalue,setsearchvalue]=useState('')
@@ -42,6 +47,7 @@ export default function Rsfeed() {
       setpage(pageno)
     }
   }
+
   const deleterss = async(itmid)=>{
     try {
       let data =await Callaxios("delete",`rss/${itmid}`)
@@ -54,6 +60,7 @@ export default function Rsfeed() {
       notifyerror("Something went wrong")
     }    
   }
+
   const rsspost = async(e)=>{
     e.preventDefault();
     let url 
@@ -154,7 +161,15 @@ export default function Rsfeed() {
                 <td>{itm.category ? itm.category.name :null}</td>
                 <td>
                   <ul className='text-center'>
-                    <li className='list-group-item '>
+
+                  <li className='list-group-item '  >
+                   
+                      <button className='btn btn-primary btn-xs' onClick={()=>{ return navigate(`/news/Rss-News/${itm.name}`,{ state : { rss_link : itm.url }})}} >Show News</button>
+                  
+                  </li>
+
+
+                    <li className='list-group-item mt-1'>
                       <button onClick={()=>setrssitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs edit-btn' ><BiEdit size={15}/>edit</button>
                     </li>
                     <li className='list-group-item mt-1' >
@@ -226,7 +241,7 @@ export default function Rsfeed() {
         <div className="mb-3 text-start">
           <label htmlFor="userEmail" className="form-label ">Category</label>
           {/* <input type="text" required onChange={(e)=>setrssitem({...rssitem,url:e.target.value})} value={rssitem.url?rssitem.url:'' } className="form-control" placeholder="URL"  /> */}
-          <select required onChange={(e) => setrssitem({ ...rssitem, category_id: e.target.value })} value={rssitem.category ? rssitem.category._id : ''} className="form-select" id="exampleFormControlSelect1">
+          <select required  onChange={(e) => setrssitem({ ...rssitem, category_id: e.target.value })} value={rssitem.category_id ? rssitem.category_id : ''} className="form-select" id="exampleFormControlSelect1">
             <option hidden   >Select Category</option>
             {categorydata.map((catitm,ck)=>(
               <option key={ck} value={catitm._id} >{catitm.name}</option>            
