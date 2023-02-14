@@ -143,7 +143,7 @@ export default function Rsfeed() {
           <table className="table table-bordered">
             <thead>
               <tr>
-                <th>#</th>
+                {/* <th>#</th> */}
                 <th>Name</th>
                 <th>URL</th>
                 <th>Category</th>
@@ -155,7 +155,7 @@ export default function Rsfeed() {
             <tbody>
               {rssdata.rss_links ? rssdata.rss_links.map((itm,k)=>(
                 <tr key={k}>
-                <td>{k+1}</td>
+                {/* <td>{k+1}</td> */}
                 <td>{itm.name}</td>
                 <td>{itm.url}</td>
                 <td>{itm.category ? itm.category.name :null}</td>
@@ -185,6 +185,28 @@ export default function Rsfeed() {
             </tbody>
           </table>
         </div>
+        <div className="row mt-1">
+                <div className=" ">
+                  <div className="dataTables_paginate paging_simple_numbers " >
+
+                    <ul className="pagination ">
+
+                      <li className="paginate_button page-item previous" id="dataTableExample_previous">
+                        <button onClick={() => getrss('', page - 1)} disabled={page === 1} className="page-link">Previous</button>
+                      </li>
+                      <li className="paginate_button page-item previous" id="dataTableExample_previous">
+                        <button disabled className="page-link active">{page}</button>
+                      </li>
+
+
+                      <li className="paginate_button page-item next" id="dataTableExample_next">
+                        <button onClick={() => getrss('', page + 1)} disabled={rssdata.is_next === false} className="page-link">Next</button>
+                      </li>
+
+                    </ul>
+                  </div>
+                </div>
+              </div>
       </div>
     </div>
   </div>

@@ -13,7 +13,7 @@ import { useContext } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import { useRef } from 'react'
 import Callaxios from './Callaxios'
-
+import { ColorRing } from 'react-loader-spinner'
 
 
 
@@ -36,7 +36,7 @@ function Rss_News_List() {
   const [sliderdata, setsliderdata] = useState('')
   const [pushnotification, setpushnotification] = useState(false)
   const editor = useRef(null);
-
+ const [isloading,setisloading]=useState(false)
 
 
 
@@ -85,9 +85,10 @@ function Rss_News_List() {
     }
 
     const postnewsfn = async (e) => {
-        console.log("THE CONTENT")
-        console.log(newsitem.content)
+        // console.log("THE CONTENT")
+        // console.log(newsitem.content)
         e.preventDefault();
+        setisloading(true)
         
         let action
         let url
@@ -165,12 +166,16 @@ function Rss_News_List() {
             setmodal(!modal)
             Get_Rss_News()     
             notify(msg)
+            setisloading(false)
             // setallnull()
           
     
+          }else{
+            setisloading(false)
           }
         } catch (error) {
           console.log(error)
+          setisloading(false)
         }
       }
 
@@ -349,7 +354,21 @@ function Rss_News_List() {
                     </div>
 
                   </div>
-
+                  <div className="row">
+                    
+                    <div className="col-sm-6">
+                      <div className="mb-3">
+                        <label className="form-label"><b>Source</b></label>
+                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, source: e.target.value })} value={newsitem.source ? newsitem.source : ''} className="form-control" placeholder="Enter Source" />
+                      </div>
+                    </div>
+                    <div className="col-sm-6">
+                      <div className="mb-3">
+                        <label className="form-label"><b>Auther</b></label>
+                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, auther: e.target.value })} value={newsitem.auther ? newsitem.auther : ''} className="form-control" placeholder="Enter Source" />
+                      </div>
+                    </div>{/* Col */}
+                  </div>{/* Row */}
                   <div className="row">
                     
                     <div className="col-sm-6">
@@ -438,6 +457,17 @@ function Rss_News_List() {
                   <div className='text-end '>
                     <button type="button" onClick={() => setmodal(!modal)} className="btn btn-secondary " style={{ marginRight: "5px" }} data-bs-dismiss="modal">Close</button>
                     <button type="submit" className="btn btn-primary ">Submit</button>
+                  </div>
+                  <div  className='text-end ' >
+                  <ColorRing
+                    visible={isloading}
+                    height="80"
+                    width="80"
+                    ariaLabel="blocks-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="blocks-wrapper"
+                    colors={[]}
+                  />
                   </div>
                 </form>
 

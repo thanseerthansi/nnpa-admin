@@ -12,6 +12,7 @@ import { Simplecontext } from './Simplecontext';
 import MultiSelect from 'react-multiple-select-dropdown-lite'
 import 'react-multiple-select-dropdown-lite/dist/index.css'
 import { confirmAlert } from "react-confirm-alert";
+import { ColorRing } from 'react-loader-spinner'
 // import Multiselect from 'multiselect-react-dropdown';
 import ReactPlayer from 'react-player'
 // import Scripts from './Scripts';
@@ -35,6 +36,7 @@ export default function News() {
   const [category,setcategory]=useState()
   const [topic,settopic]=useState()
   const [tag,settag]=useState()
+  const [isloading,setisloading]=useState(false)
 
   console.log("isslider",isslider)
   // console.log("sliderdata",sliderdata)
@@ -99,6 +101,7 @@ export default function News() {
   }
   const postnewsfn = async (e) => {
     e.preventDefault();
+    setisloading(true)
     
     let action
     let url
@@ -177,11 +180,15 @@ export default function News() {
         getnews('',page)       
         notify(msg)
         setallnull()
+        setisloading(false)
       
 
+      }else{
+        setisloading(false)
       }
     } catch (error) {
       console.log(error)
+      setisloading(false)
     }
   }
 
@@ -290,7 +297,7 @@ export default function News() {
                 <table className="table table-bordered">
                   <thead>
                     <tr>
-                      <th>#</th>
+                      {/* <th>#</th> */}
                       <th >Heading</th>
                       <th>Thumbnail</th>
                       <th>category</th>
@@ -306,7 +313,7 @@ export default function News() {
                   <tbody>
                     {newsdata.length ? newsdata.map((itm, k) => (
                       <tr key={k}>
-                        <td>{k + 1}</td>
+                        {/* <td>{k + 1}</td> */}
                         <td className='table-linebreak' onClick={() => setnewsitem(itm)} data-bs-toggle="modal" data-bs-target="#exampleModalCenter">{itm.heading}</td>
                         {/* <td>
                     {itm.media_type==="image" ?
@@ -393,6 +400,7 @@ export default function News() {
                   </div>
                 </div>
               </div>
+              
 
             </div>
           </div>
@@ -492,7 +500,7 @@ export default function News() {
         <div className="modal-dialog modal-xl box-shadow-blank">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title h4" id="myExtraLargeModalLabel">Extra large modal</h5>
+              <h5 className="modal-title h4" id="myExtraLargeModalLabel">NEWS</h5>
               <button onClick={() => setmodal(!modal) & setallnull()} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
               </button>
             </div>
@@ -575,14 +583,29 @@ export default function News() {
                     
                     <div className="col-sm-6">
                       <div className="mb-3">
+                        <label className="form-label"><b>Source</b></label>
+                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, source: e.target.value })} value={newsitem.source ? newsitem.source : ''} className="form-control" placeholder="Enter Source" />
+                      </div>
+                    </div>
+                    <div className="col-sm-6">
+                      <div className="mb-3">
+                        <label className="form-label"><b>Auther</b></label>
+                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, auther: e.target.value })} value={newsitem.auther ? newsitem.auther : ''} className="form-control" placeholder="Enter Source" />
+                      </div>
+                    </div>{/* Col */}
+                  </div>{/* Row */}
+                  <div className="row">
+                    
+                    <div className="col-sm-6">
+                      <div className="mb-3">
                         <label className="form-label"><b>Tags</b></label>
-                        <input type="text" onChange={(e) => settag( e.target.value )} value={tag} className="form-control" placeholder="Enter tags Sepperate by comma(,) . " />
+                        <input required type="text" onChange={(e) => settag( e.target.value )} value={tag} className="form-control" placeholder="Enter tags Sepperate by comma(,) . " />
                       </div>
                     </div>
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Description</b></label>
-                        <textarea type="text" onChange={(e) => setnewsitem({ ...newsitem, short_description: e.target.value })} value={newsitem.short_description ? newsitem.short_description : ''} className="form-control" placeholder="Enter description" />
+                        <textarea type="text" required onChange={(e) => setnewsitem({ ...newsitem, short_description: e.target.value })} value={newsitem.short_description ? newsitem.short_description : ''} className="form-control" placeholder="Enter description" />
                       </div>
                     </div>{/* Col */}
                   </div>{/* Row */}
@@ -679,7 +702,18 @@ export default function News() {
     </div> */}
                   <div className='text-end '>
                     <button type="button" onClick={() => setmodal(!modal) & setallnull()} className="btn btn-secondary " style={{ marginRight: "5px" }} data-bs-dismiss="modal">Close</button>
-                    <button type="submit" className="btn btn-primary ">Submit</button>
+                    <button type="submit" className="btn btn-primary " style={isloading ? {pointerEvents:'none'}:{}}>Submit</button>
+                  </div>
+                  <div  className='text-end ' >
+                  <ColorRing
+                    visible={isloading}
+                    height="80"
+                    width="80"
+                    ariaLabel="blocks-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="blocks-wrapper"
+                    colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+                  />
                   </div>
                 </form>
 
