@@ -410,7 +410,7 @@ export default function News() {
 
       {/* content Modal */}
       <div className="modal fade bd-example-modal-lg" tabIndex={-1} aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div className="modal-dialog modal-lg">
+        <div className="modal-dialog modal-xl">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title h4" id="myLargeModalLabel">Content</h5>
@@ -418,7 +418,7 @@ export default function News() {
               </button>
             </div>
             <div className="modal-body text-start">
-              <div dangerouslySetInnerHTML={{ __html: newsitem.content }} />
+              <div  dangerouslySetInnerHTML={{ __html: newsitem.content }} />
             </div>
             <div className="modal-footer">
               <button onClick={() => setnewsitem('')} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -556,11 +556,11 @@ export default function News() {
                           ))
                             
                            :null }
-                        // selected={[
-                        //   // newsitem.tag ? newsitem.tag.split(',').map((item,key)=>(
-                        //     { label:  'Around The World',value:'item'}
-                        //   // )) : ''
-                        // ]}
+                        selected={[
+                      
+                            { label:  'Around The World'}
+                          
+                        ]}
                         />
                         {/* {newsitem.category} */}
                       </div>
@@ -589,8 +589,8 @@ export default function News() {
                     </div>
                     <div className="col-sm-6">
                       <div className="mb-3">
-                        <label className="form-label"><b>Auther</b></label>
-                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, auther: e.target.value })} value={newsitem.auther ? newsitem.auther : ''} className="form-control" placeholder="Enter Source" />
+                        <label className="form-label"><b>Author</b></label>
+                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, author: e.target.value })} value={newsitem.author ? newsitem.author : ''} className="form-control" placeholder="Enter Author" />
                       </div>
                     </div>{/* Col */}
                   </div>{/* Row */}

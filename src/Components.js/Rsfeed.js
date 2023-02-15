@@ -164,7 +164,7 @@ export default function Rsfeed() {
 
                   <li className='list-group-item '  >
                    
-                      <button className='btn btn-primary btn-xs' onClick={()=>{ return navigate(`/news/Rss-News/${itm.name}`,{ state : { rss_link : itm.url }})}} >Show News</button>
+                      <button className='btn btn-primary btn-xs' onClick={()=>{ return navigate(`/news/Rss-News/${itm.name}`,{ state : { rss_link : itm.url ,category:itm.category??''}})}} >Show News</button>
                   
                   </li>
 

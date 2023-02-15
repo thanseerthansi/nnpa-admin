@@ -53,7 +53,7 @@ function Rss_News_List() {
 
     const Choose_Modal = (title,short_description) => {
  
-        setnewsitem({ ...newsitem, heading: title , short_description: short_description.props.dangerouslySetInnerHTML.__html })
+        setnewsitem({ ...newsitem, heading: title , content: short_description.props.dangerouslySetInnerHTML.__html })
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
         setmodal(true)
     }
@@ -63,7 +63,9 @@ function Rss_News_List() {
     }, [])
 
     const Get_Rss_News = async () => {
+      console.log("category",state?.category??"")
         if (state)
+        
         {
             const body = {
                 'url' : state?.rss_link ?? ''
@@ -71,7 +73,7 @@ function Rss_News_List() {
             try {
                 let response  = await axios.post(`${BaseURL}rss/news`,body)
                 setrss_newses(response.data)
-                console.log(response.data)
+                console.log("response",response.data)
 
             } catch (error) {
                 
@@ -239,7 +241,7 @@ function Rss_News_List() {
              <th>#</th>
              <th>Title</th>
              <th>News Link</th>
-             <th>Short Description</th>
+             <th>Content</th>
              <th>Pub.Date</th>
              <th>Action</th>
              
@@ -330,13 +332,13 @@ function Rss_News_List() {
                        
                         <MultiSelect style={{ maxWidth: "100%" }}
                           onChange={newcontent => { setcategory( newcontent ) }}
-                          value={category}
+                          selected={{label:state?._name??"",value:state?._id??""}}
+                          defaultValue 
                           options={categorydata ?categorydata.map((catitm,kc)=>(
                             { label: catitm.name, value: catitm._id }
                           ))
-                            
                            :null }
-                      
+                          // defaultValue={ label: "sdf", value: "sdsf" }
                         />
                       </div>
 
@@ -364,8 +366,8 @@ function Rss_News_List() {
                     </div>
                     <div className="col-sm-6">
                       <div className="mb-3">
-                        <label className="form-label"><b>Auther</b></label>
-                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, auther: e.target.value })} value={newsitem.auther ? newsitem.auther : ''} className="form-control" placeholder="Enter Source" />
+                        <label className="form-label"><b>Author</b></label>
+                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, author: e.target.value })} value={newsitem.author ? newsitem.author : ''} className="form-control" placeholder="Enter author" />
                       </div>
                     </div>{/* Col */}
                   </div>{/* Row */}
