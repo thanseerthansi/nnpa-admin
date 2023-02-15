@@ -63,7 +63,7 @@ function Rss_News_List() {
     }, [])
 
     const Get_Rss_News = async () => {
-      console.log("category",state?.category??"")
+      // console.log("category",state?.category??"")
         if (state)
         
         {

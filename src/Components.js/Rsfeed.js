@@ -263,7 +263,7 @@ export default function Rsfeed() {
         <div className="mb-3 text-start">
           <label htmlFor="userEmail" className="form-label ">Category</label>
           {/* <input type="text" required onChange={(e)=>setrssitem({...rssitem,url:e.target.value})} value={rssitem.url?rssitem.url:'' } className="form-control" placeholder="URL"  /> */}
-          <select required  onChange={(e) => setrssitem({ ...rssitem, category_id: e.target.value })} value={rssitem.category_id ? rssitem.category_id : ''} className="form-select" id="exampleFormControlSelect1">
+          <select required  onChange={(e) => setrssitem({ ...rssitem, category_id: e.target.value })} value={rssitem.category_id ?? rssitem.category?._id??''} className="form-select" id="exampleFormControlSelect1">
             <option hidden   >Select Category</option>
             {categorydata.map((catitm,ck)=>(
               <option key={ck} value={catitm._id} >{catitm.name}</option>            
