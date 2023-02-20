@@ -101,8 +101,8 @@ function Feedly() {
         
         if (category) {
           let catlist=[] 
-          category.split(',').map((item) => {
-            catlist.push(item);
+          category.map((item) => {
+            catlist.push(item.value);
           });
           datalist.category = catlist
         }else{
@@ -110,8 +110,8 @@ function Feedly() {
         }
         if (topic) {
           let topiclist=[] 
-          topic.split(',').map((item) => {
-            topiclist.push(item);
+          topic.map((item) => {
+            topiclist.push(item.value);
           });
           datalist.topics = topiclist
         }else{

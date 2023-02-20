@@ -67,7 +67,7 @@ function Rss_News_List() {
     }, [])
 
     const Get_Rss_News = async () => {
-      console.log("category",state)
+      console.log("category",state.category.name)
       
         if (state)
         
@@ -106,8 +106,8 @@ function Rss_News_List() {
         
         if (category) {
           let catlist=[] 
-          category.split(',').map((item) => {
-            catlist.push(item);
+          category.map((item) => {
+            catlist.push(item.value);
           });
           datalist.category = catlist
         }else{
@@ -115,8 +115,8 @@ function Rss_News_List() {
         }
         if (topic) {
           let topiclist=[] 
-          topic.split(',').map((item) => {
-            topiclist.push(item);
+          topic.map((item) => {
+            topiclist.push(item.value);
           });
           datalist.topics = topiclist
         }else{
@@ -221,6 +221,7 @@ function Rss_News_List() {
         // console.log("date,",isoString)
         return isoString
       }
+      // console.log("caegotry",category)
   return (
     <div className='page-wrapper px-3 mt-5'>
     <ToastContainer/>
@@ -292,7 +293,7 @@ function Rss_News_List() {
                                </td>
                             <td style={{textAlign:'left'}}><div style={{ whiteSpace:"nowrap",width:"150px",maxHeight:"150px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} /> </td>
                             <td>{ (Date(value.pubDate._text ?? value.pubDate._cdata).split('+')[0])  }</td>
-                            <td><button className='btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title._text ?? value.title._cdata ,<div dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} />,<div dangerouslySetInnerHTML={{ __html: value['content:encoded'] ? value['content:encoded']['_cdata'] : null   }} /> ,value['dc:creator']['_cdata'],handledate(value.pubDate._text ?? value.pubDate._cdata)  )} >Save</button></td>
+                            <td><button className='btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title._text ?? value.title._cdata ,<div dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} />,<div dangerouslySetInnerHTML={{ __html: value['content:encoded'] ? value['content:encoded']['_cdata'] : null   }} /> ,value['dc:creator']?['_cdata']:"",handledate(value.pubDate._text ?? value.pubDate._cdata)  )} >Save</button></td>
                         </tr>
                     ))
                 }
@@ -385,9 +386,8 @@ function Rss_News_List() {
                             ))
                              :null }
                             value={category}
-                            // defaultValue={topicsdata ?topicsdata.filter(t=>t.label.includes()).map((topicitm,kt)=>(
-                            //   { label: topicitm.name, value: topicitm._id }
-                            // )):null}
+                            defaultValue={{ label: state.category.name, value: state.category._id }}
+                            
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
                             onChange={newcontent => { setcategory( newcontent ) }}
