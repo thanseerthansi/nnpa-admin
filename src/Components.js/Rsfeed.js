@@ -114,7 +114,7 @@ export default function Rsfeed() {
     });
     };
   return (
-    <div className='page-wrapper p-3 mt-5'>
+    <div className='page-wrapper px-3 mt-5'>
        <ToastContainer/>
       <div className="row">
   <div className="col-md-12 grid-margin stretch-card">

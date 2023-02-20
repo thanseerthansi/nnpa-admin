@@ -90,7 +90,7 @@ export default function Category() {
     });
     };
   return (
-    <div className='page-wrapper p-3 mt-5'>
+    <div className='page-wrapper px-3 mt-5'>
        <ToastContainer/>
       <div className="row">
   <div className="col-md-12 grid-margin stretch-card">
@@ -102,7 +102,7 @@ export default function Category() {
         <div className='text-start'><button onClick={()=>setmodal(!modal)} className='btn btn-success btn-sm' ><BiAddToQueue size={20}/>Add</button></div>
         </div>
         <div className='col-6'>
-        <form className="search-form ml-auto">
+        <form className="search-form ml-auto ">
           <div className="input-group">
             <div className="input-group-text">
               <BiSearch/>

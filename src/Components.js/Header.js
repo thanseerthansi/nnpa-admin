@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { MdOutlineLogout,MdOutlineTopic,MdRssFeed } from 'react-icons/md';
 import { BsGrid } from 'react-icons/bs';
 import { BiNews } from 'react-icons/bi';
+import { SiFeedly } from 'react-icons/si';
 import Scripts from './Scripts';
 export default function Header() {
   let navigate = useNavigate();
@@ -63,6 +64,12 @@ export default function Header() {
             {/* <i className="link-icon" data-feather="table" /> */}
             <MdRssFeed size={20}/>
             <span className="link-title">RssFeed</span>
+          </Link>
+        </li>
+        <li className="nav-item not-active">
+          <Link to="/news/feedly" className="nav-link">
+            <SiFeedly size={20}/>
+            <span className="link-title">Feedly</span>
           </Link>
         </li>
         

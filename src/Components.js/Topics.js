@@ -90,7 +90,7 @@ export default function Topics() {
       });
       };
     return (
-        <div className='page-wrapper p-3 mt-5'>
+        <div className='page-wrapper px-3 mt-5'>
             <ToastContainer />
             <div className="row">
                 <div className="col-md-12 grid-margin stretch-card">
@@ -130,7 +130,7 @@ export default function Topics() {
                                             <tr key={k}>
                                                 <td>{k + 1}</td>
                                                 <td>{itm.name}</td>
-                                                <td>{itm.list_style}</td>
+                                                <td>{itm.list_style.replace('_'," ")}</td>
                                                 <td>
                                                     <ul className='text-center'>
                                                         <li className='list-group-item '>
@@ -139,7 +139,7 @@ export default function Topics() {
                                                         <li className='list-group-item mt-1' >
 
                                                             <button onClick={() => submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
-                                                        </li>
+                                                        </li >
                                                     </ul>
                                                 </td>
                                             </tr>
@@ -189,7 +189,7 @@ export default function Topics() {
             <div className="modal " id="exampleModalCenter" tabIndex={1} aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog" style={modal === true ? { display: 'block', paddingRight: 17 } : { display: 'none' }}>
                 <div className="modal-dialog modal-dialog-centered  box-shadow-blank" >
                     <div className="modal-content"><div className="modal-header">
-                        <h5 className="modal-title" id="exampleModalCenterTitle">Category</h5>
+                        <h5 className="modal-title" id="exampleModalCenterTitle">Topics</h5>
                         <button onClick={() => setmodal(!modal) & setcategoryitem('')} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close" />
                     </div>
                         <form className="forms-sample" onSubmit={(e) => categorypost(e)}>
@@ -202,9 +202,9 @@ export default function Topics() {
                                     <label htmlFor="userEmail" className="form-label ">List Style</label>
                                     {/* <input type="text" required onChange={(e) => setcategoryitem({ ...categoryitem, list_style: e.target.value })} value={categoryitem.list_style ? categoryitem.list_style : ''} className="form-control" placeholder="Name" /> */}
                                     <select required onChange={(e) => setcategoryitem({ ...categoryitem, list_style: e.target.value })} value={categoryitem.list_style ? categoryitem.list_style : ''} className="form-select" id="exampleFormControlSelect1">
-                                        <option hidden>Select Slider Type</option>
-                                        <option value={"horizontal_list"}  >horizontal_list</option>
-                                        <option value={"vertical_list"}  >vertical_list</option>
+                                        <option value='' hidden>Select Slider Type</option>
+                                        <option value={"horizontal_list"}  >horizontal list</option>
+                                        <option value={"vertical_list"}  >vertical list</option>
                                         <option value={"list"}  >list</option>
                                     </select>
                                 </div>

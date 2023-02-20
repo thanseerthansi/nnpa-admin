@@ -17,6 +17,8 @@ import { ColorRing } from 'react-loader-spinner'
 import ReactPlayer from 'react-player'
 // import Scripts from './Scripts';
 // import Scripts from './Scripts';
+import Select from 'react-select';
+import Compressor from 'compressorjs';
 export default function News() {
   const { categorydata, accesscheck,topicsdata } = useContext(Simplecontext)
   const [newsdata, setnewsdata] = useState([]);
@@ -111,8 +113,8 @@ export default function News() {
     
     if (category) {
       let catlist=[] 
-      category.split(',').map((item) => {
-        catlist.push(item);
+      category.map((item) => {
+        catlist.push(item.value);
       });
       datalist.category = catlist
     }else{
@@ -120,8 +122,8 @@ export default function News() {
     }
     if (topic) {
       let topiclist=[] 
-      topic.split(',').map((item) => {
-        topiclist.push(item);
+      topic.map((item) => {
+        topiclist.push(item.value);
       });
       datalist.topics = topiclist
     }else{
@@ -173,7 +175,7 @@ export default function News() {
     //     console.log("formdata",pair[0]+ ', ' + pair[1]);
     // }
       let data = await Callaxios(action, url, form_data)
-      // console.log("data", data)
+      console.log("data", data)
       if (data.status === 200) {
 
         setmodal(!modal)
@@ -185,10 +187,15 @@ export default function News() {
 
       }else{
         setisloading(false)
+        
+        notifyerror("Something went wrong")
+        
       }
     } catch (error) {
-      console.log(error)
+      console.log("error",error)
       setisloading(false)
+      notifyerror("Something went wrong")
+      
     }
   }
 
@@ -266,8 +273,21 @@ export default function News() {
     setpushnotification(itm.is_pushnotification.toString())
     settag(itm.tag)
   }
+  const handleCompressedUpload = (e) => {
+    const image = e.target.files[0];
+    new Compressor(image, {
+      quality: 0.8, // 0.6 can also be used, but its not recommended to go below.
+      success: (compressedResult) => {
+        // compressedResult has the compressed file.
+        // Use the compressed file to upload the images to your server.     
+
+        setimage(compressedResult)
+      },
+    });
+  };
+ 
   return (
-    <div className='page-wrapper p-3 mt-5'>
+    <div className='page-wrapper px-3 mt-5'>
       <ToastContainer />
       <div className="row">
         <div className="col-md-12 grid-margin stretch-card">
@@ -501,7 +521,7 @@ export default function News() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title h4" id="myExtraLargeModalLabel">NEWS</h5>
-              <button onClick={() => setmodal(!modal) & setallnull()} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
+              <button onClick={() => setmodal(!modal) & setallnull() & setcategory(null)} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
               </button>
             </div>
             <div className="modal-body text-start">
@@ -525,7 +545,7 @@ export default function News() {
                       <div className="mb-3">
                         <label htmlFor="exampleFormControlSelect2"  className="form-label"><b>Topics </b></label><br />
                         {/* <b>{newsitem.tag}</b> */}
-                        <MultiSelect style={{ maxWidth: "100%" }}
+                        {/* <MultiSelect style={{ maxWidth: "100%" }}
                           onChange={newcontent => { settopic(newcontent ) }}
                           defaultValue={null}
                           options={topicsdata ?topicsdata.map((topicitm,kt)=>(
@@ -534,7 +554,21 @@ export default function News() {
                             
                            :null }
                       
-                        />
+                        /> */}
+                        <Select
+                            options={topicsdata ?topicsdata.map((topicitm,kt)=>(
+                              { label: topicitm.name, value: topicitm._id }
+                            )):null}
+                            value={topic}
+                            // defaultValue={topicsdata ?topicsdata.filter(t=>t.label.includes()).map((topicitm,kt)=>(
+                            //   { label: topicitm.name, value: topicitm._id }
+                            // )):null}
+                            closeMenuOnSelect={false}
+                            hideSelectedOptions={false}
+                            onChange={newcontent => { settopic(newcontent ) }}
+                            isMulti={true}
+                            isRequired={true}
+                          />
                       </div>
 
                     </div>{/* Col */}
@@ -548,9 +582,10 @@ export default function News() {
                           )) : null}
 
                         </select> */}
-                        <MultiSelect style={{ maxWidth: "100%" }}
+                        {/* <MultiSelect style={{ maxWidth: "100%" }}
                           onChange={newcontent => { setcategory( newcontent ) }}
                           value={category}
+                          // value = { null }
                           options={categorydata ?categorydata.map((catitm,kc)=>(
                             { label: catitm.name, value: catitm._id }
                           ))
@@ -561,7 +596,22 @@ export default function News() {
                             { label:  'Around The World'}
                           
                         ]}
-                        />
+                        /> */}
+                        <Select
+                            options={categorydata ?categorydata.map((catitm,kc)=>(
+                              { label: catitm.name, value: catitm._id }
+                            ))
+                             :null }
+                            value={category}
+                            // defaultValue={topicsdata ?topicsdata.filter(t=>t.label.includes()).map((topicitm,kt)=>(
+                            //   { label: topicitm.name, value: topicitm._id }
+                            // )):null}
+                            closeMenuOnSelect={false}
+                            hideSelectedOptions={false}
+                            onChange={newcontent => { setcategory( newcontent ) }}
+                            isMulti={true}
+                            isRequired={true}
+                          />
                         {/* {newsitem.category} */}
                       </div>
 
@@ -605,7 +655,7 @@ export default function News() {
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Description</b></label>
-                        <textarea type="text" required onChange={(e) => setnewsitem({ ...newsitem, short_description: e.target.value })} value={newsitem.short_description ? newsitem.short_description : ''} className="form-control" placeholder="Enter description" />
+                        <textarea rows={3} type="text" required onChange={(e) => setnewsitem({ ...newsitem, short_description: e.target.value })} value={newsitem.short_description ? newsitem.short_description : ''} className="form-control" placeholder="Enter description" />
                       </div>
                     </div>{/* Col */}
                   </div>{/* Row */}
@@ -622,7 +672,7 @@ export default function News() {
                               <img className='rounded  image-size' src={BaseURL + newsitem.thumbnail} alt='img' height="auto" width="auto" />
                               : null}
                           </div>}
-                        <input   onChange={(e) => setimage(e.target.files[0])} style={newsitem._id ?{"display":'none'}: { color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
+                        <input   onChange={(e) => handleCompressedUpload(e)} style={newsitem._id ?{"display":'none'}: { color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
                       </div>
                     </div>{/* Col */}
                     <div className="col-sm-6" style={newsitem._id ? {}: {"display":'none'}}>

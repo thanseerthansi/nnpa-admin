@@ -3,7 +3,7 @@ import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { BiAddToQueue, BiSearch } from 'react-icons/bi'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { BaseURL } from './urlcall'
 import JoditEditor from 'jodit-react';
 import ReactPlayer from 'react-player'
@@ -17,13 +17,13 @@ import { ColorRing } from 'react-loader-spinner'
 import Select from 'react-select';
 
 
-function Rss_News_List() {
+function Feedly() {
 
     const { categorydata, accesscheck,topicsdata } = useContext(Simplecontext)
 
     let navigate = useNavigate()
     let { state } = useLocation()
-    const [rss_newses, setrss_newses] = useState([])
+    const [feedly_news, setfeedly_news] = useState([])
 
     const [modal, setmodal] = useState(false)
 
@@ -37,8 +37,7 @@ function Rss_News_List() {
   const [pushnotification, setpushnotification] = useState(false)
   const editor = useRef(null);
  const [isloading,setisloading]=useState(false)
- const [dataloading,setdataloading]=useState(false)
-
+  const[dataloading,setdataloading]=useState(false)
 
 
   const notify = (msg) => toast.success(msg, {
@@ -49,47 +48,43 @@ function Rss_News_List() {
   });
 
 
-  const  urlparam  = useParams()
-  let urlname = urlparam.url_name
-  // console.log("dataurl",urlname)
 
-    const Choose_Modal = (title,short_description,content,author,date) => {
-        // console.log("author",author)
-        // console.log("daracontent",content.props.dangerouslySetInnerHTML.__html)
-        setnewsitem({ ...newsitem, heading: title , short_description: short_description.props.dangerouslySetInnerHTML.__html,content:content.props.dangerouslySetInnerHTML.__html,author:author,createdAt:date })
+
+
+    const Choose_Modal = (title,short_description,author,source,tags,date) => {
+        // console.log("date",date)
+        setnewsitem({ ...newsitem, heading: title , content: short_description.props.dangerouslySetInnerHTML.__html ,author:author,source:source,createdAt:date})
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
+        settag(tags)
         setmodal(true)
     }
 
     useEffect(() => {
       setdataloading(true)
-      Get_Rss_News()
+      Get_feedly()
     }, [])
 
-    const Get_Rss_News = async () => {
-      console.log("category",state)
-      
-        if (state)
-        
-        {
-            const body = {
-                'url' : state?.rss_link ?? ''
-            }
+    const Get_feedly = async () => {
+      // console.log("category",state?.category??"")
+       
             try {
-                let response  = await Callaxios('post','rss/news',body)
-                setrss_newses(response.data)
-                console.log("response",response.data)
+                console.log("okpass")
+                const datalist ={
+                    "url": "https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/d42b7755-1769-455d-93f2-4e11bd4fc872"
+                }
+                let response  = await Callaxios("post",'news/feedly',datalist)
+                console.log("response",response.data.items)
+                if (response.status===200){
+                    setfeedly_news(response.data.items)
+                }
+                
+                
 
             } catch (error) {
                 
             }
            
-        }
-        else
-        {
-            return navigate('/news')
-        }
-        setdataloading(false)
+            setdataloading(false)
     }
 
     const postnewsfn = async (e) => {
@@ -172,7 +167,7 @@ function Rss_News_List() {
           if (data.status === 200) {
     
             setmodal(!modal)
-            Get_Rss_News()     
+            Get_feedly()     
             notify(msg)
             setisloading(false)
             // setallnull()
@@ -227,10 +222,10 @@ function Rss_News_List() {
    <div className="row">
 <div className="col-md-12 grid-margin stretch-card">
  <div className="card">
-   <div className="card-body">
+   <div className="card-body" >
      <div className='row ' >
        <div className='col-6' >
-     <h6 className="card-title text-start text-bold">{urlname}</h6>
+     <h6 className="card-title text-start text-bold">Feedly</h6>
      {/* <div className='text-start'><button  className='btn btn-success btn-sm' ><BiAddToQueue size={20}/>Add</button></div> */}
      </div>
      {/* <div className='col-6'>
@@ -245,14 +240,14 @@ function Rss_News_List() {
      </div> */}
      </div>
 
-     <div className="table-responsive pt-3" style={{height:"80vh"}}>
+     <div className="table-responsive pt-3" style={{height:"80vh"}} >
        <table className="table table-bordered">
          <thead>
            <tr>
              <th>#</th>
              <th>Title</th>
              <th>News Link</th>
-             <th>Description</th>
+             <th>Content</th>
              <th>Pub.Date</th>
              <th>Action</th>
              
@@ -261,11 +256,13 @@ function Rss_News_List() {
          </thead>
          <tbody>
             {
-                rss_newses.length === 0 ? 
+                feedly_news.length === 0 ? 
                 <tr>
-                    <td colSpan={6} > 
-                    <div style={dataloading ? {display:"none"}:{display:"block"}} >No Rss News Found</div>
-                    <ColorRing
+                    <td colSpan={6}>
+                      <div style={dataloading?{display:"none"}:{display:"block"}}>
+                      No Rss News Found
+                      </div>
+                      <ColorRing
                     visible={dataloading}
                     height="80"
                     width="80"
@@ -274,25 +271,22 @@ function Rss_News_List() {
                     wrapperClass="blocks-wrapper"
                     colors={[]}
                   /> 
-                    </td>
-                    
-                   
+                      </td>
                 </tr>
-                
                 :
                 <>
                 {
-                    rss_newses.map((value,key) => (
+                    feedly_news.map((value,key) => (
                         <tr key={key}>
                             <td>{ key+ 1}</td>
-                            <td style={{textAlign:'left',whiteSpace:"initial"}}><div style={{ wordWrap:"break-word" , width:"350px"}}>{ value.title._text ?? value.title._cdata }</div></td>
+                            <td style={{textAlign:'left',whiteSpace:"initial"}}><div style={{ wordWrap:"break-word" , width:"350px"}}>{ value.title}</div></td>
                             <td style={{textAlign:'left' }}>
-                                <a href={ value.link._text ?? value.link._cdata } target="_blank" >
+                                <a href={ value.canonicalUrl } target="_blank" >
                                 <button className='btn btn-primary btn-xs'>Details </button></a>
                                </td>
-                            <td style={{textAlign:'left'}}><div style={{ whiteSpace:"nowrap",width:"150px",maxHeight:"150px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} /> </td>
-                            <td>{ (Date(value.pubDate._text ?? value.pubDate._cdata).split('+')[0])  }</td>
-                            <td><button className='btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title._text ?? value.title._cdata ,<div dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} />,<div dangerouslySetInnerHTML={{ __html: value['content:encoded'] ? value['content:encoded']['_cdata'] : null   }} /> ,value['dc:creator']['_cdata'],handledate(value.pubDate._text ?? value.pubDate._cdata)  )} >Save</button></td>
+                            <td style={{textAlign:'left'}}><div style={{  whiteSpace:"nowrap",width:"150px",maxHeight:"100px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.summary?value.summary.content :  value.content?.content??"" } } /> </td>
+                            <td>{ Date(value.published).split('+')[0] }</td>
+                            <td><button className=' btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title ,<div dangerouslySetInnerHTML={{ __html: value.summary?value.summary.content :  value.content?.content??""  }} />,value?.author??"",value.origin?.title??"",value?.keywords,handledate(value.published))} >Save</button></td>
                         </tr>
                     ))
                 }
@@ -372,7 +366,7 @@ function Rss_News_List() {
                         {/* <MultiSelect style={{ maxWidth: "100%" }}
                           onChange={newcontent => { setcategory( newcontent ) }}
                           selected={{label:state?._name??"",value:state?._id??""}}
-                          defaultValue 
+                          defaultValue={null}
                           options={categorydata ?categorydata.map((catitm,kc)=>(
                             { label: catitm.name, value: catitm._id }
                           ))
@@ -394,7 +388,14 @@ function Rss_News_List() {
                             isMulti={true}
                             isRequired={true}
                           />
+                        {/* <select multiple  onChange={(e)=>handleChange(e.target.value)}>
+                          <option value="option1">Option 1</option>
+                          <option value="option2">Option 2</option>
+                          <option value="option3">Option 3</option>
+                          <option value="option4">Option 4</option>
+                        </select> */}
                       </div>
+
 
                     </div>
                     <div className="col-sm-4">
@@ -540,4 +541,4 @@ function Rss_News_List() {
   )
 }
 
-export default Rss_News_List
+export default Feedly

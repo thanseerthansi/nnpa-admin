@@ -3,6 +3,7 @@ import axios from 'axios'
 import { BaseURL } from './urlcall'
 
 export default async function Callaxios(action,url,datalist) {
+    console.log("axiosdata")
     try {
         let data
         if (action==="get"){
@@ -19,6 +20,7 @@ export default async function Callaxios(action,url,datalist) {
         } 
         return data
     } catch (error) {
-        console.log(error)
+        // console.log("callaxios error",error)
+        return error
     }
 }

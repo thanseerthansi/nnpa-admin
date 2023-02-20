@@ -2325,7 +2325,9 @@ progress {
 
 .table-responsive {
     overflow-x: auto;
+    height: 78%;
     -webkit-overflow-scrolling: touch
+    
 }
 
 @media (max-width:575.98px) {
@@ -5300,9 +5302,11 @@ div.tox .wizard>.actions .btn-group-vertical>a~.tox-button {
 }
 
 .card-body {
+    height: 90vh;
     flex: 1 1 auto;
     padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
     color: var(--bs-card-color)
+
 }
 
 .card-title {
@@ -23174,9 +23178,9 @@ code {
     border-radius: 4px
 }
 
-.grid-margin {
+/* .grid-margin {
     margin-bottom: 1.5rem
-}
+} */
 
 @media (min-width:576px) {
     .grid-margin-sm-0 {
@@ -23685,7 +23689,7 @@ div.tox .buy-now-wrapper .tox-button svg {
 }
 
 .main-wrapper .page-wrapper {
-    min-height: 100vh;
+    min-height: 87vh;
     background: #f9fafb;
     width: calc(100% - 240px);
     margin-left: 240px;
