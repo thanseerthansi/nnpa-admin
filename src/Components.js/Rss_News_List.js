@@ -67,7 +67,7 @@ function Rss_News_List() {
     }, [])
 
     const Get_Rss_News = async () => {
-      console.log("category",state.category.name)
+      // console.log("category",state.category.name)
       
         if (state)
         
@@ -78,7 +78,7 @@ function Rss_News_List() {
             try {
                 let response  = await Callaxios('post','rss/news',body)
                 setrss_newses(response.data)
-                console.log("response",response.data)
+                // console.log("response",response.data)
 
             } catch (error) {
                 
@@ -180,10 +180,12 @@ function Rss_News_List() {
     
           }else{
             setisloading(false)
+            notifyerror("Something went wrong")
           }
         } catch (error) {
           console.log(error)
           setisloading(false)
+          notifyerror("Something went wrong")
         }
       }
 
@@ -192,24 +194,25 @@ function Rss_News_List() {
     const slidercheckfn=()=>{
         // console.log("slider",isslider)
        if (newsitem.media_type){
-        if (isslider===false || isslider ==="false"){
-          if(newsitem.media_type==="image"){
+        // if (isslider===false || isslider ==="false"){
+        //   if(newsitem.media_type==="image"){
             
-            if( sliderdata.image_slider_count<10 ){
-              setisslider(true)
-            }else{
-              notifyerror("only 10 image sliders are allowed")
-            }
-          }else{
-            if( sliderdata.vedio_slider_count<10 ){
-              setisslider(true)
-            }else{
-              notifyerror("only 10 video sliders are allowed")
-            }
-          } 
-        }else{
-          setisslider(!isslider)
-        }
+        //     if( sliderdata.image_slider_count<10 ){
+        //       setisslider(true)
+        //     }else{
+        //       notifyerror("only 10 image sliders are allowed")
+        //     }
+        //   }else{
+        //     if( sliderdata.vedio_slider_count<10 ){
+        //       setisslider(true)
+        //     }else{
+        //       notifyerror("only 10 video sliders are allowed")
+        //     }
+        //   } 
+        // }else{
+        //   setisslider(!isslider)
+        // }
+        setisslider(!isslider)
        }else{
         notifyerror("Need to Select Media Type")
        }

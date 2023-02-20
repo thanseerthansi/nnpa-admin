@@ -239,25 +239,27 @@ export default function News() {
   // );
   const slidercheckfn=()=>{
     // console.log("slider",isslider)
+    
    if (newsitem.media_type){
-    if (isslider===false || isslider ==="false"){
-      if(newsitem.media_type==="image"){
+    // if (isslider===false || isslider ==="false"){
+    //   if(newsitem.media_type==="image"){
         
-        if( sliderdata.image_slider_count<10 ){
-          setisslider(true)
-        }else{
-          notifyerror("only 10 image sliders are allowed")
-        }
-      }else{
-        if( sliderdata.vedio_slider_count<10 ){
-          setisslider(true)
-        }else{
-          notifyerror("only 10 video sliders are allowed")
-        }
-      } 
-    }else{
-      setisslider(!isslider)
-    }
+    //     if( sliderdata.image_slider_count<10 ){
+    //       setisslider(true)
+    //     }else{
+    //       notifyerror("only 10 image sliders are allowed")
+    //     }
+    //   }else{
+    //     if( sliderdata.vedio_slider_count<10 ){
+    //       setisslider(true)
+    //     }else{
+    //       notifyerror("only 10 video sliders are allowed")
+    //     }
+    //   } 
+    // }else{
+    //   setisslider(!isslider)
+    // }
+    setisslider(!isslider)
    }else{
     notifyerror("Need to Select Media Type")
    }
@@ -285,7 +287,7 @@ export default function News() {
       },
     });
   };
- 
+  // console.log("datalist",newsitem?newsitem.topics:"")
   return (
     <div className='page-wrapper px-3 mt-5'>
       <ToastContainer />
@@ -540,7 +542,7 @@ export default function News() {
       </div> */}
                     {/* Col */}
                   </div>{/* Row */}
-                  <div className="row" style={newsitem._id ?{"display":'none'}:{}} >
+                  <div className="row"  >
                     <div className="col-sm-4 " >
                       <div className="mb-3">
                         <label htmlFor="exampleFormControlSelect2"  className="form-label"><b>Topics </b></label><br />
@@ -560,7 +562,7 @@ export default function News() {
                               { label: topicitm.name, value: topicitm._id }
                             )):null}
                             value={topic}
-                            // defaultValue={topicsdata ?topicsdata.filter(t=>t.label.includes()).map((topicitm,kt)=>(
+                            // defaultValue={topicsdata ?topicsdata.filter(t=>newsitem?newsitem.topics._id:"".includes(t._id)).map((topicitm,kt)=>(
                             //   { label: topicitm.name, value: topicitm._id }
                             // )):null}
                             closeMenuOnSelect={false}
@@ -672,7 +674,7 @@ export default function News() {
                               <img className='rounded  image-size' src={BaseURL + newsitem.thumbnail} alt='img' height="auto" width="auto" />
                               : null}
                           </div>}
-                        <input   onChange={(e) => handleCompressedUpload(e)} style={newsitem._id ?{"display":'none'}: { color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
+                        <input   onChange={(e) => handleCompressedUpload(e)} style={{ color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
                       </div>
                     </div>{/* Col */}
                     <div className="col-sm-6" style={newsitem._id ? {}: {"display":'none'}}>
