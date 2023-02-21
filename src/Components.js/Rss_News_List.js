@@ -29,7 +29,7 @@ function Rss_News_List() {
 
     const [newsitem, setnewsitem] = useState("")
     const [topic,settopic]=useState()
-    const [category,setcategory]=useState()
+    const [category,setcategory]=useState([])
      const [tag,settag]=useState()
   const [image, setimage] = useState('')
   const [isslider, setisslider] = useState(false)
@@ -59,6 +59,13 @@ function Rss_News_List() {
         setnewsitem({ ...newsitem, heading: title , short_description: short_description.props.dangerouslySetInnerHTML.__html,content:content.props.dangerouslySetInnerHTML.__html,author:author,createdAt:date })
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
         setmodal(true)
+        const list_item=[]
+        if (state.category){
+          // console.log("ok",state.category )
+          list_item.push( {label:state.category.name, value: state.category._id} ,)
+          setcategory(()=>[...list_item])
+          // console.log("listitm",list_item)
+        }    
     }
 
     useEffect(() => {
@@ -94,7 +101,7 @@ function Rss_News_List() {
 
     const postnewsfn = async (e) => {
         // console.log("THE CONTENT")
-        // console.log(newsitem.content)
+        // console.log("newsitem",newsitem)
         e.preventDefault();
         setisloading(true)
         
@@ -111,7 +118,7 @@ function Rss_News_List() {
           });
           datalist.category = catlist
         }else{
-          delete datalist.category;
+          notifyerror("Category not found")
         }
         if (topic) {
           let topiclist=[] 
@@ -120,7 +127,7 @@ function Rss_News_List() {
           });
           datalist.topics = topiclist
         }else{
-          delete datalist.topics;
+          notifyerror("Topic not found")
         }
         datalist.is_slider = isslider
         datalist.is_pushnotification = pushnotification
@@ -147,6 +154,8 @@ function Rss_News_List() {
         form_data.append("topics",JSON.stringify(datalist.topics))
         if (image) {
           form_data.append('media', image)
+        }else{
+          notifyerror("Image not found")
         }
     
         if (datalist._id) {
@@ -168,7 +177,7 @@ function Rss_News_List() {
         //     console.log("formdata",pair[0]+ ', ' + pair[1]);
         // }
           let data = await Callaxios(action, url, form_data)
-          // console.log("data", data)
+          console.log("data", data)
           if (data.status === 200) {
     
             setmodal(!modal)
@@ -225,6 +234,15 @@ function Rss_News_List() {
         return isoString
       }
       // console.log("caegotry",category)
+      const setallnull = () => {
+        setnewsitem('')
+        setisslider(false)
+        setpushnotification(false)
+        setimage('')
+        setcategory('')
+        settopic('')
+        settag('')
+      }
   return (
     <div className='page-wrapper px-3 mt-5'>
     <ToastContainer/>
@@ -320,7 +338,7 @@ function Rss_News_List() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title h4" id="myExtraLargeModalLabel">News</h5>
-              <button onClick={() => setmodal(!modal)} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
+              <button onClick={() => setmodal(!modal)&setallnull()} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
               </button>
             </div>
             <div className="modal-body text-start">
@@ -389,7 +407,7 @@ function Rss_News_List() {
                             ))
                              :null }
                             value={category}
-                            defaultValue={state.category ? { label: state.category.name, value: state.category._id }:null}
+                            // defaultValue={state.category ? { label: state.category.name, value: state.category._id }:null}
                             
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
@@ -514,7 +532,7 @@ function Rss_News_List() {
                   </div>
                  
                   <div className='text-end '>
-                    <button type="button" onClick={() => setmodal(!modal)} className="btn btn-secondary " style={{ marginRight: "5px" }} data-bs-dismiss="modal">Close</button>
+                    <button type="button" onClick={() => setmodal(!modal)&setallnull()} className="btn btn-secondary " style={{ marginRight: "5px" }} data-bs-dismiss="modal">Close</button>
                     <button type="submit" className="btn btn-primary ">Submit</button>
                   </div>
                   <div  className='text-end ' >

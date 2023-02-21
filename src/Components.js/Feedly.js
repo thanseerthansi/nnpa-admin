@@ -55,8 +55,9 @@ function Feedly() {
         // console.log("date",date)
         setnewsitem({ ...newsitem, heading: title , content: short_description.props.dangerouslySetInnerHTML.__html ,author:author,source:source,createdAt:date})
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
-        settag(tags)
+        // settag(tags)
         setmodal(true)
+        
     }
 
     useEffect(() => {
@@ -88,101 +89,106 @@ function Feedly() {
     }
 
     const postnewsfn = async (e) => {
-        // console.log("THE CONTENT")
-        // console.log(newsitem.content)
-        e.preventDefault();
-        setisloading(true)
+      // console.log("THE CONTENT")
+      // console.log("newsitem",newsitem)
+      e.preventDefault();
+      setisloading(true)
+      
+      let action
+      let url
+      let msg
+      let form_data = new FormData();
+      let datalist = Object.assign({}, newsitem); 
+      
+      if (category) {
+        let catlist=[] 
+        category.map((item) => {
+          catlist.push(item.value);
+        });
+        datalist.category = catlist
+      }else{
+        notifyerror("Category not found")
+        return
+      }
+      if (topic) {
+        let topiclist=[] 
+        topic.map((item) => {
+          topiclist.push(item.value);
+        });
+        datalist.topics = topiclist
+      }else{
+        notifyerror("Topic not found")
+        return
+      }
+      datalist.is_slider = isslider
+      datalist.is_pushnotification = pushnotification
+        // console.log("tagsbefore",tag)
+      if (Array.isArray(tag) !== true){
+  
+        // console.log("tagvalue",tag)
+        // console.log("tag",Array.isArray(tag))
+  
+        let taglist =[]
+        tag.split(',').map((tagitm)=>{
+            taglist.push(tagitm)
+        })
+        datalist.tag = taglist
+      }
+      
+      for (const [key, value] of Object.entries(datalist)) {
+        if(key !== "category" && key !== "tag" && key !== "topics"){
+          form_data.append(`${key}`, `${value}`)
+        }
+      }
+      form_data.append("category",JSON.stringify(datalist.category))
+      form_data.append("tag",JSON.stringify(datalist.tag))
+      form_data.append("topics",JSON.stringify(datalist.topics))
+      if (image) {
+        form_data.append('media', image)
+      }else{
+        notifyerror("Image not found")
+        return 
+      }
+  
+      if (datalist._id) {
+        action = "put"
+        url=`news/${datalist._id}`
+        form_data = datalist
+        delete datalist.topics
+        delete datalist.category
+        delete datalist.image
+        // console.log("formdata",form_data)
+        msg =" News updated Successfully"
+      } else {
+        action = "post"
+        url=`news/`
+        msg ="News added Successfully"
+      }
+      try {
+      //   for (var pair of form_data.entries()) {
+      //     console.log("formdata",pair[0]+ ', ' + pair[1]);
+      // }
+        let data = await Callaxios(action, url, form_data)
+        // console.log("data", data)
+        if (data.status === 200) {
+  
+          setmodal(!modal)
+          Get_feedly()     
+          notify(msg)
+          setisloading(false)
+          setallnull()
         
-        let action
-        let url
-        let msg
-        let form_data = new FormData();
-        let datalist = Object.assign({}, newsitem); 
-        
-        if (category) {
-          let catlist=[] 
-          category.map((item) => {
-            catlist.push(item.value);
-          });
-          datalist.category = catlist
+  
         }else{
-          delete datalist.category;
-        }
-        if (topic) {
-          let topiclist=[] 
-          topic.map((item) => {
-            topiclist.push(item.value);
-          });
-          datalist.topics = topiclist
-        }else{
-          delete datalist.topics;
-        }
-        datalist.is_slider = isslider
-        datalist.is_pushnotification = pushnotification
-        
-        if (Array.isArray(tag) !== true){
-    
-          // console.log("tagvalue",tag)
-          // console.log("tag",Array.isArray(tag))
-    
-          let taglist =[]
-          tag.split(',').map((tagitm)=>{
-              taglist.push(tagitm)
-          })
-          datalist.tag = taglist
-        }
-        
-        for (const [key, value] of Object.entries(datalist)) {
-          if(key !== "category" && key !== "tag" && key !== "topics"){
-            form_data.append(`${key}`, `${value}`)
-          }
-        }
-        form_data.append("category",JSON.stringify(datalist.category))
-        form_data.append("tag",JSON.stringify(datalist.tag))
-        form_data.append("topics",JSON.stringify(datalist.topics))
-        if (image) {
-          form_data.append('media', image)
-        }
-    
-        if (datalist._id) {
-          action = "put"
-          url=`news/${datalist._id}`
-          form_data = datalist
-          delete datalist.topics
-          delete datalist.category
-          delete datalist.image
-          // console.log("formdata",form_data)
-          msg =" News updated Successfully"
-        } else {
-          action = "post"
-          url=`news/`
-          msg ="News added Successfully"
-        }
-        try {
-        //   for (var pair of form_data.entries()) {
-        //     console.log("formdata",pair[0]+ ', ' + pair[1]);
-        // }
-          let data = await Callaxios(action, url, form_data)
-          // console.log("data", data)
-          if (data.status === 200) {
-    
-            setmodal(!modal)
-            Get_feedly()     
-            notify(msg)
-            setisloading(false)
-            // setallnull()
-          
-    
-          }else{
-            setisloading(false)
-            notifyerror("Something went wrong")
-          }
-        } catch (error) {
-          console.log(error)
           setisloading(false)
           notifyerror("Something went wrong")
         }
+      } catch (error) {
+        console.log(error)
+        setisloading(false)
+        notifyerror("Something went wrong")
       }
+    }
 
 
 
@@ -218,6 +224,15 @@ function Feedly() {
         const isoString = date.toISOString();
         // console.log("date,",isoString)
         return isoString
+      }
+      const setallnull = () => {
+        setnewsitem('')
+        setisslider(false)
+        setpushnotification(false)
+        setimage('')
+        setcategory([])
+        settopic('')
+        settag('')
       }
   return (
     <div className='page-wrapper px-3 mt-5'>
