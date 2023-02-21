@@ -141,7 +141,11 @@ export default function Category() {
                   </ul>
                 </td>
               </tr>
-              )):null}
+              )):<tr>
+              <td colSpan={3} > 
+              <div >No  category Found</div>
+              </td>
+              </tr>}
               
              
             </tbody>

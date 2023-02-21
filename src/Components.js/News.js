@@ -357,6 +357,7 @@ export default function News() {
                     </tr>
                   </thead>
                   <tbody>
+                 
                     {newsdata.length ? newsdata.map((itm, k) => (
                       <tr key={k}>
                         {/* <td>{k + 1}</td> */}
@@ -417,7 +418,11 @@ export default function News() {
                           </ul>
                         </td>
                       </tr>
-                    )) : null}
+                    )) : <tr>
+                    <td colSpan={10} > 
+                    <div >No  News Found</div>
+                    </td>
+                    </tr>}
 
 
                   </tbody>
