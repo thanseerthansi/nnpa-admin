@@ -41,7 +41,7 @@ export default function Rsfeed() {
       pageno = 1  
     }
     let data = await Callaxios("get","rss/",{page:pageno,limit:10,query:searchvalue})
-    console.log("rssdata",data.data.data)
+    // console.log("rssdata",data.data.data)
     if (data.status === 200){
       setrssdata(data.data.data)
       setpage(pageno)

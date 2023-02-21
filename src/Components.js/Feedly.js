@@ -68,12 +68,12 @@ function Feedly() {
       // console.log("category",state?.category??"")
        
             try {
-                console.log("okpass")
+                // console.log("okpass")
                 const datalist ={
                     "url": "https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/d42b7755-1769-455d-93f2-4e11bd4fc872"
                 }
                 let response  = await Callaxios("post",'news/feedly',datalist)
-                console.log("response",response.data.items)
+                // console.log("response",response.data.items)
                 if (response.status===200){
                     setfeedly_news(response.data.items)
                 }

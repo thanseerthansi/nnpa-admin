@@ -39,8 +39,9 @@ export default function News() {
   const [topic,settopic]=useState()
   const [tag,settag]=useState()
   const [isloading,setisloading]=useState(false)
-
-  console.log("isslider",isslider)
+  // const [item_topics,setitem_topics]=useState([])
+  // const [item_category,setitem_category]=useState([])
+  // console.log("isslider",isslider)
   // console.log("sliderdata",sliderdata)
   // console.log("sliderdata.image_slider_count",sliderdata.image_slider_count ? sliderdata.image_slider_count :"null")
   
@@ -175,7 +176,7 @@ export default function News() {
     //     console.log("formdata",pair[0]+ ', ' + pair[1]);
     // }
       let data = await Callaxios(action, url, form_data)
-      console.log("data", data)
+      // console.log("data", data)
       if (data.status === 200) {
 
         setmodal(!modal)
@@ -241,25 +242,26 @@ export default function News() {
     // console.log("slider",isslider)
     
    if (newsitem.media_type){
-    // if (isslider===false || isslider ==="false"){
-    //   if(newsitem.media_type==="image"){
+    if (isslider===false || isslider ==="false"){
+      // if(newsitem.media_type==="image"){
         
-    //     if( sliderdata.image_slider_count<10 ){
-    //       setisslider(true)
-    //     }else{
-    //       notifyerror("only 10 image sliders are allowed")
-    //     }
-    //   }else{
-    //     if( sliderdata.vedio_slider_count<10 ){
-    //       setisslider(true)
-    //     }else{
-    //       notifyerror("only 10 video sliders are allowed")
-    //     }
-    //   } 
-    // }else{
-    //   setisslider(!isslider)
-    // }
-    setisslider(!isslider)
+      //   if( sliderdata.image_slider_count<10 ){
+      //     setisslider(true)
+      //   }else{
+      //     notifyerror("only 10 image sliders are allowed")
+      //   }
+      // }else{
+      //   if( sliderdata.vedio_slider_count<10 ){
+      //     setisslider(true)
+      //   }else{
+      //     notifyerror("only 10 video sliders are allowed")
+      //   }
+      // } 
+      setisslider(true)
+    }else{
+      setisslider(!isslider)
+    }
+    
    }else{
     notifyerror("Need to Select Media Type")
    }
@@ -274,6 +276,8 @@ export default function News() {
     setisslider(itm.is_slider.toString())
     setpushnotification(itm.is_pushnotification.toString())
     settag(itm.tag)
+    sortarr(itm.topics)
+    sortcategory(itm.category)
   }
   const handleCompressedUpload = (e) => {
     const image = e.target.files[0];
@@ -288,6 +292,26 @@ export default function News() {
     });
   };
   // console.log("datalist",newsitem?newsitem.topics:"")
+  const sortarr=(topic_list)=>{
+    // console.log("topic list",topic_list)
+    const list_item=[]
+    topic_list.map((topicitm,kt)=>(    
+        list_item.push( {label:topicitm.name, value: topicitm._id} ,)
+    ))
+    // console.log("listvalue",list_item)
+   settopic(()=>[...list_item])
+  }
+  const sortcategory=(category_list)=>{
+    // console.log("topic list",category_list)
+    const list_item=[]
+    category_list.map((catitm,kt)=>(    
+        list_item.push( {label:catitm.name, value: catitm._id} ,)
+    ))
+    // console.log("listvalue",list_item)
+   setcategory(()=>[...list_item])
+  }
+
+  // console.log("topics",topic)
   return (
     <div className='page-wrapper px-3 mt-5'>
       <ToastContainer />
@@ -562,9 +586,9 @@ export default function News() {
                               { label: topicitm.name, value: topicitm._id }
                             )):null}
                             value={topic}
-                            // defaultValue={topicsdata ?topicsdata.filter(t=>newsitem?newsitem.topics._id:"".includes(t._id)).map((topicitm,kt)=>(
-                            //   { label: topicitm.name, value: topicitm._id }
-                            // )):null}
+                            // defaultValue={item_topics.map((itm)=>(
+                            //   {itm}
+                            // ))}
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
                             onChange={newcontent => { settopic(newcontent ) }}
@@ -605,9 +629,10 @@ export default function News() {
                             ))
                              :null }
                             value={category}
-                            // defaultValue={topicsdata ?topicsdata.filter(t=>t.label.includes()).map((topicitm,kt)=>(
-                            //   { label: topicitm.name, value: topicitm._id }
-                            // )):null}
+                            // defaultValue={[
+                            //       { label:"Black News", value: "63edcf8b5d71baf80f781de3" }
+                            //      { label:"Education", value: "63dc14224a8f7e1c53f3fef9" }
+                            //     ]}
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
                             onChange={newcontent => { setcategory( newcontent ) }}

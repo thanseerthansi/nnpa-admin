@@ -22,7 +22,7 @@ export default function Login() {
       e.preventDefault();
       try {
         let data = await Callaxios ("post","user/login/",{"username":username,"password":password})
-        console.log("data",data)
+        // console.log("data",data)
         if(data.status===200){
           window.localStorage.setItem("login-access","true")
           window.location='/news'

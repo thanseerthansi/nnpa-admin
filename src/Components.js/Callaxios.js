@@ -3,7 +3,7 @@ import axios from 'axios'
 import { BaseURL } from './urlcall'
 
 export default async function Callaxios(action,url,datalist) {
-    console.log("axiosdata")
+    // console.log("axiosdata")
     try {
         let data
         if (action==="get"){

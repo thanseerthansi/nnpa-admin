@@ -389,7 +389,7 @@ function Rss_News_List() {
                             ))
                              :null }
                             value={category}
-                            defaultValue={{ label: state.category.name, value: state.category._id }}
+                            defaultValue={state.category ? { label: state.category.name, value: state.category._id }:null}
                             
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
