@@ -314,7 +314,7 @@ function Rss_News_List() {
                                </td>
                             <td style={{textAlign:'left'}}><div style={{ whiteSpace:"nowrap",width:"150px",maxHeight:"150px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} /> </td>
                             <td>{ (Date(value.pubDate._text ?? value.pubDate._cdata).split('+')[0])  }</td>
-                            <td><button className='btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title._text ?? value.title._cdata ,<div dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} />,<div dangerouslySetInnerHTML={{ __html: value['content:encoded'] ? value['content:encoded']['_cdata'] : null   }} /> ,value['dc:creator']?['_cdata']:"",handledate(value.pubDate._text ?? value.pubDate._cdata)  )} >Save</button></td>
+                            <td><button className='btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title._text ?? value.title._cdata ,<div dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} />,<div dangerouslySetInnerHTML={{ __html: value['content:encoded'] ? value['content:encoded']['_cdata'] : null   }} /> ,value['dc:creator']?value['dc:creator']['_cdata']:"",handledate(value.pubDate._text ?? value.pubDate._cdata)  )} >Save</button></td>
                         </tr>
                     ))
                 }
