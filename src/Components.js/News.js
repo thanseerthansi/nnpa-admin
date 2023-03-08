@@ -119,9 +119,11 @@ export default function News() {
       });
       datalist.category = catlist
     }else{
+     
       delete datalist.category;
     }
     if (topic) {
+      
       let topiclist=[] 
       topic.map((item) => {
         topiclist.push(item.value);
@@ -132,6 +134,7 @@ export default function News() {
     }
     datalist.is_slider = isslider
     datalist.is_pushnotification = pushnotification
+   
     
     if (Array.isArray(tag) !== true){
 
@@ -161,8 +164,8 @@ export default function News() {
       action = "put"
       url=`news/${datalist._id}`
       form_data = datalist
-      delete datalist.topics
-      delete datalist.category
+      // delete datalist.topics
+      // delete datalist.category
       delete datalist.image
       // console.log("formdata",form_data)
       msg =" News updated Successfully"
@@ -172,9 +175,11 @@ export default function News() {
       msg ="News added Successfully"
     }
     try {
-    //   for (var pair of form_data.entries()) {
-    //     console.log("formdata",pair[0]+ ', ' + pair[1]);
+    //   for (var key in form_data) {
+    //     console.log(key, form_data[key]);
+        
     // }
+    
       let data = await Callaxios(action, url, form_data)
       // console.log("data", data)
       if (data.status === 200) {
