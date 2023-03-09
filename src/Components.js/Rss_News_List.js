@@ -55,8 +55,17 @@ function Rss_News_List() {
 
     const Choose_Modal = (title,short_description,content,author,date) => {
         // console.log("author",author)
-        // console.log("daracontent",content.props.dangerouslySetInnerHTML.__html)
-        setnewsitem({ ...newsitem, heading: title , short_description: short_description.props.dangerouslySetInnerHTML.__html,content:content.props.dangerouslySetInnerHTML.__html,author:author,createdAt:date })
+        // console.log("short",short_description.props.dangerouslySetInnerHTML.__html)
+        let descriptiontext
+        let descriptiondata = short_description.props.dangerouslySetInnerHTML.__html
+        if (descriptiondata.shouldRenderAsText) {
+          descriptiontext = descriptiondata
+        } else {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(descriptiondata, 'text/html');
+          descriptiontext = doc.body.textContent;
+        }
+        setnewsitem({ ...newsitem, heading: title , short_description: descriptiontext,content:content.props.dangerouslySetInnerHTML.__html,author:author,createdAt:date,source:urlname })
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
         setmodal(true)
         const list_item=[]
@@ -65,7 +74,8 @@ function Rss_News_List() {
           list_item.push( {label:state.category.name, value: state.category._id} ,)
           setcategory(()=>[...list_item])
           // console.log("listitm",list_item)
-        }    
+        } 
+           
     }
 
     useEffect(() => {
@@ -104,8 +114,8 @@ function Rss_News_List() {
         // console.log("newsitem",newsitem)
         e.preventDefault();
         setisloading(true)
-        
-        let action
+        try {
+          let action
         let url
         let msg
         let form_data = new FormData();
@@ -119,6 +129,8 @@ function Rss_News_List() {
           datalist.category = catlist
         }else{
           notifyerror("Category not found")
+          setisloading(false)
+          return
         }
         if (topic) {
           let topiclist=[] 
@@ -128,22 +140,25 @@ function Rss_News_List() {
           datalist.topics = topiclist
         }else{
           notifyerror("Topic not found")
+          setisloading(false)
+          return
         }
         datalist.is_slider = isslider
         datalist.is_pushnotification = pushnotification
-        
-        if (Array.isArray(tag) !== true){
-    
+        if (tag){
+        if (Array.isArray(tag) !== true){   
           // console.log("tagvalue",tag)
-          // console.log("tag",Array.isArray(tag))
-    
+          // console.log("tag",Array.isArray(tag))   
           let taglist =[]
           tag.split(',').map((tagitm)=>{
               taglist.push(tagitm)
           })
           datalist.tag = taglist
+        } }
+        console.log("content",datalist.content)
+        if (!datalist.content){
+          delete datalist.content
         }
-        
         for (const [key, value] of Object.entries(datalist)) {
           if(key !== "category" && key !== "tag" && key !== "topics"){
             form_data.append(`${key}`, `${value}`)
@@ -156,6 +171,8 @@ function Rss_News_List() {
           form_data.append('media', image)
         }else{
           notifyerror("Image not found")
+          setisloading(false)
+          return
         }
     
         if (datalist._id) {
@@ -196,6 +213,12 @@ function Rss_News_List() {
           setisloading(false)
           notifyerror("Something went wrong")
         }
+        } catch (error) {
+          console.log(error)
+          setisloading(false)
+          notifyerror("Something went wrong")
+        }
+        
       }
 
 
@@ -442,7 +465,7 @@ function Rss_News_List() {
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Author</b></label>
-                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, author: e.target.value })} value={newsitem.author ? newsitem.author : ''} className="form-control" placeholder="Enter author" />
+                        <input type="text"  onChange={(e) => setnewsitem({ ...newsitem, author: e.target.value })} value={newsitem.author ? newsitem.author : ''} className="form-control" placeholder="Enter author" />
                       </div>
                     </div>{/* Col */}
                   </div>{/* Row */}

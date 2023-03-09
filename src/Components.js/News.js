@@ -67,7 +67,7 @@ export default function News() {
     try {
       // console.log("pages",pages)
       let data = await Callaxios("get", "news/admin-news", { page: pages, limit: 10, query: searchvalue,category:'' })
-      // console.log("datanews", data)
+      console.log("datanews", data)
       if (data.status === 200) {
         setnewsdata(data.data.data.news)
         setnext(data.data.data.is_next)
@@ -105,104 +105,120 @@ export default function News() {
   const postnewsfn = async (e) => {
     e.preventDefault();
     setisloading(true)
-    
-    let action
-    let url
-    let msg
-    let form_data = new FormData();
-    let datalist = Object.assign({}, newsitem); 
-    
-    if (category) {
-      let catlist=[] 
-      category.map((item) => {
-        catlist.push(item.value);
-      });
-      datalist.category = catlist
-    }else{
-     
-      delete datalist.category;
-    }
-    if (topic) {
-      
-      let topiclist=[] 
-      topic.map((item) => {
-        topiclist.push(item.value);
-      });
-      datalist.topics = topiclist
-    }else{
-      delete datalist.topics;
-    }
-    datalist.is_slider = isslider
-    datalist.is_pushnotification = pushnotification
-   
-    
-    if (Array.isArray(tag) !== true){
-
-      // console.log("tagvalue",tag)
-      // console.log("tag",Array.isArray(tag))
-
-      let taglist =[]
-      tag.split(',').map((tagitm)=>{
-          taglist.push(tagitm)
-      })
-      datalist.tag = taglist
-    }
-    
-    for (const [key, value] of Object.entries(datalist)) {
-      if(key !== "category" && key !== "tag" && key !== "topics"){
-        form_data.append(`${key}`, `${value}`)
-      }
-    }
-    form_data.append("category",JSON.stringify(datalist.category))
-    form_data.append("tag",JSON.stringify(datalist.tag))
-    form_data.append("topics",JSON.stringify(datalist.topics))
-    if (image) {
-      form_data.append('media', image)
-    }
-
-    if (datalist._id) {
-      action = "put"
-      url=`news/${datalist._id}`
-      form_data = datalist
-      // delete datalist.topics
-      // delete datalist.category
-      delete datalist.image
-      // console.log("formdata",form_data)
-      msg =" News updated Successfully"
-    } else {
-      action = "post"
-      url=`news/`
-      msg ="News added Successfully"
-    }
     try {
-    //   for (var key in form_data) {
-    //     console.log(key, form_data[key]);
-        
-    // }
-    
-      let data = await Callaxios(action, url, form_data)
-      // console.log("data", data)
-      if (data.status === 200) {
-
-        setmodal(!modal)
-        getnews('',page)       
-        notify(msg)
-        setallnull()
-        setisloading(false)
-      
-
+      let action
+      let url
+      let msg
+      let form_data = new FormData();
+      let datalist = Object.assign({}, newsitem); 
+      console.log("category",category)
+      if (category) {
+        let catlist=[] 
+        category.map((item) => {
+          catlist.push(item.value);
+        });
+        console.log("categorylist",catlist)
+        datalist.category = catlist
       }else{
-        setisloading(false)
+       
+        delete datalist.category;
+      }
+      if (topic) {
         
+        let topiclist=[] 
+        topic.map((item) => {
+          topiclist.push(item.value);
+        });
+        datalist.topics = topiclist
+      }else{
+        delete datalist.topics;
+      }
+      datalist.is_slider = isslider
+      datalist.is_pushnotification = pushnotification
+     
+      if (tag){
+        if (Array.isArray(tag) !== true){
+  
+          // console.log("tagvalue",tag)
+          // console.log("tag",Array.isArray(tag))
+    
+          let taglist =[]
+          tag.split(',').map((tagitm)=>{
+              taglist.push(tagitm)
+          })
+          datalist.tag = taglist
+        }
+      }
+      
+      form_data.append("category",JSON.stringify(datalist.category))
+      // console.log("okcategory added")
+      form_data.append("tag",JSON.stringify(datalist.tag))
+      form_data.append("topics",JSON.stringify(datalist.topics))
+
+      for (const [key, value] of Object.entries(datalist)) {
+        console.log("data",key +":"+value)
+        if(key !== "category" && key !== "tag" && key !== "topics"){
+          console.log("datainpairkey",key +":"+value)
+          form_data.append(`${key}`, `${value}`)
+        }
+      }
+      
+      if (image) {
+        form_data.append('media', image)
+      }
+  
+      if (datalist._id) {
+        console.log("put")
+        action = "put"
+        url=`news/${datalist._id}`
+        form_data = datalist
+        
+      
+        // console.log("formdata",form_data)
+        msg =" News updated Successfully"
+      } else {
+        action = "post"
+        url=`news/`
+        msg ="News added Successfully"
+      }
+      try {
+        for (var key in form_data) {
+          console.log("dfgfdsgad",key, form_data[key]);
+          
+      }
+    //   for (var pair of form_data.entries()) {
+    //     console.log("dini",pair[0]+ ', ' + pair[1]); 
+    // }
+      
+        let data = await Callaxios(action, url, form_data)
+        console.log("data", data)
+        if (data.status === 200) {
+  
+          setmodal(!modal)
+          getnews('',page)       
+          notify(msg)
+          setallnull()
+          setisloading(false)
+        
+  
+        }else{
+          setisloading(false)
+          
+          notifyerror("Something went wrong")
+          
+        }
+      } catch (error) {
+        console.log("error",error)
+        setisloading(false)
         notifyerror("Something went wrong")
         
       }
     } catch (error) {
-      console.log("error",error)
+      console.log(error)
       setisloading(false)
       notifyerror("Something went wrong")
-      
     }
+   
   }
 
   const options = [
@@ -356,7 +372,7 @@ export default function News() {
                       <th>Content</th>
                       <th>Slider</th>
                       <th>tags</th>
-                      <th>description</th>
+                      {/* <th>description</th> */}
                       <th>created date</th>
                       <th>action</th>
                     </tr>
@@ -385,7 +401,7 @@ export default function News() {
                     
                     }
                     </td> */}
-                        <td ><img src={BaseURL + itm.thumbnail} onClick={() => itm.media_type === "video" ? setnewsitem(itm) & setnewsvideomodal(!newsvideomodal) : {}} style={itm.media_type === "video" ? { cursor: "pointer" } : {}} /></td>
+                        <td ><img src={itm.thumbnail.startsWith('https')||itm.thumbnail.startsWith('http')? itm.thumbnail:BaseURL+itm.thumbnail} onClick={() => itm.media_type === "video" ? setnewsitem(itm) & setnewsvideomodal(!newsvideomodal) : {}} style={itm.media_type === "video" ? { cursor: "pointer" } : {}} /></td>
                         <td>{itm.category.length ? itm.category.map((cat,kc)=>(
                           <ul key={kc}>
                             <li>{cat.name}</li>
@@ -408,7 +424,7 @@ export default function News() {
                           </ul>
                         ))}</td>
 
-                        <td className='table-linebreak' onClick={() => setnewsitem(itm)} data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg-dis">{itm.short_description} </td>
+                        {/* <td className='table-linebreak' onClick={() => setnewsitem(itm)} data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg-dis">{itm.short_description} </td> */}
 
                         <td>{itm.createdAt.split('T')[0]}</td>
                         <td>
@@ -712,17 +728,14 @@ export default function News() {
                         <input   onChange={(e) => handleCompressedUpload(e)} style={{ color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
                       </div>
                     </div>{/* Col */}
-                    <div className="col-sm-6" style={newsitem._id ? {}: {"display":'none'}}>
+                    <div className="col-sm-6" >
                       <div className="mb-3">
-                        <label className="form-label"><b>Media Type</b></label>
+                        <label className="form-label"><b>Thumbnail url</b></label>
 
-                        <select required onChange={(e) => setnewsitem({ ...newsitem, media_type: e.target.value })} value={newsitem.media_type ? newsitem.media_type : ''} className="form-select" id="exampleFormControlSelect1">
-                          <option hidden>Select Media Type</option>
-                          <option value={"image"}  >Image</option>
-                          <option value={"video"}  >Video</option>
-                        </select>
+                       
+                        <input  type="text" onChange={(e) => setnewsitem({ ...newsitem, thumbnail: e.target.value })} value={newsitem.thumbnail} className="form-control" placeholder="Enter thumbnail url" />
                       </div>
-                    </div>{/* Col */}
+                    </div>Col
                     </div>
                   <div className='row'>
                     <div className='col-sm-6'>

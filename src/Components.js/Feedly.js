@@ -47,12 +47,17 @@ function Feedly() {
     position: "top-right",
   });
 
-
-
-
-
     const Choose_Modal = (title,short_description,author,source,tags,date) => {
         // console.log("date",date)
+        // let descriptiontext
+        // let descriptiondata = short_description.props.dangerouslySetInnerHTML.__html
+        // if (descriptiondata.shouldRenderAsText) {
+        //   descriptiontext = descriptiondata
+        // } else {
+        //   const parser = new DOMParser();
+        //   const doc = parser.parseFromString(descriptiondata, 'text/html');
+        //   descriptiontext = doc.body.textContent;
+        // }
         setnewsitem({ ...newsitem, heading: title , content: short_description.props.dangerouslySetInnerHTML.__html ,author:author,source:source,createdAt:date})
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
         // settag(tags)
@@ -123,17 +128,23 @@ function Feedly() {
       datalist.is_slider = isslider
       datalist.is_pushnotification = pushnotification
         // console.log("tagsbefore",tag)
-      if (Array.isArray(tag) !== true){
+      if (tag){
+        if (Array.isArray(tag) !== true){
   
-        // console.log("tagvalue",tag)
-        // console.log("tag",Array.isArray(tag))
-  
-        let taglist =[]
-        tag.split(',').map((tagitm)=>{
-            taglist.push(tagitm)
-        })
-        datalist.tag = taglist
+          // console.log("tagvalue",tag)
+          // console.log("tag",Array.isArray(tag))
+    
+          let taglist =[]
+          tag.split(',').map((tagitm)=>{
+              taglist.push(tagitm)
+          })
+          datalist.tag = taglist
+        }
       }
+      if(!datalist.content){
+        delete datalist.content
+      }
+      
       
       for (const [key, value] of Object.entries(datalist)) {
         if(key !== "category" && key !== "tag" && key !== "topics"){
@@ -434,13 +445,13 @@ function Feedly() {
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Source</b></label>
-                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, source: e.target.value })} value={newsitem.source ? newsitem.source : ''} className="form-control" placeholder="Enter Source" />
+                        <input type="text"  onChange={(e) => setnewsitem({ ...newsitem, source: e.target.value })} value={newsitem.source ? newsitem.source : ''} className="form-control" placeholder="Enter Source" />
                       </div>
                     </div>
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Author</b></label>
-                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, author: e.target.value })} value={newsitem.author ? newsitem.author : ''} className="form-control" placeholder="Enter author" />
+                        <input type="text"  onChange={(e) => setnewsitem({ ...newsitem, author: e.target.value })} value={newsitem.author ? newsitem.author : ''} className="form-control" placeholder="Enter author" />
                       </div>
                     </div>{/* Col */}
                   </div>{/* Row */}
