@@ -111,114 +111,90 @@ export default function News() {
       let msg
       let form_data = new FormData();
       let datalist = Object.assign({}, newsitem); 
-      console.log("category",category)
-      if (category) {
-        let catlist=[] 
-        category.map((item) => {
-          catlist.push(item.value);
-        });
-        console.log("categorylist",catlist)
-        datalist.category = catlist
-      }else{
-       
-        delete datalist.category;
-      }
-      if (topic) {
-        
-        let topiclist=[] 
-        topic.map((item) => {
-          topiclist.push(item.value);
-        });
-        datalist.topics = topiclist
-      }else{
-        delete datalist.topics;
-      }
-      datalist.is_slider = isslider
-      datalist.is_pushnotification = pushnotification
-     
-      if (tag){
-        if (Array.isArray(tag) !== true){
-  
-          // console.log("tagvalue",tag)
-          // console.log("tag",Array.isArray(tag))
-    
-          let taglist =[]
-          tag.split(',').map((tagitm)=>{
-              taglist.push(tagitm)
-          })
-          datalist.tag = taglist
-        }
-      }
-      
-      form_data.append("category",JSON.stringify(datalist.category))
-      // console.log("okcategory added")
-      form_data.append("tag",JSON.stringify(datalist.tag))
-      form_data.append("topics",JSON.stringify(datalist.topics))
-
-      for (const [key, value] of Object.entries(datalist)) {
-        console.log("data",key +":"+value)
-        if(key !== "category" && key !== "tag" && key !== "topics"){
-          console.log("datainpairkey",key +":"+value)
-          form_data.append(`${key}`, `${value}`)
-        }
-      }
-      
-      if (image) {
-        form_data.append('media', image)
-      }
-  
+      // console.log("category",category)
       if (datalist._id) {
-        console.log("put")
+        // console.log("put")
         action = "put"
         url=`news/${datalist._id}`
-        form_data = datalist
-        
-      
-        // console.log("formdata",form_data)
+        delete datalist.category
+        delete datalist.topics
+        // delete datalist.tag
         msg =" News updated Successfully"
       } else {
         action = "post"
         url=`news/`
         msg ="News added Successfully"
       }
-      try {
-        for (var key in form_data) {
-          console.log("dfgfdsgad",key, form_data[key]);
-          
+      
+      if (category) {
+        let catlist=[] 
+        category.map((item) => {
+          catlist.push(item.value);
+        });
+        form_data.append("category",JSON.stringify(catlist))
+        // datalist.category = catlist
       }
+       
+      if (topic) {
+        let topiclist=[]
+        topic.map((item) => {
+          topiclist.push(item.value);
+        });
+        // datalist.topics = topiclist
+        form_data.append("topics",JSON.stringify(topiclist))
+      }
+      datalist.is_slider = isslider
+      datalist.is_pushnotification = pushnotification
+      // console.log("tag",tag)
+      if (tag){
+        let taglist =[]
+        if (Array.isArray(tag) !== true){         
+          tag.split(',').map((tagitm)=>{
+              taglist.push(tagitm)
+          })
+          // console.log("notarray",taglist)
+          form_data.append("tag",JSON.stringify(taglist))
+        }else{
+          // console.log("array")
+          form_data.append("tag",JSON.stringify(datalist.tag))
+        }
+      }
+      for (const [key, value] of Object.entries(datalist)) {
+        // console.log("data",key +":"+value)
+        if(key !== "category" && key !== "tag" && key !== "topics"){
+          // console.log("datainpairkey",key +":"+value)
+          form_data.append(`${key}`, `${value}`)
+        }
+      }      
+      if (image) {
+        form_data.append('media', image)
+      }
+      try {
     //   for (var pair of form_data.entries()) {
     //     console.log("dini",pair[0]+ ', ' + pair[1]); 
-    // }
-      
+    // }      
         let data = await Callaxios(action, url, form_data)
-        console.log("data", data)
-        if (data.status === 200) {
-  
+        // console.log("data", data)
+        if (data.status === 200) { 
           setmodal(!modal)
           getnews('',page)       
           notify(msg)
           setallnull()
           setisloading(false)
-        
-  
         }else{
-          setisloading(false)
-          
-          notifyerror("Something went wrong")
-          
+          setisloading(false)         
+          notifyerror("Something went wrong")         
         }
       } catch (error) {
         console.log("error",error)
         setisloading(false)
-        notifyerror("Something went wrong")
-        
+        notifyerror("Something went wrong")       
       }
     } catch (error) {
       console.log(error)
       setisloading(false)
       notifyerror("Something went wrong")
-    }
-   
+    }  
   }
 
   const options = [
