@@ -2155,6 +2155,7 @@ progress {
     box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg)
 }
 
+
 .table>tbody {
     vertical-align: inherit
 }
@@ -26072,8 +26073,13 @@ div.tox .btn-icon-text.btn-lg.tox-button .btn-icon-prepend {
     white-space: nowrap;
     vertical-align: middle;
 }
+/* .tablereact td,
+.tablereact th {
+    white-space: nowrap;
+    vertical-align: middle;
+} */
 
-.table td img {
+.tablereact ul img {
     width: 60px;
     height: 75px;
     border-radius: 5px
@@ -27420,4 +27426,32 @@ html{
 }
 .edit-btn{
     width: 73px;
+}
+.data-table-extensions > .data-table-extensions-filter {
+    float: right !important;
+    border: 1px solid #ede6e6;
+    margin-top: -50px;
+    display: block;
+    width:50%;
+    padding: 0.469rem 0.8rem;
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #000;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #e9ecef;
+    appearance: none;
+    border-radius: 0.25rem;
+}
+
+
+.data-table-extensions > .data-table-extensions-filter > .filter-text {
+    border: 0;
+    border-bottom: 1px solid #f5f5f5;
+    /* outline: none; */
+    padding: 4px;
+    margin-left: 4px;
+    background-color: transparent;
+    width: 90%;
 }

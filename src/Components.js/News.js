@@ -19,6 +19,10 @@ import ReactPlayer from 'react-player'
 // import Scripts from './Scripts';
 import Select from 'react-select';
 import Compressor from 'compressorjs';
+import DataTable from 'react-data-table-component';
+import DataTableExtensions from 'react-data-table-component-extensions';
+import "react-data-table-component-extensions/dist/index.css";
+
 export default function News() {
   const { categorydata, accesscheck,topicsdata } = useContext(Simplecontext)
   const [newsdata, setnewsdata] = useState([]);
@@ -28,7 +32,7 @@ export default function News() {
   const [modal, setmodal] = useState(false)
   const [isslider, setisslider] = useState(false)
   const [pushnotification, setpushnotification] = useState(false)
-  // const [content, setContent] = useState('');
+  const [filteredvalue, setfilteredvalue] = useState('');
   const [newsvideomodal, setnewsvideomodal] = useState(false)
   const [searchvalue, setsearchvalue] = useState('')
   const [image, setimage] = useState('')
@@ -50,6 +54,16 @@ export default function News() {
     accesscheck()
     getnews()
   }, [])
+  useEffect(()=>{
+    console.log("dataserach")
+    // const result = Object.values(newsdata).some((value) =>{
+    //   return  value.toLowerCase().includes(searchvalue.toLowerCase())
+    // })
+    const result =newsdata.filter((news)=>{
+      return news.heading.toLowerCase().match(searchvalue.toLowerCase()) 
+    });
+    setfilteredvalue(result)
+  },[searchvalue])
 
   const notify = (msg) => toast.success(msg, {
     position: "top-right",
@@ -66,10 +80,12 @@ export default function News() {
     }
     try {
       // console.log("pages",pages)
-      let data = await Callaxios("get", "news/admin-news", { page: pages, limit: 10, query: searchvalue,category:'' })
+      let data = await Callaxios("get", "news/admin-news", { page: pages, limit: 20,category:'' })
       console.log("datanews", data)
       if (data.status === 200) {
         setnewsdata(data.data.data.news)
+        setfilteredvalue(data.data.data.news)
+
         setnext(data.data.data.is_next)
         if (pages) {
           setpage(pages)
@@ -307,7 +323,97 @@ export default function News() {
     // console.log("listvalue",list_item)
    setcategory(()=>[...list_item])
   }
+  const columns =[
+    {
+      name:"HEADING",
+      selector : (itm)=>itm.heading,
+    },
+    {
+      name:"THUMBNAIL",
+      selector : (itm)=><ul className='p-1'><img  src={itm.thumbnail.startsWith('https')||itm.thumbnail.startsWith('http')? itm.thumbnail:BaseURL+itm.thumbnail} onClick={() => itm.media_type === "video" ? setnewsitem(itm) & setnewsvideomodal(!newsvideomodal) : {}} style={itm.media_type === "video" ? { cursor: "pointer" } : {}} /></ul>,
+    },
+    {
+      name:"CATEGORY",
+      selector : (itm)=>itm.category.length ? itm.category.map((cat,kc)=>(
+        <ul key={kc}>
+          <li>{cat.name}</li>
+        </ul>
+      )): null,
+    },
+    {
+      name:"TOPICS",
+      selector : (itm)=>itm.topics.map((topicitm,key)=>(
+        <ul key={key}>
+          <li >{topicitm.name}</li>
+        </ul>
+      )),
+    },
+    {
+      name:"CONTENT",
+      selector : (itm)=><ul className='table-linebreak' onClick={() => setnewsitem(itm)}><button type="button" className="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg">
+      Content
+    </button></ul>,
+    },
+    {
+      name:"SLIDER",
+      selector : (itm)=>itm.is_slider.toString(),
+    },
+    {
+      name:"TAGS",
+      selector : (itm)=>itm.tag.map((itmtag,ke)=>(
+        <ul key={ke}>
+          <li >{itmtag}</li>
+        </ul>
+      )),
+    },
+    {
+      name:"CREATED",
+      selector : (itm)=>itm.createdAt.split('T')[0],
+    },
+    {
+      name:"ACTION",
+      selector : (itm)=><ul className=''>
+      <li className='list-group-item'>
+        <button onClick={() => seteditfn(itm)} className='btn btn-warning btn-xs edit-btn'><BiEdit size={15} />edit</button>
+      </li>
+      <li className='list-group-item mt-1' >
 
+        <button onClick={() => submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
+      </li>
+    </ul>,
+    },
+  ]
+  const customStyles = {
+    cells: {
+      style: {
+        border: "0.5px solid #f5f2f2 ",
+        textalign:"center"
+      },
+    },
+    header: {
+      style: {
+        border: "1px solid gray",
+        minHeight: "56px",
+        paddingLeft: "16px",
+        paddingRight: "16px",
+        textAlign: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        
+      },
+    },
+    filter:{
+      style:{
+        bordr:"1px solid gray",
+      }
+    }
+ 
+  };
+  const tableData = {
+    columns,
+    filteredvalue
+  };
   // console.log("topics",topic)
   return (
     <div className='page-wrapper px-3 mt-5'>
@@ -322,7 +428,7 @@ export default function News() {
                   <div className='text-start'><button onClick={() => setmodal(!modal)} className='btn btn-success btn-sm'><BiAddToQueue size={20} />Add</button></div>
                 </div>
                 <div  className='col-6'>
-                  <form className="search-form ml-auto" onSubmit={(e) => getnews(e, 1)} >
+                  {/* <form className="search-form ml-auto" onSubmit={(e) => getnews(e, 1)} >
                     <div className="input-group">
 
                       <input onChange={(e) => setsearchvalue(e.target.value)} type="text" className="form-control form-control-sm" id="navbarForm" placeholder="Search here..." />
@@ -330,17 +436,74 @@ export default function News() {
                         <button type='submit' className='btn btn-primary btn-sm ' ><BiSearch size={20} /></button>
                       </div>
                     </div>
-                  </form>
+                  </form> */}
 
                 </div>
               </div>
 
-
-              <div className="table-responsive pt-3">
-                <table className="table table-bordered">
+              
+              <div className="">
+              <DataTableExtensions
+          columns={columns}
+          data={filteredvalue}
+          print={false}
+          export={false}
+          
+        >
+          <DataTable
+            // columns={columns}
+            // data={data}
+            noHeader
+            // defaultSortField="id"
+            // defaultSortAsc={false}
+            pagination
+            highlightOnHover
+            columns={columns}
+            data={newsdata}
+           
+            defaultSortField="_id"
+            defaultSortAsc={false}
+            // pagination
+            // highlightOnHover
+            // pagination
+            fixedHeader
+            fixedHeaderScrollHeight='57vh'
+            className="tablereact  tablereact "
+            // highlightOnHover
+            // subHeader
+            customStyles={customStyles}
+          />
+        </DataTableExtensions>
+              {/* <DataTableExtensions
+                {...tableData}
+              >
+              <DataTable
+            
+            columns={columns}
+            data={newsdata}
+            noHeader
+            defaultSortField="_id"
+            defaultSortAsc={false}
+            pagination
+            highlightOnHover
+            pagination
+            fixedHeader
+            fixedHeaderScrollHeight='57vh'
+            className="tablereact  tablereact "
+            highlightOnHover
+            subHeader
+            customStyles={customStyles}
+            subHeaderComponent={<input
+              type="text" className="form-control form-control-sm w-50" placeholder="Search here..."
+              value={searchvalue}
+              onChange={(e)=>setsearchvalue(e.target.value)}
+              />}
+        />
+         </DataTableExtensions> */}
+                {/* <table className="table table-bordered">
                   <thead>
                     <tr>
-                      {/* <th>#</th> */}
+                     
                       <th >Heading</th>
                       <th>Thumbnail</th>
                       <th>category</th>
@@ -348,7 +511,7 @@ export default function News() {
                       <th>Content</th>
                       <th>Slider</th>
                       <th>tags</th>
-                      {/* <th>description</th> */}
+                   
                       <th>created date</th>
                       <th>action</th>
                     </tr>
@@ -357,26 +520,9 @@ export default function News() {
                  
                     {newsdata.length ? newsdata.map((itm, k) => (
                       <tr key={k}>
-                        {/* <td>{k + 1}</td> */}
+                       
                         <td className='table-linebreak' onClick={() => setnewsitem(itm)} data-bs-toggle="modal" data-bs-target="#exampleModalCenter">{itm.heading}</td>
-                        {/* <td>
-                    {itm.media_type==="image" ?
-                    <img src={BaseURL+itm.thumbnail} />
-                    : <ReactPlayer 
-                    url={itm.url}
-                    width='200px'
-                    height='300px'
-                    controls
-                />
-                  //   <video 
-                  //   controls
-                  //   src="https://www.youtube.com/watch?v=G-zyTlZQYpE"
-                  //   style={{ width: '100%' }}
-                  // />
-                    
-                    
-                    }
-                    </td> */}
+                       
                         <td ><img src={itm.thumbnail.startsWith('https')||itm.thumbnail.startsWith('http')? itm.thumbnail:BaseURL+itm.thumbnail} onClick={() => itm.media_type === "video" ? setnewsitem(itm) & setnewsvideomodal(!newsvideomodal) : {}} style={itm.media_type === "video" ? { cursor: "pointer" } : {}} /></td>
                         <td>{itm.category.length ? itm.category.map((cat,kc)=>(
                           <ul key={kc}>
@@ -400,7 +546,6 @@ export default function News() {
                           </ul>
                         ))}</td>
 
-                        {/* <td className='table-linebreak' onClick={() => setnewsitem(itm)} data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg-dis">{itm.short_description} </td> */}
 
                         <td>{itm.createdAt.split('T')[0]}</td>
                         <td>
@@ -423,10 +568,10 @@ export default function News() {
 
 
                   </tbody>
-                </table>
+                </table> */}
 
               </div>
-              <div className="row mt-1">
+              {/* <div className="row mt-1">
                 <div className=" ">
                   <div className="dataTables_paginate paging_simple_numbers " >
 
@@ -447,7 +592,7 @@ export default function News() {
                     </ul>
                   </div>
                 </div>
-              </div>
+              </div> */}
               
 
             </div>
