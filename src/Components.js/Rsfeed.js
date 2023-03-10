@@ -247,7 +247,7 @@ export default function Rsfeed() {
   <div className="modal " id="exampleModalCenter" tabIndex={1} aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog" style={modal===true ? {display: 'block', paddingRight: 17}:{display:'none'}}>
   <div className="modal-dialog modal-dialog-centered  box-shadow-blank" >
     <div className="modal-content"><div className="modal-header">
-      <h5 className="modal-title" id="exampleModalCenterTitle">Category</h5>
+      <h5 className="modal-title" id="exampleModalCenterTitle">Rss Feed</h5>
       <button onClick={()=>setmodal(!modal) & setrssitem('')} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close" />
       </div>
       <form className="forms-sample" onSubmit={(e)=>rsspost(e)}>
