@@ -12,6 +12,8 @@
     "multiselect-react-dropdown": "^2.0.25",
     "react": "^18.2.0",
     "react-confirm-alert": "^3.0.6",
+    "react-data-table-component": "^7.5.3",
+    "react-data-table-component-extensions": "^1.6.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-loader-spinner": "^5.3.4",
@@ -21,6 +23,7 @@
     "react-scripts": "5.0.1",
     "react-select": "^5.7.0",
     "react-toastify": "^9.1.1",
+    "styled-components": "^5.3.8",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
