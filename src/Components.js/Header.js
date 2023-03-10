@@ -66,12 +66,22 @@ export default function Header() {
             <span className="link-title">RssFeed</span>
           </Link>
         </li>
+
         <li className="nav-item not-active">
+          <Link to="/news/feedly-category" className="nav-link">
+            <SiFeedly size={20}/>
+            <span className="link-title">Feedly Category</span>
+          </Link>
+        </li>
+
+
+
+        {/* <li className="nav-item not-active">
           <Link to="/news/feedly" className="nav-link">
             <SiFeedly size={20}/>
             <span className="link-title">Feedly</span>
           </Link>
-        </li>
+        </li> */}
         
         
         

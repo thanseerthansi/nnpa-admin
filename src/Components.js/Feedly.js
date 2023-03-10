@@ -3,7 +3,7 @@ import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { BiAddToQueue, BiSearch } from 'react-icons/bi'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { BaseURL } from './urlcall'
 import JoditEditor from 'jodit-react';
 import ReactPlayer from 'react-player'
@@ -22,7 +22,7 @@ function Feedly() {
     const { categorydata, accesscheck,topicsdata } = useContext(Simplecontext)
 
     let navigate = useNavigate()
-    let { state } = useLocation()
+    let { category_id } = useParams()
     const [feedly_news, setfeedly_news] = useState([])
 
     const [modal, setmodal] = useState(false)
@@ -66,29 +66,29 @@ function Feedly() {
     }
 
     useEffect(() => {
-      setdataloading(true)
-      Get_feedly()
+   
+        setdataloading(true)
+        Get_feedly()
+
+      
     }, [])
 
     const Get_feedly = async () => {
-      // console.log("category",state?.category??"")
+     
+            const datalist ={
+              "url": `https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/${category_id}`
+          }
+          axios.post(`${BaseURL}feedly/news`,datalist,{
+            headers : {
+              Authorization : `A-rGA3_wcfl3VRKTG1BynfHQUKPfGs3ZHe5jnk47MgLYvjRHsmOq_mtUOAWKpBlULuX5-CaFMiRbaqQs899RQBuKA7IwJsDpOHIMyvN-G_FXzzZQUayKBUbSgN-4sKEWPRfcAc3i0OBDF-deHX1qJJoaDynQFS6rYfpcMR1HLWVuJABMfWTPG-dJW1BkoloJ34m3pAqVDKxWyfPPwN3NJgQZzs073PidpwVGprZPcxl4cNqUPo7lmyoS35tl:feedlydev`
+            },
+          })
+          .then((res) => {
+            console.log(res.data.items)
+            setfeedly_news(res.data.items)
+          })
        
-            try {
-                // console.log("okpass")
-                const datalist ={
-                    "url": "https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/d42b7755-1769-455d-93f2-4e11bd4fc872"
-                }
-                let response  = await Callaxios("post",'news/feedly',datalist)
-                // console.log("response",response.data.items)
-                if (response.status===200){
-                    setfeedly_news(response.data.items)
-                }
-                
-                
-
-            } catch (error) {
-                
-            }
+            
            
             setdataloading(false)
     }
