@@ -28,6 +28,7 @@ function FeedlyCategory() {
             }
         })
         .then((res) => {
+          console.log("feedlycatid",res.data.data)
             setall_feedly_category(res.data.data)
         })
         .catch((error)=>{

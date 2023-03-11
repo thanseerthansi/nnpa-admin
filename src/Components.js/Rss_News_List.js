@@ -2,7 +2,7 @@ import axios from 'axios'
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { BiAddToQueue, BiSearch } from 'react-icons/bi'
+import { RiDeleteBin6Fill } from 'react-icons/ri'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { BaseURL } from './urlcall'
 import JoditEditor from 'jodit-react';
@@ -56,6 +56,20 @@ function Rss_News_List() {
     const Choose_Modal = (title,short_description,content,author,date) => {
         // console.log("author",author)
         // console.log("short",short_description.props.dangerouslySetInnerHTML.__html)
+        // console.log("content  ",content.props.dangerouslySetInnerHTML.__html)
+        // let regeximg = <img[^>]+src="([^">]+)"
+        // const image = document.querySelector('img.webfeedsFeaturedVisual');
+        const image = content.props.dangerouslySetInnerHTML.__html  
+        let thumbnail;
+        if(image){
+          // const htmlTag = '<img src="https://example.com/image.jpg" alt="Example Image">';
+          const srcRegex = /<img.*?src="(.*?)"/;
+          const srcMatch = image.match(srcRegex);
+          const srcLink = srcMatch[1];
+          // console.log(srcLink)
+          thumbnail = srcLink
+          // setnewsitem({...newsitem,thumbnail:srcLink})
+        }
         let descriptiontext
         let descriptiondata = short_description.props.dangerouslySetInnerHTML.__html
         if (descriptiondata.shouldRenderAsText) {
@@ -65,7 +79,7 @@ function Rss_News_List() {
           const doc = parser.parseFromString(descriptiondata, 'text/html');
           descriptiontext = doc.body.textContent;
         }
-        setnewsitem({ ...newsitem, heading: title , short_description: descriptiontext,content:content.props.dangerouslySetInnerHTML.__html,author:author,createdAt:date,source:urlname })
+        setnewsitem({ ...newsitem, heading: title , short_description: descriptiontext,content:content.props.dangerouslySetInnerHTML.__html,author:author,createdAt:date,source:urlname,thumbnail:thumbnail })
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
         setmodal(true)
         const list_item=[]
@@ -73,7 +87,7 @@ function Rss_News_List() {
           // console.log("ok",state.category )
           list_item.push( {label:state.category.name, value: state.category._id} ,)
           setcategory(()=>[...list_item])
-          // console.log("listitm",list_item)
+          // console.log("listitm",newsitem)
         } 
            
     }
@@ -110,8 +124,6 @@ function Rss_News_List() {
     }
 
     const postnewsfn = async (e) => {
-        // console.log("THE CONTENT")
-        // console.log("newsitem",newsitem)
         e.preventDefault();
         setisloading(true)
         try {
@@ -119,8 +131,7 @@ function Rss_News_List() {
         let url
         let msg
         let form_data = new FormData();
-        let datalist = Object.assign({}, newsitem); 
-        
+        let datalist = Object.assign({}, newsitem);         
         if (category) {
           let catlist=[] 
           category.map((item) => {
@@ -147,15 +158,18 @@ function Rss_News_List() {
         datalist.is_pushnotification = pushnotification
         if (tag){
         if (Array.isArray(tag) !== true){   
-          // console.log("tagvalue",tag)
-          // console.log("tag",Array.isArray(tag))   
           let taglist =[]
           tag.split(',').map((tagitm)=>{
               taglist.push(tagitm)
           })
           datalist.tag = taglist
-        } }
-        console.log("content",datalist.content)
+        }else{
+          datalist.tag = tag
+        }
+        form_data.append("tag",JSON.stringify(datalist.tag))
+       }else{
+        delete datalist.tag
+       }
         if (!datalist.content){
           delete datalist.content
         }
@@ -165,14 +179,24 @@ function Rss_News_List() {
           }
         }
         form_data.append("category",JSON.stringify(datalist.category))
-        form_data.append("tag",JSON.stringify(datalist.tag))
+        
         form_data.append("topics",JSON.stringify(datalist.topics))
         if (image) {
-          form_data.append('media', image)
+          if (datalist.thumbnail){
+            notifyerror("Both Image and Thumbnail are not allowed Choose one of them ")
+            setisloading(false)
+            return
+          }else{
+            form_data.append('media', image)
+          }
+          
         }else{
-          notifyerror("Image not found")
-          setisloading(false)
-          return
+          if (!datalist.thumbnail){
+            notifyerror("Image not found")
+            setisloading(false)
+            return
+          }
+          
         }
     
         if (datalist._id) {
@@ -190,11 +214,12 @@ function Rss_News_List() {
           msg ="News added Successfully"
         }
         try {
+          // console.log("dataenter")
         //   for (var pair of form_data.entries()) {
         //     console.log("formdata",pair[0]+ ', ' + pair[1]);
         // }
           let data = await Callaxios(action, url, form_data)
-          console.log("data", data)
+          // console.log("data", data)
           if (data.status === 200) {
     
             setmodal(!modal)
@@ -330,14 +355,14 @@ function Rss_News_List() {
                     rss_newses.map((value,key) => (
                         <tr key={key}>
                             <td>{ key+ 1}</td>
-                            <td style={{textAlign:'left',whiteSpace:"initial"}}><div style={{ wordWrap:"break-word" , width:"350px"}}>{ value.title._text ?? value.title._cdata }</div></td>
+                            <td style={{textAlign:'left',whiteSpace:"initial"}}><div style={{ wordWrap:"break-word" , width:"350px"}}>{ value.title?._text ?? value.title?._cdata ??"" }</div></td>
                             <td style={{textAlign:'left' }}>
-                                <a href={ value.link._text ?? value.link._cdata } target="_blank" >
+                                <a href={ value.link?._text ?? value.link?._cdata??"" } target="_blank" >
                                 <button className='btn btn-primary btn-xs'>Details </button></a>
                                </td>
-                            <td style={{textAlign:'left'}}><div style={{ whiteSpace:"nowrap",width:"150px",maxHeight:"150px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} /> </td>
-                            <td>{ (Date(value.pubDate._text ?? value.pubDate._cdata).split('+')[0])  }</td>
-                            <td><button className='btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title._text ?? value.title._cdata ,<div dangerouslySetInnerHTML={{ __html: value.description._text ?? value.description._cdata }} />,<div dangerouslySetInnerHTML={{ __html: value['content:encoded'] ? value['content:encoded']['_cdata'] : null   }} /> ,value['dc:creator']?value['dc:creator']['_cdata']:"",handledate(value.pubDate._text ?? value.pubDate._cdata)  )} >Save</button></td>
+                            <td style={{textAlign:'left'}}><div style={{ whiteSpace:"nowrap",width:"150px",maxHeight:"150px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.description?._text ?? value.description?._cdata??"" }} /> </td>
+                            <td>{ (Date(value.pubDate?._text ?? value.pubDate?._cdata??"").split('+')[0])  }</td>
+                            <td><button className='btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title?._text ?? value.title?._cdata??"" ,<div dangerouslySetInnerHTML={{ __html:  value.description?._text ?? value.description?._cdata??"" }} />,<div dangerouslySetInnerHTML={{ __html: value['content:encoded'] ? value['content:encoded']['_cdata'] : null   }} /> ,value['dc:creator']?value['dc:creator']['_cdata']:"",handledate(value.pubDate?._text ?? value.pubDate?._cdata??"")  )} >Save</button></td>
                         </tr>
                     ))
                 }
@@ -490,25 +515,24 @@ function Rss_News_List() {
                         <label className="form-label"><b>Image</b></label>
                         {image ?
                           <div className=''>
-                            <img className='rounded image-size' src={URL.createObjectURL(image)} alt='img' height="auto" width="auto" />
+                            <img className='rounded image-size' src={URL.createObjectURL(image)} alt='img' height="auto" width="auto" />&nbsp;
+                            <button className='border-0 btn-link   btn-sm' onClick={()=>setimage()}><RiDeleteBin6Fill size={20} color={"red"}/></button>
                           </div>
-                          : <div className='' >
-                            {newsitem.thumbnail ?
-                              <img className='rounded  image-size' src={BaseURL + newsitem.thumbnail} alt='img' height="auto" width="auto" />
-                              : null}
-                          </div>}
+                          : null
+                          }
                         <input   onChange={(e) => setimage(e.target.files[0])} style={newsitem._id ?{"display":'none'}: { color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
                       </div>
                     </div>
-                    <div className="col-sm-6" style={newsitem._id ? {}: {"display":'none'}}>
+                    <div className="col-sm-6" >
                       <div className="mb-3">
-                        <label className="form-label"><b>Media Type</b></label>
+                        <label className="form-label"><b>Thumbnail url</b></label>
 
-                        <select required onChange={(e) => setnewsitem({ ...newsitem, media_type: e.target.value })} value={newsitem.media_type ? newsitem.media_type : ''} className="form-select" id="exampleFormControlSelect1">
-                          <option hidden>Select Media Type</option>
-                          <option value={"image"}  >Image</option>
-                          <option value={"video"}  >Video</option>
-                        </select>
+                        <div className='' >
+                            {newsitem.thumbnail ?
+                              <img className='rounded  image-size' src={newsitem.thumbnail.startsWith('https')||newsitem.thumbnail.startsWith('http')? newsitem.thumbnail:BaseURL+newsitem.thumbnail} alt='img' height="auto" width="auto" />
+                              : null}
+                          </div>
+                        <input  type="text" onChange={(e) => setnewsitem({ ...newsitem, thumbnail: e.target.value })} value={newsitem.thumbnail?newsitem.thumbnail:""} className="form-control" placeholder="Enter thumbnail url" />
                       </div>
                     </div>
                     </div>

@@ -2,7 +2,7 @@ import axios from 'axios'
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { BiAddToQueue, BiSearch } from 'react-icons/bi'
+import { RiDeleteBin6Fill } from 'react-icons/ri'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { BaseURL } from './urlcall'
 import JoditEditor from 'jodit-react';
@@ -39,7 +39,7 @@ function Feedly() {
  const [isloading,setisloading]=useState(false)
   const[dataloading,setdataloading]=useState(false)
 
-
+  // console.log("dataloading",dataloading)
   const notify = (msg) => toast.success(msg, {
     position: "top-right",
   });
@@ -47,20 +47,21 @@ function Feedly() {
     position: "top-right",
   });
 
-    const Choose_Modal = (title,short_description,author,source,tags,date) => {
-        // console.log("date",date)
-        // let descriptiontext
-        // let descriptiondata = short_description.props.dangerouslySetInnerHTML.__html
-        // if (descriptiondata.shouldRenderAsText) {
-        //   descriptiontext = descriptiondata
-        // } else {
-        //   const parser = new DOMParser();
-        //   const doc = parser.parseFromString(descriptiondata, 'text/html');
-        //   descriptiontext = doc.body.textContent;
-        // }
-        setnewsitem({ ...newsitem, heading: title , content: short_description.props.dangerouslySetInnerHTML.__html ,author:author,source:source,createdAt:date})
+    const Choose_Modal = (title,short_description,author,source,tags,date,content,thumbnail) => {
+        // console.log("fullContent",content)
+        // console.log("thumbnail",thumbnail)
+        let descriptiontext
+        let descriptiondata = short_description.props.dangerouslySetInnerHTML.__html
+        if (descriptiondata.shouldRenderAsText) {
+          descriptiontext = descriptiondata
+        } else {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(descriptiondata, 'text/html');
+          descriptiontext = doc.body.textContent;
+        }
+        setnewsitem({ ...newsitem, heading: title , short_description: descriptiontext,author:author,source:source,createdAt:date,content:content,thumbnail:thumbnail})
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
-        // settag(tags)
+        settag(tags)
         setmodal(true)
         
     }
@@ -74,7 +75,7 @@ function Feedly() {
     }, [])
 
     const Get_feedly = async () => {
-     
+          setdataloading(true)
             const datalist ={
               "url": `https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/${category_id}`
           }
@@ -84,7 +85,7 @@ function Feedly() {
             },
           })
           .then((res) => {
-            console.log(res.data.items)
+            // console.log("response",res.data.items)
             setfeedly_news(res.data.items)
           })
        
@@ -113,6 +114,7 @@ function Feedly() {
         datalist.category = catlist
       }else{
         notifyerror("Category not found")
+        setisloading(false)
         return
       }
       if (topic) {
@@ -123,11 +125,12 @@ function Feedly() {
         datalist.topics = topiclist
       }else{
         notifyerror("Topic not found")
+        setisloading(false)
         return
       }
       datalist.is_slider = isslider
       datalist.is_pushnotification = pushnotification
-        // console.log("tagsbefore",tag)
+      // console.log("tagsbefore",tag)
       if (tag){
         if (Array.isArray(tag) !== true){
   
@@ -139,7 +142,12 @@ function Feedly() {
               taglist.push(tagitm)
           })
           datalist.tag = taglist
+        }else{
+          datalist.tag = tag
         }
+        form_data.append("tag",JSON.stringify(datalist.tag))
+      }else{
+        delete datalist.tag
       }
       if(!datalist.content){
         delete datalist.content
@@ -152,19 +160,30 @@ function Feedly() {
         }
       }
       form_data.append("category",JSON.stringify(datalist.category))
-      form_data.append("tag",JSON.stringify(datalist.tag))
+      
       form_data.append("topics",JSON.stringify(datalist.topics))
       if (image) {
-        form_data.append('media', image)
+        if (datalist.thumbnail){
+          notifyerror("Both Image and Thumbnail not allowed Choose image or Thumbnail url")
+          setisloading(false)
+          return 
+        }else{
+          form_data.append('media', image)
+        }
+        
       }else{
-        notifyerror("Image not found")
-        return 
+        if(!datalist.thumbnail){
+          notifyerror("Image or Thumbnail url not found")
+          setisloading(false)
+          return 
+        }
+        
       }
   
       if (datalist._id) {
         action = "put"
         url=`news/${datalist._id}`
-        form_data = datalist
+        // form_data = datalist
         delete datalist.topics
         delete datalist.category
         delete datalist.image
@@ -315,7 +334,7 @@ function Feedly() {
                                </td>
                             <td style={{textAlign:'left'}}><div style={{  whiteSpace:"nowrap",width:"150px",maxHeight:"100px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.summary?value.summary.content :  value.content?.content??"" } } /> </td>
                             <td>{ Date(value.published).split('+')[0] }</td>
-                            <td><button className=' btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title ,<div dangerouslySetInnerHTML={{ __html: value.summary?value.summary.content :  value.content?.content??""  }} />,value?.author??"",value.origin?.title??"",value?.keywords,handledate(value.published))} >Save</button></td>
+                            <td><button className=' btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title ,<div dangerouslySetInnerHTML={{ __html: value.summary?value.summary.content :  value.content?.content??""  }} />,value?.author??"",value.origin?.title??"",value?.keywords,handledate(value.published),value.fullContent,value.visual?.url??"")} >Save</button></td>
                         </tr>
                     ))
                 }
@@ -329,11 +348,6 @@ function Feedly() {
  </div>
 </div>
 </div>
-
-
-
-
-     
       <div className="modal " tabIndex={-1} role="dialog" style={modal === true ? { display: 'block', paddingRight: 17 } : { display: 'none' }} >
         <div className="modal-dialog modal-xl box-shadow-blank">
           <div className="modal-content">
@@ -386,7 +400,6 @@ function Feedly() {
                             isRequired={true}
                           />
                       </div>
-
                     </div>
                     <div className="col-sm-4" >
                       <div className="mb-3">
@@ -460,7 +473,7 @@ function Feedly() {
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Tags</b></label>
-                        <input type="text" onChange={(e) => settag( e.target.value )} value={tag} className="form-control" placeholder="Enter tags Sepperate by comma(,) . " />
+                        <input  type="text" onChange={(e) => settag( e.target.value )} value={tag} className="form-control" placeholder="Enter tags Sepperate by comma(,) . " />
                       </div>
                     </div>
                     <div className="col-sm-6">
@@ -474,30 +487,33 @@ function Feedly() {
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Image</b></label>
+                        <div className=''>
+                        
                         {image ?
                           <div className=''>
-                            <img className='rounded image-size' src={URL.createObjectURL(image)} alt='img' height="auto" width="auto" />
+                            <img className='rounded image-size' src={URL.createObjectURL(image)} alt='img' height="auto" width="auto" />&nbsp;
+                            <button className='border-0 btn-link   btn-sm' onClick={()=>setimage()}><RiDeleteBin6Fill size={20} color={"red"}/></button>
                           </div>
-                          : <div className='' >
-                            {newsitem.thumbnail ?
-                              <img className='rounded  image-size' src={BaseURL + newsitem.thumbnail} alt='img' height="auto" width="auto" />
-                              : null}
-                          </div>}
+                          : null}
+                          </div>
                         <input   onChange={(e) => setimage(e.target.files[0])} style={newsitem._id ?{"display":'none'}: { color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
                       </div>
                     </div>
-                    <div className="col-sm-6" style={newsitem._id ? {}: {"display":'none'}}>
+                    
+                    <div className="col-sm-6" >
                       <div className="mb-3">
-                        <label className="form-label"><b>Media Type</b></label>
+                        <label className="form-label"><b>Thumbnail url</b></label>
 
-                        <select required onChange={(e) => setnewsitem({ ...newsitem, media_type: e.target.value })} value={newsitem.media_type ? newsitem.media_type : ''} className="form-select" id="exampleFormControlSelect1">
-                          <option hidden>Select Media Type</option>
-                          <option value={"image"}  >Image</option>
-                          <option value={"video"}  >Video</option>
-                        </select>
+                        <div className='' >
+                            {newsitem.thumbnail ?
+                              <img className='rounded  image-size' src={newsitem.thumbnail.startsWith('https')||newsitem.thumbnail.startsWith('http')? newsitem.thumbnail:BaseURL+newsitem.thumbnail} alt='img' height="auto" width="auto" />
+                              : null}
+                          </div>
+                        <input  type="text" onChange={(e) => setnewsitem({ ...newsitem, thumbnail: e.target.value })} value={newsitem.thumbnail?newsitem.thumbnail:""} className="form-control" placeholder="Enter thumbnail url" />
                       </div>
                     </div>
                     </div>
+                    
                   <div className='row'>
                     <div className='col-sm-6'>
                       <div className="form-check mb-2">

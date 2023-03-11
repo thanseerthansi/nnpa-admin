@@ -6,7 +6,7 @@ import { BaseURL } from './urlcall';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { BiSearch, BiAddToQueue, BiEdit } from 'react-icons/bi';
-import { RiDeleteBin6Line } from 'react-icons/ri';
+import { RiDeleteBin6Line,RiDeleteBin6Fill } from 'react-icons/ri';
 import JoditEditor from 'jodit-react';
 import { Simplecontext } from './Simplecontext';
 import MultiSelect from 'react-multiple-select-dropdown-lite'
@@ -55,7 +55,7 @@ export default function News() {
     getnews()
   }, [])
   useEffect(()=>{
-    console.log("dataserach")
+    // console.log("dataserach")
     // const result = Object.values(newsdata).some((value) =>{
     //   return  value.toLowerCase().includes(searchvalue.toLowerCase())
     // })
@@ -81,7 +81,7 @@ export default function News() {
     try {
       // console.log("pages",pages)
       let data = await Callaxios("get", "news/admin-news", { page: pages, limit: 20,category:'' })
-      console.log("datanews", data)
+      // console.log("datanews", data)
       if (data.status === 200) {
         setnewsdata(data.data.data.news)
         setfilteredvalue(data.data.data.news)
@@ -168,12 +168,12 @@ export default function News() {
           tag.split(',').map((tagitm)=>{
               taglist.push(tagitm)
           })
-          // console.log("notarray",taglist)
           form_data.append("tag",JSON.stringify(taglist))
         }else{
-          // console.log("array")
           form_data.append("tag",JSON.stringify(datalist.tag))
         }
+      }else{
+        delete datalist.tag
       }
       for (const [key, value] of Object.entries(datalist)) {
         // console.log("data",key +":"+value)
@@ -183,7 +183,21 @@ export default function News() {
         }
       }      
       if (image) {
-        form_data.append('media', image)
+        if (datalist.thumbnail){
+          notifyerror("Both Image and Thumbnail not allowed Choose image or Thumbnail url")
+          setisloading(false)
+          return 
+        }else{
+          form_data.append('media', image)
+        }
+        
+      }else{
+        if(!datalist.thumbnail){
+          notifyerror("Image or Thumbnail url not found")
+          setisloading(false)
+          return 
+        }
+        
       }
       try {
     //   for (var pair of form_data.entries()) {
@@ -467,7 +481,7 @@ export default function News() {
             // highlightOnHover
             // pagination
             fixedHeader
-            fixedHeaderScrollHeight='57vh'
+            fixedHeaderScrollHeight='63vh'
             className="tablereact  tablereact "
             // highlightOnHover
             // subHeader
@@ -823,7 +837,7 @@ export default function News() {
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Tags</b></label>
-                        <input required type="text" onChange={(e) => settag( e.target.value )} value={tag} className="form-control" placeholder="Enter tags Sepperate by comma(,) . " />
+                        <input  type="text" onChange={(e) => settag( e.target.value )} value={tag} className="form-control" placeholder="Enter tags Sepperate by comma(,) . " />
                       </div>
                     </div>
                     <div className="col-sm-6">
@@ -840,23 +854,24 @@ export default function News() {
                         {image ?
                           <div className=''>
                             <img className='rounded image-size' src={URL.createObjectURL(image)} alt='img' height="auto" width="auto" />
+                            <button className='border-0 btn-link   btn-sm' onClick={()=>setimage()}><RiDeleteBin6Fill size={20} color={"red"}/></button>
                           </div>
-                          : <div className='' >
-                            {newsitem.thumbnail ?
-                              <img className='rounded  image-size' src={BaseURL + newsitem.thumbnail} alt='img' height="auto" width="auto" />
-                              : null}
-                          </div>}
+                          :null }
                         <input   onChange={(e) => handleCompressedUpload(e)} style={{ color: "rgba(0, 0, 0, 0)" }} value={''} type="file" className="form-control" />
                       </div>
                     </div>{/* Col */}
                     <div className="col-sm-6" >
                       <div className="mb-3">
                         <label className="form-label"><b>Thumbnail url</b></label>
-
+                        <div className='' >
+                            {newsitem.thumbnail ?
+                              <img className='rounded  image-size' src={newsitem.thumbnail.startsWith('https')||newsitem.thumbnail.startsWith('http')? newsitem.thumbnail:BaseURL+newsitem.thumbnail}  alt='img' height="auto" width="auto" />
+                              : null}
+                          </div>
                        
-                        <input  type="text" onChange={(e) => setnewsitem({ ...newsitem, thumbnail: e.target.value })} value={newsitem.thumbnail} className="form-control" placeholder="Enter thumbnail url" />
+                        <input  type="text" onChange={(e) => setnewsitem({ ...newsitem, thumbnail: e.target.value })} value={newsitem.thumbnail?newsitem.thumbnail:""} className="form-control" placeholder="Enter thumbnail url" />
                       </div>
-                    </div>Col
+                    </div>
                     </div>
                   <div className='row'>
                     <div className='col-sm-6'>
@@ -877,7 +892,7 @@ export default function News() {
                       <div className="col-sm-6">
                         <div className="mb-3">
                           <label className="form-label"><b>Video url</b></label>
-                          <input required type="text" onChange={(e) => setnewsitem({ ...newsitem, url: e.target.value })} value={newsitem.url} className="form-control" placeholder="Enter viedo url" />
+                          <input required type="text" onChange={(e) => setnewsitem({ ...newsitem, url: e.target.value })} value={newsitem.url?newsitem.url:""} className="form-control" placeholder="Enter viedo url" />
                         </div>
                       </div>
                       : null : null}
