@@ -23,6 +23,7 @@ function Feedly() {
 
     let navigate = useNavigate()
     let { category_id } = useParams()
+    let { state } = useLocation()
     const [feedly_news, setfeedly_news] = useState([])
 
     const [modal, setmodal] = useState(false)
@@ -39,7 +40,7 @@ function Feedly() {
  const [isloading,setisloading]=useState(false)
   const[dataloading,setdataloading]=useState(false)
 
-  // console.log("dataloading",dataloading)
+  // console.log("state",state.categoryname)
   const notify = (msg) => toast.success(msg, {
     position: "top-right",
   });
@@ -62,36 +63,46 @@ function Feedly() {
         setnewsitem({ ...newsitem, heading: title , short_description: descriptiontext,author:author,source:source,createdAt:date,content:content,thumbnail:thumbnail})
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
         settag(tags)
+        getcategoryname()
         setmodal(true)
         
     }
 
-    useEffect(() => {
-   
+    useEffect(() => { 
         setdataloading(true)
         Get_feedly()
 
-      
     }, [])
+    const getcategoryname =()=>{
+      if (state.categoryname){
+        // console.log("categorydata",categorydata)
+        let categoryvalue =categorydata.filter(t=>(state.categoryname).toLowerCase().includes(t.name.toLowerCase())) 
+        // console.log("category",categoryvalue)
+        if(categoryvalue.length){
+          const list_itm=[]
+          list_itm.push( {label:categoryvalue[0].name, value: categoryvalue[0]._id} ,)
+          setcategory(()=>[...list_itm])
 
+        }
+      }
+    }
     const Get_feedly = async () => {
-          setdataloading(true)
-            const datalist ={
-              "url": `https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/${category_id}`
-          }
-          axios.post(`${BaseURL}feedly/news`,datalist,{
-            headers : {
-              Authorization : `A-rGA3_wcfl3VRKTG1BynfHQUKPfGs3ZHe5jnk47MgLYvjRHsmOq_mtUOAWKpBlULuX5-CaFMiRbaqQs899RQBuKA7IwJsDpOHIMyvN-G_FXzzZQUayKBUbSgN-4sKEWPRfcAc3i0OBDF-deHX1qJJoaDynQFS6rYfpcMR1HLWVuJABMfWTPG-dJW1BkoloJ34m3pAqVDKxWyfPPwN3NJgQZzs073PidpwVGprZPcxl4cNqUPo7lmyoS35tl:feedlydev`
-            },
-          })
-          .then((res) => {
-            // console.log("response",res.data.items)
-            setfeedly_news(res.data.items)
-          })
-       
-            
-           
-            setdataloading(false)
+      const datalist ={
+        "url": `https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/${category_id}`
+      }
+      axios.post(`${BaseURL}feedly/news`,datalist,{
+        headers : {
+          Authorization : `A-rGA3_wcfl3VRKTG1BynfHQUKPfGs3ZHe5jnk47MgLYvjRHsmOq_mtUOAWKpBlULuX5-CaFMiRbaqQs899RQBuKA7IwJsDpOHIMyvN-G_FXzzZQUayKBUbSgN-4sKEWPRfcAc3i0OBDF-deHX1qJJoaDynQFS6rYfpcMR1HLWVuJABMfWTPG-dJW1BkoloJ34m3pAqVDKxWyfPPwN3NJgQZzs073PidpwVGprZPcxl4cNqUPo7lmyoS35tl:feedlydev`
+        },
+      })
+      .then((res) => {
+        // console.log("response",res.data.items)
+        setfeedly_news(res.data.items)
+      })
+    
+        
+        
+        setdataloading(true)
     }
 
     const postnewsfn = async (e) => {
@@ -260,7 +271,7 @@ function Feedly() {
         setisslider(false)
         setpushnotification(false)
         setimage('')
-        setcategory([])
+        setcategory('')
         settopic('')
         settag('')
       }
@@ -445,7 +456,7 @@ function Feedly() {
                         <label className="form-label"><b>Media Type</b></label>
 
                         <select required onChange={(e) => setnewsitem({ ...newsitem, media_type: e.target.value })} value={newsitem.media_type ? newsitem.media_type : ''} className="form-select" id="exampleFormControlSelect1">
-                          <option hidden>Select Media Type</option>
+                          <option value="" hidden>Select Media Type</option>
                           <option value={"image"}  >Image</option>
                           <option value={"video"}  >Video</option>
                         </select>

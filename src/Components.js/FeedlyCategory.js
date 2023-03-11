@@ -1,7 +1,9 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { confirmAlert } from 'react-confirm-alert'
-import { BiAddToQueue } from 'react-icons/bi'
+import { BiAddToQueue,BiEdit } from 'react-icons/bi'
+import { RiDeleteBin6Line } from 'react-icons/ri'
+import { BsFillEyeFill } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import Category from './Category'
@@ -28,7 +30,7 @@ function FeedlyCategory() {
             }
         })
         .then((res) => {
-          console.log("feedlycatid",res.data.data)
+          // console.log("feedlycatid",res.data.data)
             setall_feedly_category(res.data.data)
         })
         .catch((error)=>{
@@ -140,9 +142,10 @@ function FeedlyCategory() {
                                 <td>{ value.name }</td>
                                 <td>{ value.feedly_category_id }</td>
                                 <td>
-                                <button type="button"  className="btn btn-primary btn-xs " style={{ marginRight: "5px" }} onClick={()=>navigate(`/news/feedly/${value.feedly_category_id}`)}  > Show News </button> <br />
-                                <button type="button"  className="btn btn-warning btn-xs mt-2" style={{ marginRight: "5px" }}  onClick={()=>setfeedly_data({...feedly_data , name : value.name , feedly_category_id : value.feedly_category_id , _id : value._id })&setmodal(true)} > Edit </button> <br />
-                                <button type="button"  className="btn btn-danger btn-xs mt-2" style={{ marginRight: "5px" }} onClick={()=>submitdelete(value._id)}  > Delete </button> <br />
+                                  
+                                <button type="button"  className="btn btn-primary btn-xs "  onClick={()=>navigate(`/news/feedly/${value.feedly_category_id}`,{ state : { categoryname:value.name??''}})}  > <BsFillEyeFill size={15}/> </button> 
+                                <button type="button " style={{marginLeft:"2px"}}   className="btn btn-warning btn-xs "   onClick={()=>setfeedly_data({...feedly_data , name : value.name , feedly_category_id : value.feedly_category_id , _id : value._id })&setmodal(true)} > <BiEdit size={15}/> </button>
+                                <button type="button"  style={{marginLeft:"2px"}} className="btn btn-danger btn-xs  "  onClick={()=>submitdelete(value._id)}  > <RiDeleteBin6Line size={15} /> </button> 
                                 </td>
                             </tr>
                         ))

@@ -370,7 +370,7 @@ export default function News() {
     },
     {
       name:"SLIDER",
-      selector : (itm)=>itm.is_slider.toString(),
+      selector : (itm)=>itm.is_slider?<p>YES</p>:<p>NO</p>,
     },
     {
       name:"TAGS",
@@ -387,13 +387,15 @@ export default function News() {
     {
       name:"ACTION",
       selector : (itm)=><ul className=''>
-      <li className='list-group-item'>
-        <button onClick={() => seteditfn(itm)} className='btn btn-warning btn-xs edit-btn'><BiEdit size={15} />edit</button>
+      <li className='list-group-item d-flex'>
+        <div>
+        <button onClick={() => seteditfn(itm)} className='btn btn-warning btn-xs '><BiEdit size={15} /></button>
+        </div>
+        <div className='ml-5' style={{marginLeft:"2px"}}>
+        <button  onClick={() => submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} /></button>
+      </div>
       </li>
-      <li className='list-group-item mt-1' >
-
-        <button onClick={() => submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
-      </li>
+     
     </ul>,
     },
   ]
@@ -809,7 +811,7 @@ export default function News() {
                         <label className="form-label"><b>Media Type</b></label>
 
                         <select required onChange={(e) => setnewsitem({ ...newsitem, media_type: e.target.value })} value={newsitem.media_type ? newsitem.media_type : ''} className="form-select" id="exampleFormControlSelect1">
-                          <option hidden>Select Media Type</option>
+                          <option value="" hidden>Select Media Type</option>
                           <option value={"image"}  >Image</option>
                           <option value={"video"}  >Video</option>
                         </select>

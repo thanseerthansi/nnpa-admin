@@ -126,7 +126,7 @@ export default function Topics() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {topicsdata.length ? topicsdata.filter(t => t.name.toLowerCase().includes(searchvalue)).map((itm, k) => (
+                                        {topicsdata.length ? topicsdata.filter(t => t.name.toLowerCase().includes(searchvalue)).length?topicsdata.filter(t => t.name.toLowerCase().includes(searchvalue)).map((itm, k) => (
                                             <tr key={k}>
                                                 <td>{k + 1}</td>
                                                 <td>{itm.name}</td>
@@ -134,18 +134,23 @@ export default function Topics() {
                                                 <td>
                                                     <ul className='text-center'>
                                                         <li className='list-group-item '>
-                                                            <button onClick={() => setcategoryitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs edit-btn' ><BiEdit size={15} />edit</button>
+                                                            <button onClick={() => setcategoryitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs ' ><BiEdit size={15} /></button>
+                                                            <button onClick={() => submitdelete(itm._id)} style={{marginLeft:"2px"}} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} /></button>
                                                         </li>
-                                                        <li className='list-group-item mt-1' >
-
-                                                            <button onClick={() => submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
-                                                        </li >
+                                                        {/* <li className='list-group-item mt-1' >                                                            
+                                                        </li > */}
                                                     </ul>
                                                 </td>
                                             </tr>
-                                        )) : null}
-
-
+                                        )) : <tr>
+                                        <td colSpan={4} > 
+                                        <div >No Topics Found</div>
+                                        </td>
+                                        </tr>:<tr>
+                                        <td colSpan={4} > 
+                                        <div >No Topics Found</div>
+                                        </td>
+                                        </tr>}
                                     </tbody>
                                 </table>
                             </div>

@@ -125,23 +125,31 @@ export default function Category() {
               </tr>
             </thead>
             <tbody>
-              {categorydata.length? categorydata.filter(t=>t.name.toLowerCase().includes(searchvalue)).map((itm,k)=>(
+              {categorydata.length? categorydata.filter(t=>t.name.toLowerCase().includes(searchvalue)).length ? categorydata.filter(t=>t.name.toLowerCase().includes(searchvalue)).map((itm,k)=>(
                 <tr key={k}>
                 <td>{k+1}</td>
                 <td>{itm.name}</td>
                 <td>
-                  <ul className='text-center'>
-                    <li className='list-group-item '>
-                      <button onClick={()=>setcategoryitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs edit-btn' ><BiEdit size={15}/>edit</button>
+                  <ul className='text-center '>
+                    <li className='list-group-item  '>
+                      
+                      <button onClick={()=>setcategoryitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs ' ><BiEdit size={15}/></button>
+                      
+                      <button onClick={()=>submitdelete(itm._id)} style={{marginLeft:"2px"}} className='btn btn-danger btn-xs ' ><RiDeleteBin6Line size={15} /></button>                    
+                      
                     </li>
-                    <li className='list-group-item mt-1' >
+                    {/* <li className='list-group-item mt-1' >
                     
                       <button onClick={()=>submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
-                    </li>
+                    </li> */}
                   </ul>
                 </td>
               </tr>
               )):<tr>
+              <td colSpan={3} > 
+              <div >No  category Found</div>
+              </td>
+              </tr>:<tr>
               <td colSpan={3} > 
               <div >No  category Found</div>
               </td>

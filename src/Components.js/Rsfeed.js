@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { BiSearch,BiAddToQueue,BiEdit } from 'react-icons/bi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { BsFillEyeFill } from 'react-icons/bs';
 // import Scripts from './Scripts';
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -153,7 +154,7 @@ export default function Rsfeed() {
               </tr>
             </thead>
             <tbody>
-              {rssdata.rss_links ? rssdata.rss_links.map((itm,k)=>(
+              {rssdata.rss_links? rssdata.rss_links.length?rssdata.rss_links.map((itm,k)=>(
                 <tr key={k}>
                 {/* <td>{k+1}</td> */}
                 <td>{itm.name}</td>
@@ -164,22 +165,32 @@ export default function Rsfeed() {
 
                   <li className='list-group-item '  >
                    
-                      <button className='btn btn-primary btn-xs' onClick={()=>{ return navigate(`/news/Rss-News/${itm.name}`,{ state : { rss_link : itm.url ,category:itm.category??''}})}} >Show News</button>
-                  
+                      <button className='btn btn-primary btn-xs' onClick={()=>{ return navigate(`/news/Rss-News/${itm.name}`,{ state : { rss_link : itm.url ,category:itm.category??''}})}} ><BsFillEyeFill size={15}/></button>
+                      <button style={{marginLeft:"2px"}} onClick={()=>setrssitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs ' ><BiEdit size={15}/></button>
+                      <button style={{marginLeft:"2px"}} onClick={()=>submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} /></button>
                   </li>
 
 
-                    <li className='list-group-item mt-1'>
-                      <button onClick={()=>setrssitem(itm) & setmodal(!modal)} className='btn btn-warning btn-xs edit-btn' ><BiEdit size={15}/>edit</button>
+                    {/* <li className='list-group-item mt-1'>
+                      
                     </li>
                     <li className='list-group-item mt-1' >
                     
-                      <button onClick={()=>submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
-                    </li>
+                      
+                    </li> */}
                   </ul>
                 </td>
               </tr>
-              )):null}
+              )):<tr>
+              <td colSpan={4} > 
+              <div >No RssFeed Found</div>
+              </td>
+              </tr>:<tr>
+              <td colSpan={4} > 
+              <div >No RssFeed Found</div>
+              </td>
+              </tr>
+              }
               
              
             </tbody>
