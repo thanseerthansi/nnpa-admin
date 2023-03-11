@@ -276,10 +276,14 @@ function Rss_News_List() {
           
       }
       const handledate=(cd)=>{
-        const date = new Date(cd);
-        const isoString = date.toISOString();
-        // console.log("date,",isoString)
-        return isoString
+        // console.log("cd",cd)
+        if(cd){
+          const date = new Date(cd);
+          const isoString = date.toISOString();
+          // console.log("date,",isoString)
+          return isoString
+        }
+        
       }
       // console.log("caegotry",category)
       const setallnull = () => {
@@ -361,8 +365,8 @@ function Rss_News_List() {
                                 <button className='btn btn-primary btn-xs'>Details </button></a>
                                </td>
                             <td style={{textAlign:'left'}}><div style={{ whiteSpace:"nowrap",width:"150px",maxHeight:"150px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.description?._text ?? value.description?._cdata??"" }} /> </td>
-                            <td>{ (Date(value.pubDate?._text ?? value.pubDate?._cdata??"").split('+')[0])  }</td>
-                            <td><button className='btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title?._text ?? value.title?._cdata??"" ,<div dangerouslySetInnerHTML={{ __html:  value.description?._text ?? value.description?._cdata??"" }} />,<div dangerouslySetInnerHTML={{ __html: value['content:encoded'] ? value['content:encoded']['_cdata'] : null   }} /> ,value['dc:creator']?value['dc:creator']['_cdata']:"",handledate(value.pubDate?._text ?? value.pubDate?._cdata??"")  )} >Save</button></td>
+                            <td>{ (handledate(value.pubDate?._text ?? value.pubDate?._cdata??""))?.split('T')[0]??"" }</td>
+                            <td><button className='btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title?._text ?? value.title?._cdata??"" ,<div dangerouslySetInnerHTML={{ __html:  value.description?._text ?? value.description?._cdata??"" }} />,<div dangerouslySetInnerHTML={{ __html: value['content:encoded'] ? value['content:encoded']['_cdata'] : null   }} /> ,value['dc:creator']?value['dc:creator']['_cdata']:"",handledate((value.pubDate?._text ?? value.pubDate?._cdata??Date("")))  )} >Save</button></td>
                         </tr>
                     ))
                 }

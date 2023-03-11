@@ -344,7 +344,7 @@ function Feedly() {
                                 <button className='btn btn-primary btn-xs'>Details </button></a>
                                </td>
                             <td style={{textAlign:'left'}}><div style={{  whiteSpace:"nowrap",width:"150px",maxHeight:"100px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.summary?value.summary.content :  value.content?.content??"" } } /> </td>
-                            <td>{ Date(value.published).split('+')[0] }</td>
+                            <td>{ (handledate((value.published)))?.split('T')[0]??"" }</td>
                             <td><button className=' btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title ,<div dangerouslySetInnerHTML={{ __html: value.summary?value.summary.content :  value.content?.content??""  }} />,value?.author??"",value.origin?.title??"",value?.keywords,handledate(value.published),value.fullContent,value.visual?.url??"")} >Save</button></td>
                         </tr>
                     ))

@@ -41,8 +41,9 @@ export default function Rsfeed() {
     if (!pageno){
       pageno = 1  
     }
-    let data = await Callaxios("get","rss/",{page:pageno,limit:10,query:searchvalue})
-    // console.log("rssdata",data.data.data)
+    console.log("pageno",pageno)
+    let data = await Callaxios("get","rss/",{page:pageno,limit:1,query:searchvalue})
+    console.log("rssdata",data.data.data)
     if (data.status === 200){
       setrssdata(data.data.data)
       setpage(pageno)
@@ -196,7 +197,7 @@ export default function Rsfeed() {
             </tbody>
           </table>
         </div>
-        <div className="row mt-1">
+        {/* <div className="row mt-1">
                 <div className=" ">
                   <div className="dataTables_paginate paging_simple_numbers " >
 
@@ -217,7 +218,7 @@ export default function Rsfeed() {
                     </ul>
                   </div>
                 </div>
-              </div>
+              </div> */}
       </div>
     </div>
   </div>
