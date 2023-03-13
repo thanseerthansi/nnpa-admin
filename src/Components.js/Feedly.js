@@ -74,9 +74,10 @@ function Feedly() {
 
     }, [])
     const getcategoryname =()=>{
+      // console.log("category ",state.categoryname)
       if (state.categoryname){
         // console.log("categorydata",categorydata)
-        let categoryvalue =categorydata.filter(t=>(state.categoryname).toLowerCase().includes(t.name.toLowerCase())) 
+        let categoryvalue =categorydata.filter(t=>(state.categoryname).toLowerCase().includes(t.name.trim().toLowerCase())) 
         // console.log("category",categoryvalue)
         if(categoryvalue.length){
           const list_itm=[]
