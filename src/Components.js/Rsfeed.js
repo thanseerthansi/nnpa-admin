@@ -24,6 +24,7 @@ export default function Rsfeed() {
   const [page,setpage]=useState(1)
   // console.log("d=search",searchvalue)
   useEffect(() => {
+    window.scrollTo(0, 0);
     accesscheck()
     getrss()
     // Scripts()
@@ -41,9 +42,9 @@ export default function Rsfeed() {
     if (!pageno){
       pageno = 1  
     }
-    console.log("pageno",pageno)
+    // console.log("pageno",pageno)
     let data = await Callaxios("get","rss/",{page:pageno,limit:1,query:searchvalue})
-    console.log("rssdata",data.data.data)
+    // console.log("rssdata",data.data.data)
     if (data.status === 200){
       setrssdata(data.data.data)
       setpage(pageno)

@@ -53,6 +53,7 @@ export default function News() {
     // Scripts()
     accesscheck()
     getnews()
+    window.scrollTo(0, 0);
   }, [])
   useEffect(()=>{
     // console.log("dataserach")
@@ -337,7 +338,13 @@ export default function News() {
     // console.log("listvalue",list_item)
    setcategory(()=>[...list_item])
   }
+  // const rowNumber = (row) => filteredvalue.indexOf(row) + 1;
   const columns =[
+    
+    // {
+    //   name: '#',
+    //   selector: (row) => rowNumber(row),
+    // },
     {
       name:"HEADING",
       selector : (itm)=>itm.heading,

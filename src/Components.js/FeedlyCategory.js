@@ -18,6 +18,7 @@ function FeedlyCategory() {
     const [limit, setlimit] = useState(10)
 
     useEffect(() => {
+      window.scrollTo(0, 0);
         Get_All_Feedly()
     }, [])
 

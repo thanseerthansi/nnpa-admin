@@ -24,9 +24,7 @@ function Rss_News_List() {
     let navigate = useNavigate()
     let { state } = useLocation()
     const [rss_newses, setrss_newses] = useState([])
-
     const [modal, setmodal] = useState(false)
-
     const [newsitem, setnewsitem] = useState("")
     const [topic,settopic]=useState()
     const [category,setcategory]=useState([])
@@ -38,9 +36,6 @@ function Rss_News_List() {
   const editor = useRef(null);
  const [isloading,setisloading]=useState(false)
  const [dataloading,setdataloading]=useState(false)
-
-
-
   const notify = (msg) => toast.success(msg, {
     position: "top-right",
   });
@@ -65,11 +60,29 @@ function Rss_News_List() {
           // const htmlTag = '<img src="https://example.com/image.jpg" alt="Example Image">';
           const srcRegex = /<img.*?src="(.*?)"/;
           const srcMatch = image.match(srcRegex);
-          const srcLink = srcMatch[1];
-          // console.log(srcLink)
-          thumbnail = srcLink
+          if (srcMatch){
+            const srcLink = srcMatch[1];
+            // console.log(srcLink)
+            thumbnail = srcLink
+          }
+          
           // setnewsitem({...newsitem,thumbnail:srcLink})
         }
+        if (!thumbnail){
+          if (short_description){
+            let shortimage =short_description.props.dangerouslySetInnerHTML.__html
+            if(shortimage){
+              // const htmlTag = '<img src="https://example.com/image.jpg" alt="Example Image">';
+              const srcRegexshort = /<img.*?src="(.*?)"/;
+              const srcMatchshort = shortimage.match(srcRegexshort);
+              if (srcMatchshort){
+                const srcLink = srcMatchshort[1];
+                // console.log(srcLink)
+                thumbnail = srcLink
+              }
+          }
+        }
+      }
         let descriptiontext
         let descriptiondata = short_description.props.dangerouslySetInnerHTML.__html
         if (descriptiondata.shouldRenderAsText) {
@@ -93,6 +106,7 @@ function Rss_News_List() {
     }
 
     useEffect(() => {
+      window.scrollTo(0, 0);
       setdataloading(true)
       Get_Rss_News()
     }, [])

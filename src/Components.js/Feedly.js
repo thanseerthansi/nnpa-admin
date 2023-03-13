@@ -15,6 +15,9 @@ import { useRef } from 'react'
 import Callaxios from './Callaxios'
 import { ColorRing } from 'react-loader-spinner'
 import Select from 'react-select';
+import DataTable from 'react-data-table-component';
+import DataTableExtensions from 'react-data-table-component-extensions';
+import "react-data-table-component-extensions/dist/index.css";
 
 
 function Feedly() {
@@ -60,6 +63,21 @@ function Feedly() {
           const doc = parser.parseFromString(descriptiondata, 'text/html');
           descriptiontext = doc.body.textContent;
         }
+        // console.log("thmbnail",thumbnail)
+        if (!thumbnail){
+          let image =short_description.props.dangerouslySetInnerHTML.__html  
+          // console.log("image",image)
+          if (image){
+            const srcRegex = /<img.*?src="(.*?)"/;
+            const srcMatch = image.match(srcRegex);
+            if (srcMatch){             
+              const srcLink = srcMatch[1];
+            // console.log(srcLink)
+              thumbnail = srcLink
+            }
+            
+          }
+        }
         setnewsitem({ ...newsitem, heading: title , short_description: descriptiontext,author:author,source:source,createdAt:date,content:content,thumbnail:thumbnail})
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
         settag(tags)
@@ -69,6 +87,7 @@ function Feedly() {
     }
 
     useEffect(() => { 
+      window.scrollTo(0, 0);
         setdataloading(true)
         Get_feedly()
 
@@ -276,6 +295,16 @@ function Feedly() {
         settopic('')
         settag('')
       }
+      const columns =[
+        {
+          name:"#",
+          selector : (itm)=>itm.heading,
+        },
+        {
+          name:"HEADING",
+          selector : (itm)=>itm.heading,
+        },
+      ]
   return (
     <div className='page-wrapper px-3 mt-5'>
     <ToastContainer/>
@@ -307,7 +336,7 @@ function Feedly() {
              <th>#</th>
              <th>Title</th>
              <th>News Link</th>
-             <th>Content</th>
+             <th>Description</th>
              <th>Pub.Date</th>
              <th>Action</th>
              

@@ -16,6 +16,7 @@ export default function Category() {
   const [modal,setmodal]=useState(false)
   // console.log("d=search",searchvalue)
   useEffect(() => {
+    window.scrollTo(0, 0);
     accesscheck()
     // Scripts()
   }, [])
