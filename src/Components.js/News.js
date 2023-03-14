@@ -32,7 +32,7 @@ export default function News() {
   const [modal, setmodal] = useState(false)
   const [isslider, setisslider] = useState(false)
   const [pushnotification, setpushnotification] = useState(false)
-  const [filteredvalue, setfilteredvalue] = useState('');
+  // const [filteredvalue, setfilteredvalue] = useState('');
   const [newsvideomodal, setnewsvideomodal] = useState(false)
   const [searchvalue, setsearchvalue] = useState('')
   const [image, setimage] = useState('')
@@ -55,16 +55,16 @@ export default function News() {
     getnews()
     window.scrollTo(0, 0);
   }, [])
-  useEffect(()=>{
-    // console.log("dataserach")
-    // const result = Object.values(newsdata).some((value) =>{
-    //   return  value.toLowerCase().includes(searchvalue.toLowerCase())
-    // })
-    const result =newsdata.filter((news)=>{
-      return news.heading.toLowerCase().match(searchvalue.toLowerCase()) 
-    });
-    setfilteredvalue(result)
-  },[searchvalue])
+  // useEffect(()=>{
+  //   // console.log("dataserach")
+  //   // const result = Object.values(newsdata).some((value) =>{
+  //   //   return  value.toLowerCase().includes(searchvalue.toLowerCase())
+  //   // })
+  //   const result =newsdata.filter((news)=>{
+  //     return news.heading.toLowerCase().match(searchvalue.toLowerCase()) 
+  //   });
+  //   setfilteredvalue(result)
+  // },[searchvalue])
 
   const notify = (msg) => toast.success(msg, {
     position: "top-right",
@@ -85,7 +85,7 @@ export default function News() {
       // console.log("datanews", data)
       if (data.status === 200) {
         setnewsdata(data.data.data.news)
-        setfilteredvalue(data.data.data.news)
+        // setfilteredvalue(data.data.data.news)
 
         setnext(data.data.data.is_next)
         if (pages) {
@@ -435,7 +435,7 @@ export default function News() {
   };
   const tableData = {
     columns,
-    filteredvalue
+    newsdata
   };
   // console.log("topics",topic)
   return (
@@ -468,7 +468,7 @@ export default function News() {
               <div className="">
               <DataTableExtensions
           columns={columns}
-          data={filteredvalue}
+          data={newsdata}
           print={false}
           export={false}
           
@@ -476,13 +476,13 @@ export default function News() {
           <DataTable
             // columns={columns}
             // data={data}
-            noHeader
+            // noHeader
             // defaultSortField="id"
             // defaultSortAsc={false}
             pagination
             highlightOnHover
-            columns={columns}
-            data={newsdata}
+            // columns={columns}
+            // data={filteredvalue}
            
             defaultSortField="_id"
             defaultSortAsc={false}
@@ -837,7 +837,7 @@ export default function News() {
                     <div className="col-sm-6">
                       <div className="mb-3">
                         <label className="form-label"><b>Author</b></label>
-                        <input type="text" required onChange={(e) => setnewsitem({ ...newsitem, author: e.target.value })} value={newsitem.author ? newsitem.author : ''} className="form-control" placeholder="Enter Author" />
+                        <input type="text"  onChange={(e) => setnewsitem({ ...newsitem, author: e.target.value })} value={newsitem.author ? newsitem.author : ''} className="form-control" placeholder="Enter Author" />
                       </div>
                     </div>{/* Col */}
                   </div>{/* Row */}

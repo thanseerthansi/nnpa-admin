@@ -3,11 +3,12 @@ import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { RiDeleteBin6Fill } from 'react-icons/ri'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { BiSearch } from 'react-icons/bi'
+import { useLocation, useParams } from 'react-router-dom'
 import { BaseURL } from './urlcall'
 import JoditEditor from 'jodit-react';
-import ReactPlayer from 'react-player'
-import MultiSelect from 'react-multiple-select-dropdown-lite'
+// import ReactPlayer from 'react-player'
+// import MultiSelect from 'react-multiple-select-dropdown-lite'
 import { Simplecontext } from './Simplecontext'
 import { useContext } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
@@ -22,9 +23,9 @@ import "react-data-table-component-extensions/dist/index.css";
 
 function Feedly() {
 
-    const { categorydata, accesscheck,topicsdata } = useContext(Simplecontext)
+    const { categorydata,topicsdata } = useContext(Simplecontext)
 
-    let navigate = useNavigate()
+    // let navigate = useNavigate()
     let { category_id } = useParams()
     let { state } = useLocation()
     const [feedly_news, setfeedly_news] = useState([])
@@ -42,6 +43,7 @@ function Feedly() {
   const editor = useRef(null);
  const [isloading,setisloading]=useState(false)
   const[dataloading,setdataloading]=useState(false)
+  const [count,setcount]=useState(50)
 
   // console.log("state",state.categoryname)
   const notify = (msg) => toast.success(msg, {
@@ -51,9 +53,9 @@ function Feedly() {
     position: "top-right",
   });
 
-    const Choose_Modal = (title,short_description,author,source,tags,date,content,thumbnail) => {
+    const Choose_Modal = (title,short_description,author,source,tags,date,content,thumbnail,commonTopics) => {
         // console.log("fullContent",content)
-        // console.log("thumbnail",thumbnail)
+        // console.log("commonTopics",commonTopics)
         let descriptiontext
         let descriptiondata = short_description.props.dangerouslySetInnerHTML.__html
         if (descriptiondata.shouldRenderAsText) {
@@ -78,6 +80,9 @@ function Feedly() {
             
           }
         }
+        if(commonTopics){
+          gettopicname(commonTopics)
+        }
         setnewsitem({ ...newsitem, heading: title , short_description: descriptiontext,author:author,source:source,createdAt:date,content:content,thumbnail:thumbnail})
         // setnewsitem({ ...newsitem, short_description: short_description.props.dangerouslySetInnerHTML.__html })
         settag(tags)
@@ -92,6 +97,27 @@ function Feedly() {
         Get_feedly()
 
     }, [])
+    const gettopicname =(topics)=>{
+      const listdata=[]
+      topics.map((itm)=>{
+      let tdata = topicsdata.filter(t=>t.name.trim().toLowerCase().includes(itm.label.toLowerCase()))
+      // console.log("tdata",tdata)
+      if (tdata.length){
+        listdata.push(tdata[0])
+      }
+    })
+    // console.log("datalist",listdata)
+    if(listdata.length){
+      const topic_array=[]
+      listdata.forEach(topicitm => {
+        topic_array.push({label:topicitm.name, value: topicitm._id} ,)
+      });
+      settopic(()=>[...topic_array])
+    }
+      // console.log("listafterloop",listdata[0])
+      // let data = topicsdata.filter(t=>(t.name.includes(listdata)))
+      // console.log("sat",data)
+    }
     const getcategoryname =()=>{
       // console.log("category ",state.categoryname)
       if (state.categoryname){
@@ -106,9 +132,25 @@ function Feedly() {
         }
       }
     }
+    const Get_accesstoken =async()=>{
+      // const refresh_token = "A00R7OwejcquDDf5_eoJh45w6Xdz7l3p9yNNqp93KNhkagpQhEhRqp-Q2CA6oIc3mYcNxqCOH5YjmwQcfBjlz_HuUlnCAZUlL4h96Jo3Q0JFa1nQ1fge_bU-LXNmA_3Vh3Mo993Lev7Jg6aYWpGUAa9bowzR6KwsGTBya0ryBcU444bvKhUmSaKXjHzkQXEbdi4qqZWgk6cqwxC6Lyy1CoFnnbSoQrap:feedlydev"
+      const data = {
+        grant_type: 'refresh_token',
+        refresh_token: "A00R7OwejcquDDf5_eoJh45w6Xdz7l3p9yNNqp93KNhkagpQhEhRqp-Q2CA6oIc3mYcNxqCOH5YjmwQcfBjlz_HuUlnCAZUlL4h96Jo3Q0JFa1nQ1fge_bU-LXNmA_3Vh3Mo993Lev7Jg6aYWpGUAa9bowzR6KwsGTBya0ryBcU444bvKhUmSaKXjHzkQXEbdi4qqZWgk6cqwxC6Lyy1CoFnnbSoQrap:feedlydev",
+        client_id: "681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b",
+        client_secret: 'your_client_secret'
+      };
+      let response  = await fetch('https://cloud.feedly.com/v3/auth/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams(data)
+      });
+    }
     const Get_feedly = async () => {
       const datalist ={
-        "url": `https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/${category_id}`
+        "url": `https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/${category_id}&count=${count}`
       }
       axios.post(`${BaseURL}feedly/news`,datalist,{
         headers : {
@@ -317,16 +359,17 @@ function Feedly() {
      <h6 className="card-title text-start text-bold">Feedly</h6>
      {/* <div className='text-start'><button  className='btn btn-success btn-sm' ><BiAddToQueue size={20}/>Add</button></div> */}
      </div>
-     {/* <div className='col-6'>
-     <form className="search-form ml-auto">
-       <div className="input-group">
-         <div className="input-group-text">
-           <BiSearch/>
-         </div>
-         <input  type="text" className="form-control" id="navbarForm" placeholder="Search here..." />
+     <div className='col-6 '>
+     <form className="search-form "style={{textAlign:" -webkit-right"}}  onSubmit={(e)=>e.preventDefault() & Get_feedly()} >
+       <div className="input-group d-flex  mr-5" style={{width:"200px"}}>
+         <label className='mt-2 text-secondary'>Count Show :&nbsp; </label>
+         <input  type="number" className="form-control" onChange={(e)=>setcount(e.target.value)} value={count}  id="navbarForm"  />
+         <div className="">
+          <button type='submit' className='btn btn-secondary btn-sm   rounded-right' ><BiSearch size={20} /></button>
+        </div>
        </div>
      </form>
-     </div> */}
+     </div>
      </div>
 
      <div className="table-responsive pt-3" style={{height:"80vh"}} >
@@ -373,9 +416,9 @@ function Feedly() {
                                 <a href={ value.canonicalUrl } target="_blank" >
                                 <button className='btn btn-primary btn-xs'>Details </button></a>
                                </td>
-                            <td style={{textAlign:'left'}}><div style={{  whiteSpace:"nowrap",width:"150px",maxHeight:"100px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.summary?value.summary.content :  value.content?.content??"" } } /> </td>
+                            <td style={{textAlign:'left'}}><div style={{  whiteSpace:"nowrap",width:"150px",maxHeight:"100px",overflow:"hidden",textOverflow:"ellipsis"}} dangerouslySetInnerHTML={{ __html: value.leoSummary?.sentences[0]?.text??value.summary?.content??"" ??"" } } /> </td>
                             <td>{ (handledate((value.published)))?.split('T')[0]??"" }</td>
-                            <td><button className=' btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title ,<div dangerouslySetInnerHTML={{ __html: value.summary?value.summary.content :  value.content?.content??""  }} />,value?.author??"",value.origin?.title??"",value?.keywords,handledate(value.published),value.fullContent,value.visual?.url??"")} >Save</button></td>
+                            <td><button className=' btn btn-success btn-xs' onClick={()=>Choose_Modal(value.title ,<div dangerouslySetInnerHTML={{ __html: value.leoSummary?.sentences[0]?.text??value.summary?.content??"" ?? "" }} />,value?.author??"",value.origin?.title??"",value?.keywords,handledate(value.published),value?.fullContent??value.content?.content??value.summary?.content??"",value.visual?.url??"",value?.commonTopics??"")} >Save</button></td>
                         </tr>
                     ))
                 }
@@ -394,7 +437,7 @@ function Feedly() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title h4" id="myExtraLargeModalLabel">News</h5>
-              <button onClick={() => setmodal(!modal)} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
+              <button onClick={() => setmodal(!modal) &setallnull() } type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close">
               </button>
             </div>
             <div className="modal-body text-start">
@@ -598,7 +641,7 @@ function Feedly() {
                   </div>
                  
                   <div className='text-end '>
-                    <button type="button" onClick={() => setmodal(!modal)} className="btn btn-secondary " style={{ marginRight: "5px" }} data-bs-dismiss="modal">Close</button>
+                    <button type="button" onClick={() => setmodal(!modal)&setallnull() } className="btn btn-secondary " style={{ marginRight: "5px" }} data-bs-dismiss="modal">Close</button>
                     <button type="submit" className="btn btn-primary ">Submit</button>
                   </div>
                   <div  className='text-end ' >

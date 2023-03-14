@@ -1,4 +1,4 @@
-import axios from 'axios'
+// import axios from 'axios'
 import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -6,8 +6,8 @@ import { RiDeleteBin6Fill } from 'react-icons/ri'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { BaseURL } from './urlcall'
 import JoditEditor from 'jodit-react';
-import ReactPlayer from 'react-player'
-import MultiSelect from 'react-multiple-select-dropdown-lite'
+// import ReactPlayer from 'react-player'
+// import MultiSelect from 'react-multiple-select-dropdown-lite'
 import { Simplecontext } from './Simplecontext'
 import { useContext } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
@@ -19,7 +19,7 @@ import Select from 'react-select';
 
 function Rss_News_List() {
 
-    const { categorydata, accesscheck,topicsdata } = useContext(Simplecontext)
+    const { categorydata,topicsdata } = useContext(Simplecontext)
 
     let navigate = useNavigate()
     let { state } = useLocation()
@@ -31,7 +31,7 @@ function Rss_News_List() {
      const [tag,settag]=useState()
   const [image, setimage] = useState('')
   const [isslider, setisslider] = useState(false)
-  const [sliderdata, setsliderdata] = useState('')
+  // const [sliderdata, setsliderdata] = useState('')
   const [pushnotification, setpushnotification] = useState(false)
   const editor = useRef(null);
  const [isloading,setisloading]=useState(false)
@@ -148,7 +148,7 @@ function Rss_News_List() {
         let datalist = Object.assign({}, newsitem);         
         if (category) {
           let catlist=[] 
-          category.map((item) => {
+          category.forEach((item) => {
             catlist.push(item.value);
           });
           datalist.category = catlist
@@ -159,7 +159,7 @@ function Rss_News_List() {
         }
         if (topic) {
           let topiclist=[] 
-          topic.map((item) => {
+          topic.forEach((item) => {
             topiclist.push(item.value);
           });
           datalist.topics = topiclist
@@ -173,7 +173,7 @@ function Rss_News_List() {
         if (tag){
         if (Array.isArray(tag) !== true){   
           let taglist =[]
-          tag.split(',').map((tagitm)=>{
+          tag.split(',').forEach((tagitm)=>{
               taglist.push(tagitm)
           })
           datalist.tag = taglist
