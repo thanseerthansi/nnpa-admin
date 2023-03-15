@@ -356,7 +356,7 @@ export default function News() {
     {
       name:"CATEGORY",
       selector : (itm)=>itm.category.length ? itm.category.map((cat,kc)=>(
-        <ul key={kc}>
+        <ul key={kc} style={{marginLeft: "-15px"}}>
           <li>{cat.name}</li>
         </ul>
       )): null,
@@ -364,14 +364,14 @@ export default function News() {
     {
       name:"TOPICS",
       selector : (itm)=>itm.topics.map((topicitm,key)=>(
-        <ul key={key}>
+        <ul key={key} style={{marginLeft: "-15px"}}>
           <li >{topicitm.name}</li>
         </ul>
       )),
     },
     {
       name:"CONTENT",
-      selector : (itm)=><ul className='table-linebreak' onClick={() => setnewsitem(itm)}><button type="button" className="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg">
+      selector : (itm)=><ul  style={{marginLeft: "-15px"}} className='table-linebreak' onClick={() => setnewsitem(itm)}><button type="button" className="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg">
       Content
     </button></ul>,
     },
@@ -382,7 +382,7 @@ export default function News() {
     {
       name:"TAGS",
       selector : (itm)=>itm.tag.map((itmtag,ke)=>(
-        <ul key={ke}>
+        <ul key={ke} style={{marginLeft: "-15px"}}>
           <li >{itmtag}</li>
         </ul>
       )),
@@ -393,7 +393,7 @@ export default function News() {
     },
     {
       name:"ACTION",
-      selector : (itm)=><ul className=''>
+      selector : (itm)=><ul style={{marginLeft: "-15px"}}>
       <li className='list-group-item d-flex'>
         <div>
         <button onClick={() => seteditfn(itm)} className='btn btn-warning btn-xs '><BiEdit size={15} /></button>
@@ -433,10 +433,10 @@ export default function News() {
     }
  
   };
-  const tableData = {
-    columns,
-    newsdata
-  };
+  // const tableData = {
+  //   columns,
+  //   newsdata
+  // };
   // console.log("topics",topic)
   return (
     <div className='page-wrapper px-3 mt-5'>
@@ -497,133 +497,11 @@ export default function News() {
             customStyles={customStyles}
           />
         </DataTableExtensions>
-              {/* <DataTableExtensions
-                {...tableData}
-              >
-              <DataTable
-            
-            columns={columns}
-            data={newsdata}
-            noHeader
-            defaultSortField="_id"
-            defaultSortAsc={false}
-            pagination
-            highlightOnHover
-            pagination
-            fixedHeader
-            fixedHeaderScrollHeight='57vh'
-            className="tablereact  tablereact "
-            highlightOnHover
-            subHeader
-            customStyles={customStyles}
-            subHeaderComponent={<input
-              type="text" className="form-control form-control-sm w-50" placeholder="Search here..."
-              value={searchvalue}
-              onChange={(e)=>setsearchvalue(e.target.value)}
-              />}
-        />
-         </DataTableExtensions> */}
-                {/* <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                     
-                      <th >Heading</th>
-                      <th>Thumbnail</th>
-                      <th>category</th>
-                      <th>Topics</th>
-                      <th>Content</th>
-                      <th>Slider</th>
-                      <th>tags</th>
-                   
-                      <th>created date</th>
-                      <th>action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                 
-                    {newsdata.length ? newsdata.map((itm, k) => (
-                      <tr key={k}>
-                       
-                        <td className='table-linebreak' onClick={() => setnewsitem(itm)} data-bs-toggle="modal" data-bs-target="#exampleModalCenter">{itm.heading}</td>
-                       
-                        <td ><img src={itm.thumbnail.startsWith('https')||itm.thumbnail.startsWith('http')? itm.thumbnail:BaseURL+itm.thumbnail} onClick={() => itm.media_type === "video" ? setnewsitem(itm) & setnewsvideomodal(!newsvideomodal) : {}} style={itm.media_type === "video" ? { cursor: "pointer" } : {}} /></td>
-                        <td>{itm.category.length ? itm.category.map((cat,kc)=>(
-                          <ul key={kc}>
-                            <li>{cat.name}</li>
-                          </ul>
-                        )): null}</td>
-                        <td>{itm.topics.map((topicitm,key)=>(
-                          <ul key={key}>
-                            <li >{topicitm.name}</li>
-                          </ul>
-                        ))}</td>
-                        <td className='table-linebreak' onClick={() => setnewsitem(itm)}><button type="button" className="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg">
-                          Content
-                        </button>
-                        </td>
-                        
-                        <td>{itm.is_slider.toString()}</td>
-                        <td>{itm.tag.map((itmtag,ke)=>(
-                          <ul key={ke}>
-                            <li >{itmtag}</li>
-                          </ul>
-                        ))}</td>
-
-
-                        <td>{itm.createdAt.split('T')[0]}</td>
-                        <td>
-                          <ul className=''>
-                            <li className='list-group-item'>
-                              <button onClick={() => seteditfn(itm)} className='btn btn-warning btn-xs edit-btn'><BiEdit size={15} />edit</button>
-                            </li>
-                            <li className='list-group-item mt-1' >
-
-                              <button onClick={() => submitdelete(itm._id)} className='btn btn-danger btn-xs' ><RiDeleteBin6Line size={15} />delete</button>
-                            </li>
-                          </ul>
-                        </td>
-                      </tr>
-                    )) : <tr>
-                    <td colSpan={10} > 
-                    <div >No  News Found</div>
-                    </td>
-                    </tr>}
-
-
-                  </tbody>
-                </table> */}
-
               </div>
-              {/* <div className="row mt-1">
-                <div className=" ">
-                  <div className="dataTables_paginate paging_simple_numbers " >
-
-                    <ul className="pagination ">
-
-                      <li className="paginate_button page-item previous" id="dataTableExample_previous">
-                        <button onClick={() => getnews('', page - 1)} disabled={page === 1} className="page-link">Previous</button>
-                      </li>
-                      <li className="paginate_button page-item previous" id="dataTableExample_previous">
-                        <button disabled className="page-link active">{page}</button>
-                      </li>
-
-
-                      <li className="paginate_button page-item next" id="dataTableExample_next">
-                        <button onClick={() => getnews('', page + 1)} disabled={next === false} className="page-link">Next</button>
-                      </li>
-
-                    </ul>
-                  </div>
-                </div>
-              </div> */}
-              
-
             </div>
           </div>
         </div>
       </div>
-
-
       {/* content Modal */}
       <div className="modal fade bd-example-modal-lg" tabIndex={-1} aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-xl">
@@ -650,17 +528,12 @@ export default function News() {
               <h5 className="modal-title" id="exampleModalCenterTitle">Heading</h5>
               <button onClick={() => setnewsitem('')} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="btn-close" />
             </div>
-
             <div className="modal-body text-start">
-
               <p>{newsitem.heading}</p>
-
             </div>
             <div className="modal-footer">
               <button onClick={() => setnewsitem('')} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
             </div>
-
           </div>
         </div>
       </div>
@@ -730,35 +603,16 @@ export default function News() {
                         <input onChange={(e) => setnewsitem({ ...newsitem, heading: e.target.value })} value={newsitem.heading ? newsitem.heading : ''} required type="text" className="form-control" placeholder="Enter Heading" />
                       </div>
                     </div>{/* Col */}
-                    {/* <div className="col-sm-6">
-        
-              
-      </div> */}
-                    {/* Col */}
                   </div>{/* Row */}
                   <div className="row"  >
                     <div className="col-sm-4 " >
                       <div className="mb-3">
                         <label htmlFor="exampleFormControlSelect2"  className="form-label"><b>Topics </b></label><br />
-                        {/* <b>{newsitem.tag}</b> */}
-                        {/* <MultiSelect style={{ maxWidth: "100%" }}
-                          onChange={newcontent => { settopic(newcontent ) }}
-                          defaultValue={null}
-                          options={topicsdata ?topicsdata.map((topicitm,kt)=>(
-                            { label: topicitm.name, value: topicitm._id }
-                          ))
-                            
-                           :null }
-                      
-                        /> */}
                         <Select
                             options={topicsdata ?topicsdata.map((topicitm,kt)=>(
                               { label: topicitm.name, value: topicitm._id }
                             )):null}
                             value={topic}
-                            // defaultValue={item_topics.map((itm)=>(
-                            //   {itm}
-                            // ))}
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
                             onChange={newcontent => { settopic(newcontent ) }}
@@ -766,50 +620,22 @@ export default function News() {
                             isRequired={true}
                           />
                       </div>
-
                     </div>{/* Col */}
                     <div className="col-sm-4" >
                       <div className="mb-3">
                         <label htmlFor="exampleFormControlSelect1" className="form-label"><b>Select Category</b></label>
-                        {/* <select required className="form-select" onChange={(e) => { setnewsitem({ ...newsitem, category: e.target.value }) }} value={newsitem.category ? newsitem.category[0]._id : ''} >
-                          <option hidden >Select Category</option>
-                          {categorydata.length ? categorydata.map((itm, k) => (
-                            <option key={k} value={itm._id} >{itm.name}</option>
-                          )) : null}
-
-                        </select> */}
-                        {/* <MultiSelect style={{ maxWidth: "100%" }}
-                          onChange={newcontent => { setcategory( newcontent ) }}
-                          value={category}
-                          // value = { null }
-                          options={categorydata ?categorydata.map((catitm,kc)=>(
-                            { label: catitm.name, value: catitm._id }
-                          ))
-                            
-                           :null }
-                        selected={[
-                      
-                            { label:  'Around The World'}
-                          
-                        ]}
-                        /> */}
                         <Select
                             options={categorydata ?categorydata.map((catitm,kc)=>(
                               { label: catitm.name, value: catitm._id }
                             ))
                              :null }
                             value={category}
-                            // defaultValue={[
-                            //       { label:"Black News", value: "63edcf8b5d71baf80f781de3" }
-                            //      { label:"Education", value: "63dc14224a8f7e1c53f3fef9" }
-                            //     ]}
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
                             onChange={newcontent => { setcategory( newcontent ) }}
                             isMulti={true}
                             isRequired={true}
                           />
-                        {/* {newsitem.category} */}
                       </div>
 
                     </div>{/* Col */}
@@ -918,33 +744,9 @@ export default function News() {
                           onBlur={(newContent) => setnewsitem({ ...newsitem, content: newContent })} // preferred to use only this option to update the content for performance reasons
                           onChange={(newContent) => { }}
                         />
-
-                        {/* <JoditEditor
-          ref={editor}
-          // config={config}
-          tabIndex={1} // tabIndex of textarea
-          onBlur={newcontent => setnewsitem({...newsitem,content:newcontent})}  
-          value={newsitem.content ? newsitem.content : ''}
-          onChange={newcontent => {setnewsitem({...newsitem,content:newcontent})}}
-      /> */}
                       </div>
                     </div>{/* Col */}
                   </div>{/* row */}
-                  {/* <div className=''>
-      <div className="form-check mb-2">
-      <input type="checkbox" className="form-check-input" id="checkChecked"   />
-      <label className="form-check-label" htmlFor="checkChecked">
-        <b>Is-Slider</b>
-      </label>
-    </div>
-      <div className="form-check mb-2">
-      <input type="checkbox" className="form-check-input" id="checkChecked"  />
-      <label className="form-check-label" htmlFor="checkChecked">
-        <b>Push Notification</b>
-      </label>
-    </div>
-
-    </div> */}
                   <div className='text-end '>
                     <button type="button" onClick={() => setmodal(!modal) & setallnull()} className="btn btn-secondary " style={{ marginRight: "5px" }} data-bs-dismiss="modal">Close</button>
                     <button type="submit" className="btn btn-primary " style={isloading ? {pointerEvents:'none'}:{}}>Submit</button>
