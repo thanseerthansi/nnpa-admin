@@ -104,10 +104,20 @@ function Rss_News_List() {
       list_item.push({ label: state.category.name, value: state.category._id },)
       setcategory(() => [...list_item])
       // console.log("listitm",newsitem)
+      Gettopics(state.category)
     }
-
+    
   }
-
+  const Gettopics=(cate)=>{
+    // console.log("category",cate.name)
+    let top = topicsdata.filter(t=>t.name.trim().toLowerCase().includes(cate.name.trim().toLowerCase()))
+    if (top.length){
+      const topiclist =[]  
+      topiclist.push({label:top[0].name,value:top[0]._id})
+      settopic(()=>[...topiclist])
+    }
+    
+  }
   useEffect(() => {
     window.scrollTo(0, 0);
     setdataloading(true)

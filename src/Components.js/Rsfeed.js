@@ -146,7 +146,7 @@ export default function Rsfeed() {
           <table className="table table-bordered">
             <thead>
               <tr>
-                {/* <th>#</th> */}
+                <th>#</th>
                 <th>Name</th>
                 <th>URL</th>
                 <th>Category</th>
@@ -158,7 +158,7 @@ export default function Rsfeed() {
             <tbody>
               {rssdata.rss_links? rssdata.rss_links.length?rssdata.rss_links.map((itm,k)=>(
                 <tr key={k}>
-                {/* <td>{k+1}</td> */}
+                <td>{k+1}</td>
                 <td>{itm.name}</td>
                 <td>{itm.url}</td>
                 <td>{itm.category ? itm.category.name :null}</td>
