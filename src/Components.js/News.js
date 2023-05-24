@@ -337,7 +337,7 @@ export default function News() {
     ))
     // console.log("listvalue",list_item)
    setcategory(()=>[...list_item])
-  }
+  } 
   // const rowNumber = (row) => filteredvalue.indexOf(row) + 1;
   const columns =[
     
@@ -413,6 +413,13 @@ export default function News() {
         textalign:"center"
       },
     },
+    headCells: {
+      style: {
+          minHeight: '40px',
+          border: "0.5px solid #e8e2e2 ",
+          borderTopWidth: '1.5px'
+      },
+  },
     header: {
       style: {
         border: "1px solid gray",
@@ -425,6 +432,7 @@ export default function News() {
         justifyContent: "center",
         
       },
+      
     },
     filter:{
       style:{

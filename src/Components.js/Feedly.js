@@ -23,7 +23,7 @@ import "react-data-table-component-extensions/dist/index.css";
 
 function Feedly() {
 
-  const { categorydata, topicsdata } = useContext(Simplecontext)
+  const { categorydata, topicsdata,gettopics } = useContext(Simplecontext)
 
   // let navigate = useNavigate()
   let { category_id } = useParams()
@@ -33,18 +33,18 @@ function Feedly() {
   const [modal, setmodal] = useState(false)
 
   const [newsitem, setnewsitem] = useState("")
-  const [topic, settopic] = useState()
-  const [category, setcategory] = useState()
-  const [tag, settag] = useState()
+  const [topic, settopic] = useState('')
+  const [category, setcategory] = useState('')
+  const [tag, settag] = useState('')
   const [image, setimage] = useState('')
   const [isslider, setisslider] = useState(false)
   const [sliderdata, setsliderdata] = useState('')
   const [pushnotification, setpushnotification] = useState(false)
   const editor = useRef(null);
   const [isloading, setisloading] = useState(false)
-  const [dataloading, setdataloading] = useState(false)
+  const [dataloading, setdataloading] = useState(true)
   const [count, setcount] = useState(50)
-
+  // console.log("dataloading",dataloading)
   // console.log("state",state.categoryname)
   const notify = (msg) => toast.success(msg, {
     position: "top-right",
@@ -93,8 +93,9 @@ function Feedly() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setdataloading(true)
+    // setdataloading(true)
     Get_feedly()
+    gettopics()
 
   }, [])
   const gettopicname = (topics) => {
@@ -136,7 +137,7 @@ function Feedly() {
     // const refresh_token = "A00R7OwejcquDDf5_eoJh45w6Xdz7l3p9yNNqp93KNhkagpQhEhRqp-Q2CA6oIc3mYcNxqCOH5YjmwQcfBjlz_HuUlnCAZUlL4h96Jo3Q0JFa1nQ1fge_bU-LXNmA_3Vh3Mo993Lev7Jg6aYWpGUAa9bowzR6KwsGTBya0ryBcU444bvKhUmSaKXjHzkQXEbdi4qqZWgk6cqwxC6Lyy1CoFnnbSoQrap:feedlydev"
     const data = {
       grant_type: 'refresh_token',
-      refresh_token: "A00R7OwejcquDDf5_eoJh45w6Xdz7l3p9yNNqp93KNhkagpQhEhRqp-Q2CA6oIc3mYcNxqCOH5YjmwQcfBjlz_HuUlnCAZUlL4h96Jo3Q0JFa1nQ1fge_bU-LXNmA_3Vh3Mo993Lev7Jg6aYWpGUAa9bowzR6KwsGTBya0ryBcU444bvKhUmSaKXjHzkQXEbdi4qqZWgk6cqwxC6Lyy1CoFnnbSoQrap:feedlydev",
+      refresh_token: "A_fnGFWHFND_Q1V3TRDmBvN9_jPGMa-0GDFkjGo0awjqriRaOZRN1DAYLEKH-Gec7qTgRA-aQZMBWznshP6-ypMNGSMRN96JRmHttj6CiFpDEw9vG-hhNQXnMQjtPlnOoHhrxYN1OIlJEcRQdM-7HyL80xet58ZVjFeY5YeBC3FRU_68gKoErSSpywnKSXIagne1expjKVbsD3DtEFMlWZSmhc7Ymuo:feedlydev",
       client_id: "681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b",
       client_secret: 'your_client_secret'
     };
@@ -149,19 +150,26 @@ function Feedly() {
     });
   }
   const Get_feedly = async () => {
+    // setdataloading(true)
     const datalist = {
       "url": `https://cloud.feedly.com/v3/streams/contents?streamId=user/681cb5bf-c7bd-4c08-bbdc-bfee06c38a8b/category/${category_id}&count=${count}`
     }
     axios.post(`${BaseURL}feedly/news`, datalist, {
       headers: {
-        Authorization: `A-rGA3_wcfl3VRKTG1BynfHQUKPfGs3ZHe5jnk47MgLYvjRHsmOq_mtUOAWKpBlULuX5-CaFMiRbaqQs899RQBuKA7IwJsDpOHIMyvN-G_FXzzZQUayKBUbSgN-4sKEWPRfcAc3i0OBDF-deHX1qJJoaDynQFS6rYfpcMR1HLWVuJABMfWTPG-dJW1BkoloJ34m3pAqVDKxWyfPPwN3NJgQZzs073PidpwVGprZPcxl4cNqUPo7lmyoS35tl:feedlydev`
+        Authorization: `Axw_tbQ_nCXIh6XUurEXgGTJB1xEpIMqheXQ3Yln8K4rNwBRk_04vVgJef6sZoPHbjKYSYgChlRqM68AiV2LO3MLwm0Hl3HLyKyiiojR42YJVmsDRp100h7Byzr7QrTq_dKsvs35qzjL5qdeps5g7FjtcN2mUIWEF7_cxAxvgE36nDEX1tCMjQRNFskzbERKrRW2Wb9HlrPegNLY7xczeHG8mfcn1kRS0RzpsKaC_VXTY9jBRHiKSNrfSFg:feedlydev`
       },
     })
       .then((res) => {
-        // console.log("response",res.data.items)
-        setfeedly_news(res.data.items)
+        // console.log("response",res)
+        if(res.data.items){
+          setfeedly_news(res.data.items)
+        }else{
+          // setdataloading(true)
+          console.log("error",res.data.message)
+        }
+        
       })
-    setdataloading(true)
+    setdataloading(false)
   }
 
   const postnewsfn = async (e) => {
@@ -392,7 +400,7 @@ function Feedly() {
                 </div>
               </div>
               <div>
-                {feedly_news.length === 0 ?
+                
 
                   <div className='text-center'>
                     <ColorRing
@@ -406,7 +414,7 @@ function Feedly() {
                     />
 
                   </div>
-                  : <DataTable
+                   <DataTable
                     columns={columns}
                     data={feedly_news}
                     noHeader
@@ -419,7 +427,7 @@ function Feedly() {
                     fixedHeaderScrollHeight='72vh'
                     className="tablereact  tablereact  "
                     customStyles={customStyles}
-                  />}
+                  />
               </div>
               {/* <div className="table-responsive pt-3" style={{height:"80vh"}} >
        <table className="table table-bordered">

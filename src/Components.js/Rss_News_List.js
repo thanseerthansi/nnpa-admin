@@ -22,7 +22,7 @@ import "react-data-table-component-extensions/dist/index.css";
 
 function Rss_News_List() {
 
-  const { categorydata, topicsdata } = useContext(Simplecontext)
+  const { categorydata, topicsdata,gettopics } = useContext(Simplecontext)
 
   let navigate = useNavigate()
   let { state } = useLocation()
@@ -122,6 +122,7 @@ function Rss_News_List() {
     window.scrollTo(0, 0);
     setdataloading(true)
     Get_Rss_News()
+    gettopics()
   }, [])
 
   const Get_Rss_News = async () => {
